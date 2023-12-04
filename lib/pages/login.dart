@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iot_scrty/assets/colors.dart';
 import 'package:iot_scrty/components/campo_cadastro.dart';
 import 'package:iot_scrty/pages/_home_coordenador.dart';
 import 'package:iot_scrty/pages/_home_professor.dart';
@@ -36,20 +37,34 @@ class LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
+      appBar: AppBar(
+        title: const Text('Login'),
+        backgroundColor: PersonalColors.primaryGreen,
+        titleTextStyle: const TextStyle(color: Colors.white, fontSize: 20),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CampoCadastro(labelText: 'email', controller: _emailController),
-            const SizedBox(height: 16.0),
-            CampoCadastro(labelText: 'senha', controller: _passwordController),
-            const SizedBox(height: 32.0),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              color: PersonalColors.backgroundGrey,
+              child: Column(children: [
+                const SizedBox(height: 16.0),
+                CampoCadastro(labelText: 'email', controller: _emailController),
+                const SizedBox(height: 16.0),
+                CampoCadastro(
+                    labelText: 'senha', controller: _passwordController),
+                const SizedBox(height: 32.0),
+              ]),
+            ),
             ElevatedButton(
                 onPressed: () => {homeProfessor(context)},
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromRGBO(74, 188, 216, 1),
+                    foregroundColor: Colors.white,
+                    backgroundColor: PersonalColors.primaryGreen,
                     shape: const LinearBorder()),
                 child: const Text('Entrar')),
           ],

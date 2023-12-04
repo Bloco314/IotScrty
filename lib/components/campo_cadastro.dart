@@ -6,21 +6,21 @@ class CampoCadastro extends StatelessWidget {
   final bool border;
 
   CampoCadastro(
-      {required this.labelText,
-      required this.controller,
-      this.border = true});
+      {required this.labelText, required this.controller, this.border = true});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: TextFormField(
-        decoration: InputDecoration(
-          labelText: labelText,
-          border: border ? const OutlineInputBorder() : InputBorder.none,
-        ),
-        controller: controller,
-      ),
-    );
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          decoration: BoxDecoration(color: Colors.white),
+          child: TextFormField(
+            decoration: InputDecoration(
+              labelText: labelText,
+              border: border ? const OutlineInputBorder() : InputBorder.none,
+            ),
+            controller: controller,
+          ),
+        ));
   }
 }

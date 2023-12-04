@@ -6,12 +6,15 @@ import 'package:iot_scrty/pages/_solicitations.dart';
 class NavBarProfessor extends StatelessWidget {
   final String nome;
   final String email;
+  final BuildContext cont;
 
-  NavBarProfessor({required this.nome, required this.email});
+  NavBarProfessor(
+      {required this.nome, required this.email, required this.cont});
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      width: MediaQuery.of(cont).size.width * 50 / 100,
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
@@ -71,12 +74,15 @@ class NavBarProfessor extends StatelessWidget {
 class NavBarCoordenador extends StatelessWidget {
   final String nome;
   final String email;
+  final BuildContext cont;
 
-  NavBarCoordenador({required this.nome, required this.email});
+  NavBarCoordenador(
+      {required this.nome, required this.email, required this.cont});
 
-  @override
+  @override 
   Widget build(BuildContext context) {
     return Drawer(
+      width: MediaQuery.of(cont).size.width * 50 / 100,
       child: ListView(
         padding: EdgeInsets.zero,
         children: [

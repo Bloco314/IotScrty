@@ -10,7 +10,7 @@ class HomeCState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: NavBarCoordenador(email: email, nome: nome),
+      drawer: NavBarCoordenador(email: email, nome: nome, cont: context),
       appBar: AppBar(
         title: Text("Bem-vindo $nome"),
         backgroundColor: const Color.fromRGBO(74, 188, 216, 1),

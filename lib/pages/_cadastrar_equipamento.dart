@@ -12,7 +12,7 @@ class CadEnviromentState extends State<CadEnviroment> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: NavBarProfessor(email: 'jmcds',nome: 'jose'),
+      drawer: NavBarProfessor(email: 'jmcds',nome: 'jose',cont: context),
       appBar: AppBar(
         title: const Text('Cadastrar ambiente'),
         backgroundColor: const Color.fromRGBO(74, 188, 216, 1),

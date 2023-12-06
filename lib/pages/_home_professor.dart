@@ -12,7 +12,7 @@ class HomePState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: NavBarProfessor(email: email, nome: nome, cont: context),
-      appBar: TopBar(nome: nome),
+      appBar: TopBar(text: nome),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Container(child: Text("Home sweet home")),

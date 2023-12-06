@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:iot_scrty/pages/_cadastrar_ambiente.dart';
+import 'package:iot_scrty/pages/_cadastrar_equipamento.dart';
 import 'package:iot_scrty/pages/_horarios_professor.dart';
 import 'package:iot_scrty/pages/_registrar_emprestimo.dart';
 import 'package:iot_scrty/pages/_solicitations.dart';
@@ -79,7 +81,27 @@ class NavBarCoordenador extends StatelessWidget {
   NavBarCoordenador(
       {required this.nome, required this.email, required this.cont});
 
-  @override 
+  void tela_equipamentos(context) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => CadEquip(
+                  email: email,
+                  nome: nome,
+                )));
+  }
+
+  void tela_ambientes(context) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ViewEnvironments(
+                  email: email,
+                  nome: nome,
+                )));
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Drawer(
       width: MediaQuery.of(cont).size.width * 50 / 100,
@@ -107,9 +129,15 @@ class NavBarCoordenador extends StatelessWidget {
           ),
           //itens da navbar
           ListTile(
-            leading: const Icon(Icons.schedule),
-            title: const Text('blabla'),
-            onTap: () => null,
+            leading: const Icon(Icons.apartment_sharp),
+            title: const Text('Ambientes'),
+            onTap: () => tela_ambientes(context),
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.computer),
+            title: const Text('Equipamentos'),
+            onTap: () => tela_equipamentos(context),
           ),
           const Divider()
         ],

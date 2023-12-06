@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:iot_scrty/assets/colors.dart';
 
 class TopBar extends StatelessWidget implements PreferredSizeWidget {
-  final String nome;
+  final String text;
 
-  TopBar({required this.nome});
+  TopBar({required this.text});
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text("Bem-vindo $nome"),
+      title: Text("$text"),
       backgroundColor: PersonalColors.primaryGreen,
       foregroundColor: Colors.white,
     );

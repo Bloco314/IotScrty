@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iot_scrty/assets/colors.dart';
 import 'package:iot_scrty/components/campo_cadastro.dart';
+import 'package:iot_scrty/components/top_bar.dart';
 import 'package:iot_scrty/pages/_home_coordenador.dart';
 import 'package:iot_scrty/pages/_home_professor.dart';
 
@@ -37,11 +38,7 @@ class LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login'),
-        backgroundColor: PersonalColors.primaryGreen,
-        titleTextStyle: const TextStyle(color: Colors.white, fontSize: 20),
-      ),
+      appBar: TopBar(text: 'Login'),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -61,7 +58,7 @@ class LoginState extends State<Login> {
               ]),
             ),
             ElevatedButton(
-                onPressed: () => {homeProfessor(context)},
+                onPressed: () => {homeCoordenador(context)},
                 style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
                     backgroundColor: PersonalColors.primaryGreen,

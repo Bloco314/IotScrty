@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:iot_scrty/assets/colors.dart';
 import 'package:iot_scrty/components/navigation_bar.dart';
 
-class CadEnviroment extends StatefulWidget {
-  @override
-  CadEnviromentState createState() => CadEnviromentState();
-}
+class CadEquip extends StatelessWidget {
+final String nome;
+  final String email;
 
-class CadEnviromentState extends State<CadEnviroment> {
-  final key = 'cadEnvState';
+  CadEquip({required this.nome, required this.email});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: NavBarProfessor(email: 'jmcds',nome: 'jose',cont: context),
+      drawer: NavBarCoordenador(email: email,nome: nome,cont: context),
       appBar: AppBar(
-        title: const Text('Cadastrar ambiente'),
-        backgroundColor: const Color.fromRGBO(74, 188, 216, 1),
+        title: const Text('Equipamentos'),
+        backgroundColor: PersonalColors.primaryGreen,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -27,7 +26,7 @@ class CadEnviromentState extends State<CadEnviroment> {
                   Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromRGBO(74, 188, 216, 1)),
+                    backgroundColor: PersonalColors.primaryGreen),
                 child: const Text('Retorna')),
           ],
         ),

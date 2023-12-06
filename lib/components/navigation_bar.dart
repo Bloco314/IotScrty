@@ -3,7 +3,7 @@ import 'package:iot_scrty/pages/_cadastrar_ambiente.dart';
 import 'package:iot_scrty/pages/_cadastrar_equipamento.dart';
 import 'package:iot_scrty/pages/_horarios_professor.dart';
 import 'package:iot_scrty/pages/_registrar_emprestimo.dart';
-import 'package:iot_scrty/pages/_solicitations.dart';
+import 'package:iot_scrty/pages/_solicitacoes.dart';
 
 class NavBarProfessor extends StatelessWidget {
   final String nome;

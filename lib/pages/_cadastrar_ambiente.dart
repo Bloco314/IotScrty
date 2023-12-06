@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iot_scrty/assets/colors.dart';
 import 'package:iot_scrty/components/campo_cadastro.dart';
 import 'package:iot_scrty/components/navigation_bar.dart';
 import 'package:iot_scrty/components/table_elements.dart';
@@ -25,6 +26,7 @@ class ViewEnvironments extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         child: Column(
           children: [
+            //Cabeçalho
             Table(
               defaultVerticalAlignment: TableCellVerticalAlignment.middle,
               children: [
@@ -39,6 +41,7 @@ class ViewEnvironments extends StatelessWidget {
                 ),
               ],
             ),
+            //Dados da tabela
             Table(
               defaultVerticalAlignment: TableCellVerticalAlignment.middle,
               children: dados.asMap().entries.map((entry) {
@@ -50,25 +53,48 @@ class ViewEnvironments extends StatelessWidget {
                     color: index % 2 == 0 ? Colors.grey[200] : Colors.white,
                   ),
                   children: [
-                    TableCell(child: Text(rowData['nome'])),
-                    TableCell(child: Text(rowData['horarios'].toString())),
-                    TableCell(child: Text(rowData['algo'])),
+                    BodyCell(text: rowData['nome']),
+                    BodyCell(text: rowData['horarios'].toString()),
+                    BodyCell(text: rowData['algo']),
                     TableCell(
-                      child: IconButton(
-                        icon: Icon(Icons.edit),
+                      child: ElevatedButton(
                         onPressed: () => null,
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: PersonalColors.buttonGrey,
+                            minimumSize: const Size(5.0, 10.0),
+                            maximumSize: const Size(5.0, 50.0)),
+                        child: const Icon(
+                          Icons.edit,
+                          size: 30.0,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                     TableCell(
-                      child: IconButton(
-                        icon: Icon(Icons.delete),
+                      child: ElevatedButton(
                         onPressed: () => null,
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: PersonalColors.buttonGrey,
+                            minimumSize: const Size(10.0, 10.0),
+                            maximumSize: const Size(10.0, 50.0)),
+                        child: const Icon(Icons.delete,
+                            size: 30.0, color: Colors.white),
                       ),
                     ),
                   ],
                 );
               }).toList(),
             ),
+            //Botão
+            ElevatedButton(
+                onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CadEnviroment(
+                              email: email,
+                              nome: nome,
+                            ))),
+                child: Text('Novo Ambiente'))
           ],
         ),
       ),

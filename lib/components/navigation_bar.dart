@@ -1,17 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:iot_scrty/pages/_cad_environment.dart';
 import 'package:iot_scrty/pages/_cad_equip.dart';
+import 'package:iot_scrty/pages/_home_coordenador.dart';
+import 'package:iot_scrty/pages/_home_professor.dart';
 import 'package:iot_scrty/pages/_horarios_professor.dart';
 import 'package:iot_scrty/pages/_register_loan.dart';
 import 'package:iot_scrty/pages/_solicitations.dart';
+import 'package:iot_scrty/pages/login.dart';
 
 class NavBarProfessor extends StatelessWidget {
   final String nome;
   final String email;
   final BuildContext cont;
+  final String pageName;
 
   NavBarProfessor(
-      {required this.nome, required this.email, required this.cont});
+      {required this.nome,
+      required this.email,
+      required this.cont,
+      required this.pageName});
+
+  void navigateTo(context, Widget page) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => page));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,30 +52,32 @@ class NavBarProfessor extends StatelessWidget {
           ),
           //itens da navbar
           ListTile(
+              leading: const Icon(Icons.home),
+              title: const Text('Home'),
+              onTap: () => {
+                    if (pageName != 'professor_home')
+                      {
+                        navigateTo(
+                            context, HomePState(email: email, nome: nome))
+                      }
+                  }),
+          ListTile(
             leading: const Icon(Icons.schedule),
             title: const Text('Emprestimo aluno'),
-            onTap: () => {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => CheckinEquip()))
-            },
+            onTap: () => navigateTo(context, CheckinEquip()),
           ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.location_searching),
             title: const Text('Solicitações'),
-            onTap: () => {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => Solicitacoes()))
-            },
+            onTap: () =>
+                navigateTo(context, Solicitacoes(nome: nome, email: email)),
           ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.edit_calendar),
             title: const Text('Horarios'),
-            onTap: () => {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Horarios()))
-            },
+            onTap: () => navigateTo(context, Horarios()),
           ),
           const Divider()
         ],
@@ -77,28 +90,16 @@ class NavBarCoordenador extends StatelessWidget {
   final String nome;
   final String email;
   final BuildContext cont;
+  final String pageName;
 
   NavBarCoordenador(
-      {required this.nome, required this.email, required this.cont});
+      {required this.nome,
+      required this.email,
+      required this.cont,
+      required this.pageName});
 
-  void tela_equipamentos(context) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => CadEquip(
-                  email: email,
-                  nome: nome,
-                )));
-  }
-
-  void tela_ambientes(context) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => ViewEnvironments(
-                  email: email,
-                  nome: nome,
-                )));
+  void navigateTo(context, Widget page) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => page));
   }
 
   @override
@@ -129,17 +130,58 @@ class NavBarCoordenador extends StatelessWidget {
           ),
           //itens da navbar
           ListTile(
-            leading: const Icon(Icons.apartment_sharp),
-            title: const Text('Ambientes'),
-            onTap: () => tela_ambientes(context),
+            leading: const Icon(Icons.home),
+            title: const Text('Home'),
+            onTap: () => {
+              if (pageName != 'coordenador_home')
+                {navigateTo(context, HomeCState(email: email, nome: nome))}
+              else
+                {Navigator.of(context).pop()}
+            },
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.computer),
-            title: const Text('Equipamentos'),
-            onTap: () => tela_equipamentos(context),
-          ),
-          const Divider()
+              leading: const Icon(Icons.apartment_rounded),
+              title: const Text('Ambientes'),
+              onTap: () => {
+                    if (pageName != 'visualizar_ambientes')
+                      {
+                        navigateTo(
+                            context, ViewEnvironments(nome: nome, email: email))
+                      }
+                    else
+                      {Navigator.of(context).pop()}
+                  }),
+          const Divider(),
+          ListTile(
+              leading: const Icon(Icons.computer),
+              title: const Text('Equipamentos'),
+              onTap: () => {
+                    if (pageName != 'cadastrar_equipamentos')
+                      {navigateTo(context, CadEquip(nome: nome, email: email))}
+                    else
+                      {Navigator.of(context).pop()}
+                  }),
+          const Divider(),
+          ListTile(
+              leading: const Icon(Icons.wechat),
+              title: const Text('Solicitações'),
+              onTap: () => {
+                    if (pageName != 'solicitacoes')
+                      {
+                        navigateTo(
+                            context, Solicitacoes(nome: nome, email: email))
+                      }
+                    else
+                      {Navigator.of(context).pop()}
+                  }),
+          const Divider(),
+          ListTile(
+              leading: const Icon(Icons.exit_to_app_sharp),
+              title: const Text('Logout'),
+              onTap: () => Navigator.pushNamedAndRemoveUntil(
+                  context, '/', (route) => false)),
+          Divider()
         ],
       ),
     );

@@ -9,12 +9,17 @@ class HeaderCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return TableCell(
         child: Container(
-            color: PersonalColors.backgroundGrey,
-            child: Text(
-              text,
-              style: TextStyle(color: Colors.black),
-              textAlign: TextAlign.center,
-            )));
+            height: 50,
+            alignment: Alignment.center,
+            decoration: const BoxDecoration(
+                border: Border(
+                    bottom: BorderSide(color: Colors.black),
+                    left: BorderSide(color: Colors.black),
+                    right: BorderSide(color: Colors.black),
+                    top: BorderSide(color: Colors.black))),
+            child: Text(text,
+                style: TextStyle(color: Colors.black),
+                textAlign: TextAlign.center)));
   }
 }
 
@@ -28,6 +33,26 @@ class BodyCell extends StatelessWidget {
         child: Text(
       text,
       textAlign: TextAlign.center,
+    ));
+  }
+}
+
+class BoxCell extends StatelessWidget {
+  final StatelessWidget? wi;
+
+  BoxCell({this.wi});
+
+  @override
+  Widget build(BuildContext context) {
+    return TableCell(
+        child: Container(
+      decoration: const BoxDecoration(
+          border: Border(
+              bottom: BorderSide(color: Colors.black),
+              left: BorderSide(color: Colors.black),
+              right: BorderSide(color: Colors.black),
+              top: BorderSide(color: Colors.black))),
+      child: wi,
     ));
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:iot_scrty/assets/colors.dart';
+import 'package:iot_scrty/components/buttons.dart';
 import 'package:iot_scrty/components/input_fields.dart';
-import 'package:iot_scrty/components/navigatio_bar.dart';
+import 'package:iot_scrty/components/navigation_bar.dart';
 import 'package:iot_scrty/components/table_elements.dart';
 import 'package:iot_scrty/components/top_bar.dart';
 
@@ -9,21 +9,40 @@ class ViewEnvironments extends StatelessWidget {
   final String nome;
   final String email;
 
-  final List<Map<String, dynamic>> dados = [
-    {'nome': 'ambiente 1', 'horarios': 'sim', 'algo': 'mais'},
-    {'nome': 'ambiente 2', 'horarios': 'nao', 'algo': 'mais'},
-    {'nome': 'ambiente 3', 'horarios': 'sim', 'algo': 'mais'},
+  final List<String> dados = [
+    'Ambiente 1',
+    'Ambiente 2',
+    'Ambiente 3',
+    'Ambiente 4',
+    'Ambiente 5'
   ];
 
   ViewEnvironments({required this.nome, required this.email});
 
+  void navigateTo(context, Widget page) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => page));
+  }
+
+  void modalHorarios(context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ModalHorarios();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: NavBarCoordenador(email: email, nome: nome, cont: context),
+      drawer: NavBarCoordenador(
+          email: email,
+          nome: nome,
+          cont: context,
+          pageName: 'visualizar_ambientes'),
       appBar: TopBar(text: 'Ambientes'),
       body: Padding(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(5),
         child: Column(
           children: [
             //Cabeçalho
@@ -33,10 +52,8 @@ class ViewEnvironments extends StatelessWidget {
                 TableRow(
                   children: [
                     HeaderCell(text: 'Nome'),
-                    HeaderCell(text: 'Horarios'),
-                    HeaderCell(text: 'Algo mais'),
-                    HeaderCell(text: 'Editar'),
-                    HeaderCell(text: 'Excluir')
+                    HeaderCell(text: 'Equipamentos'),
+                    HeaderCell(text: 'Horarios')
                   ],
                 ),
               ],
@@ -46,55 +63,34 @@ class ViewEnvironments extends StatelessWidget {
               defaultVerticalAlignment: TableCellVerticalAlignment.middle,
               children: dados.asMap().entries.map((entry) {
                 int index = entry.key;
-                Map<String, dynamic> rowData = entry.value;
 
                 return TableRow(
                   decoration: BoxDecoration(
                     color: index % 2 == 0 ? Colors.grey[200] : Colors.white,
                   ),
                   children: [
-                    BodyCell(text: rowData['nome']),
-                    BodyCell(text: rowData['horarios'].toString()),
-                    BodyCell(text: rowData['algo']),
+                    BodyCell(text: entry.value),
+                    //Abre modal de equipamentos
                     TableCell(
-                      child: ElevatedButton(
-                        onPressed: () => null,
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: PersonalColors.buttonGrey,
-                            minimumSize: const Size(5.0, 10.0),
-                            maximumSize: const Size(5.0, 50.0)),
-                        child: const Icon(
-                          Icons.edit,
-                          size: 30.0,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
+                        child: TableButton(
+                            icone: Icons.computer_sharp,
+                            onPressed: () => null)),
+                    //Abre modal de horarios
                     TableCell(
-                      child: ElevatedButton(
-                        onPressed: () => null,
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: PersonalColors.buttonGrey,
-                            minimumSize: const Size(10.0, 10.0),
-                            maximumSize: const Size(10.0, 50.0)),
-                        child: const Icon(Icons.delete,
-                            size: 30.0, color: Colors.white),
-                      ),
-                    ),
+                        child: TableButton(
+                            icone: Icons.watch_later,
+                            onPressed: () => modalHorarios(context))),
                   ],
                 );
               }).toList(),
             ),
-            //Botão
-            ElevatedButton(
-                onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => CadEnviroment(
-                              email: email,
-                              nome: nome,
-                            ))),
-                child: Text('Novo Ambiente'))
+            //Botão para novo ambiente
+            Container(
+                margin: EdgeInsets.only(),
+                child: DefaultButton(
+                    text: 'Novo ambiente',
+                    onPressed: () => navigateTo(
+                        context, CadEnviroment(nome: nome, email: email)))),
           ],
         ),
       ),
@@ -117,7 +113,11 @@ class CadEnviroment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: NavBarCoordenador(email: email, nome: nome, cont: context),
+      drawer: NavBarCoordenador(
+          email: email,
+          nome: nome,
+          cont: context,
+          pageName: 'cadastrar_ambientes'),
       appBar: TopBar(text: 'Ambientes'),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -131,6 +131,36 @@ class CadEnviroment extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class ModalHorarios extends StatelessWidget {
+  final List<String> horarios = ['10-10', '20-20', '30-30', '40-40'];
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      shape: LinearBorder(),
+      title: Text('Horários'),
+      content: Container(
+        height: 400,
+        width: 300,
+        child: ListView.builder(
+          itemCount: horarios.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Column(children: [
+              ListTile(
+                title: Text(horarios[index]),
+              ),
+              Divider()
+            ]); 
+          },
+        ),
+      ),
+      actions: [
+        DefaultButton(text: 'Fechar', onPressed: () => Navigator.pop(context))
+      ],
     );
   }
 }

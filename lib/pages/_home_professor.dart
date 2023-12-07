@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iot_scrty/components/navigatio_bar.dart';
+import 'package:iot_scrty/components/navigation_bar.dart';
 import 'package:iot_scrty/components/top_bar.dart';
 
 class HomePState extends StatelessWidget {
@@ -11,7 +11,8 @@ class HomePState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: NavBarProfessor(email: email, nome: nome, cont: context),
+      drawer: NavBarProfessor(
+          email: email, nome: nome, cont: context, pageName: 'professor_home'),
       appBar: TopBar(text: nome),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

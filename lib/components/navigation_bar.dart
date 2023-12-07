@@ -180,7 +180,7 @@ class NavBarCoordenador extends StatelessWidget {
               title: const Text('Logout'),
               onTap: () => Navigator.pushNamedAndRemoveUntil(
                   context, '/', (route) => false)),
-          Divider()
+          const Divider()
         ],
       ),
     );

@@ -7,13 +7,15 @@ class GenericButton extends StatelessWidget {
   final Color? color;
   final double? width;
   final double? height;
+  final Color? textColor;
 
   GenericButton(
       {required this.text,
       this.onPressed,
       this.color,
       this.height,
-      this.width});
+      this.width,
+      this.textColor});
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +26,14 @@ class GenericButton extends StatelessWidget {
         child: ElevatedButton(
             onPressed: onPressed,
             style: ElevatedButton.styleFrom(
+                elevation: 0,
                 foregroundColor: Colors.white,
                 backgroundColor: color,
                 shape: const LinearBorder()),
-            child: Text(text)));
+            child: Text(
+              text,
+              style: TextStyle(color: textColor),
+            )));
   }
 }
 

@@ -17,7 +17,9 @@ class CampoCadastro extends StatelessWidget {
           child: TextFormField(
             decoration: InputDecoration(
               labelText: labelText,
-              border: border ? const OutlineInputBorder() : InputBorder.none,
+              border: border
+                  ? const OutlineInputBorder(borderRadius: BorderRadius.zero)
+                  : InputBorder.none,
             ),
             controller: controller,
           ),

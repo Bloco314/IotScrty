@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:iot_scrty/components/buttons.dart';
 import 'package:iot_scrty/components/navigation_bar.dart';
 import 'package:iot_scrty/components/top_bar.dart';
 
@@ -18,46 +19,64 @@ class HomeCState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: NavBarCoordenador(
-          email: email,
-          nome: nome,
-          cont: context,
-          pageName: 'coordenador_home'),
-      appBar: TopBar(
-          text:
-              'Bem-vindo${nome.isNotEmpty ? ', ' : ''}$nome'),
-      //corpo
-      body: Padding(
+        drawer: NavBarCoordenador(
+            email: email,
+            nome: nome,
+            cont: context,
+            pageName: 'coordenador_home'),
+        appBar: TopBar(text: 'Bem-vindo${nome.isNotEmpty ? ', ' : ''}$nome'),
+        //corpo
+        body: Padding(
           padding: EdgeInsets.all(16.0),
-          child: CarouselSlider(
-            options: CarouselOptions(
-              height: 200.0,
-              enlargeCenterPage: true,
-              autoPlay: true,
-              aspectRatio: 16 / 9,
-              autoPlayCurve: Curves.fastOutSlowIn,
-              enableInfiniteScroll: true,
-              autoPlayAnimationDuration: const Duration(milliseconds: 800),
-              viewportFraction: 0.8,
+          child: Column(children: [
+            //Carrosel com noticias
+            CarouselSlider(
+              options: CarouselOptions(
+                height: 200.0,
+                enlargeCenterPage: true,
+                autoPlay: true,
+                aspectRatio: 16 / 9,
+                autoPlayCurve: Curves.fastOutSlowIn,
+                enableInfiniteScroll: true,
+                autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                viewportFraction: 0.8,
+              ),
+              items: images.map((String imageUrl) {
+                return Builder(
+                  builder: (BuildContext context) {
+                    return Container(
+                      width: MediaQuery.of(context).size.width,
+                      margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                      decoration: BoxDecoration(
+                        color: Colors.green[100],
+                      ),
+                      child: Image.network(
+                        imageUrl,
+                        fit: BoxFit.cover,
+                      ),
+                    );
+                  },
+                );
+              }).toList(),
             ),
-            items: images.map((String imageUrl) {
-              return Builder(
-                builder: (BuildContext context) {
-                  return Container(
-                    width: MediaQuery.of(context).size.width,
-                    margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                    decoration: BoxDecoration(
-                      color: Colors.green[100],
-                    ),
-                    child: Image.network(
-                      imageUrl,
-                      fit: BoxFit.cover,
-                    ),
-                  );
-                },
-              );
-            }).toList(),
-          )),
-    );
+            Divider(),
+            Container(margin: EdgeInsets.only(top: 50)),
+            //Outro
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                PrimaryButton(text: 'Acão 1'),
+                PrimaryButton(text: 'Acão 2')
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                PrimaryButton(text: 'Acão 3'),
+                PrimaryButton(text: 'Acão 4')
+              ],
+            )
+          ]),
+        ));
   }
 }

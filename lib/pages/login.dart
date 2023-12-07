@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iot_scrty/assets/colors.dart';
+import 'package:iot_scrty/components/buttons.dart';
 import 'package:iot_scrty/components/input_fields.dart';
 import 'package:iot_scrty/components/top_bar.dart';
 import 'package:iot_scrty/pages/_home_coordenador.dart';
@@ -15,55 +16,49 @@ class LoginState extends State<Login> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void homeProfessor(context) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => HomePState(
-                  email: _emailController.text,
-                  nome: _passwordController.text,
-                )));
+  void navigateTo(context, Widget page) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => page));
   }
 
-  void homeCoordenador(context) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => HomeCState(
-                  email: _emailController.text,
-                  nome: _passwordController.text,
-                )));
-  }
+  void criarConta() {}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: TopBar(text: 'Login'),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              color: PersonalColors.backgroundGrey,
+              padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 10),
+              decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(7.5)),
+                  color: PersonalColors.backgroundGrey),
               child: Column(children: [
-                const SizedBox(height: 16.0),
                 CampoCadastro(labelText: 'email', controller: _emailController),
                 const SizedBox(height: 16.0),
                 CampoCadastro(
-                    labelText: 'senha', controller: _passwordController),
-                const SizedBox(height: 32.0),
+                    labelText: 'senha', controller: _passwordController)
               ]),
             ),
-            ElevatedButton(
-                onPressed: () => {homeCoordenador(context)},
-                style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: PersonalColors.primaryGreen,
-                    shape: const LinearBorder()),
-                child: const Text('Entrar')),
+            PrimaryButton(
+                text: 'Entrar',
+                onPressed: () => navigateTo(
+                    context,
+                    HomeCState(
+                        email: _emailController.text,
+                        nome: _passwordController.text))),
+            GenericButton(
+                text: 'Não tem uma conta?',
+                width: 180,
+                height: 30,
+                onPressed: () => criarConta(),
+                color: Colors.transparent,
+                textColor: Colors.grey)
           ],
         ),
       ),

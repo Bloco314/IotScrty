@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:iot_scrty/assets/colors.dart';
 
 class HeaderCell extends StatelessWidget {
   final String text;

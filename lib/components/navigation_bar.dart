@@ -6,7 +6,6 @@ import 'package:iot_scrty/pages/_home_professor.dart';
 import 'package:iot_scrty/pages/_horarios_professor.dart';
 import 'package:iot_scrty/pages/_register_loan.dart';
 import 'package:iot_scrty/pages/_solicitations.dart';
-import 'package:iot_scrty/pages/login.dart';
 
 class NavBarProfessor extends StatelessWidget {
   final String nome;

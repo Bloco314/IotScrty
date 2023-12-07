@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iot_scrty/components/navigation_bar.dart';
+import 'package:iot_scrty/components/navigatio_bar.dart';
 import 'package:iot_scrty/components/top_bar.dart';
 
 class HomeCState extends StatelessWidget {

@@ -1,22 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:iot_scrty/assets/colors.dart';
 
-class DefaultButton extends StatelessWidget {
+class GenericButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
+  final Color? color;
+  final double? width;
+  final double? height;
 
-  DefaultButton({required this.text, this.onPressed});
+  GenericButton(
+      {required this.text,
+      this.onPressed,
+      this.color,
+      this.height,
+      this.width});
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-            foregroundColor: Colors.white,
-            backgroundColor: PersonalColors.primaryGreen,
-            shape: const LinearBorder()),
-        child: Text(text));
+    return Container(
+        width: width ?? 120,
+        height: height ?? 50,
+        margin: const EdgeInsets.all(5),
+        child: ElevatedButton(
+            onPressed: onPressed,
+            style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: color,
+                shape: const LinearBorder()),
+            child: Text(text)));
   }
+}
+
+class PrimaryButton extends GenericButton {
+  PrimaryButton(
+      {required String text,
+      VoidCallback? onPressed,
+      double? width,
+      double? height})
+      : super(
+            text: text,
+            onPressed: onPressed,
+            height: height,
+            width: width,
+            color: PersonalColors.primaryGreen);
+}
+
+class SecondaryButton extends GenericButton {
+  SecondaryButton(
+      {required String text,
+      VoidCallback? onPressed,
+      double? width,
+      double? height})
+      : super(
+            text: text,
+            onPressed: onPressed,
+            height: height,
+            width: width,
+            color: PersonalColors.buttonRed);
 }
 
 class TableButton extends StatelessWidget {

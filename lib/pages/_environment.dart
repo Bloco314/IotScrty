@@ -87,8 +87,9 @@ class ViewEnvironments extends StatelessWidget {
             //Botão para novo ambiente
             Container(
                 margin: EdgeInsets.only(),
-                child: DefaultButton(
+                child: PrimaryButton(
                     text: 'Novo ambiente',
+                    width: 160,
                     onPressed: () => navigateTo(
                         context, CadEnviroment(nome: nome, email: email)))),
           ],
@@ -106,9 +107,13 @@ class CadEnviroment extends StatelessWidget {
 
   CadEnviroment({required this.nome, required this.email});
 
-  void cadastrarEquipamento() {
-    print(nomeSala.text + horariosSala.text);
+  void cadastrarEquipamento() {}
+
+  void Cancelar(context) {
+    Navigator.pop(context);
   }
+
+  void Cadastrar() {}
 
   @override
   Widget build(BuildContext context) {
@@ -125,9 +130,10 @@ class CadEnviroment extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CampoCadastro(labelText: 'Nome da sala', controller: nomeSala),
-            CampoCadastro(labelText: 'Horario', controller: horariosSala),
-            TextButton(
-                onPressed: cadastrarEquipamento, child: Text('Cadastrar'))
+            CampoCadastro(labelText: 'Horarios', controller: horariosSala),
+            PrimaryButton(text: 'Cadastrar', onPressed: Cadastrar),
+            SecondaryButton(
+                text: 'Cancelar', onPressed: () => Cancelar(context))
           ],
         ),
       ),
@@ -154,12 +160,12 @@ class ModalHorarios extends StatelessWidget {
                 title: Text(horarios[index]),
               ),
               Divider()
-            ]); 
+            ]);
           },
         ),
       ),
       actions: [
-        DefaultButton(text: 'Fechar', onPressed: () => Navigator.pop(context))
+        PrimaryButton(text: 'Fechar', onPressed: () => Navigator.pop(context))
       ],
     );
   }

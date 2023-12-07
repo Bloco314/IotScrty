@@ -23,7 +23,9 @@ class HomeCState extends StatelessWidget {
           nome: nome,
           cont: context,
           pageName: 'coordenador_home'),
-      appBar: TopBar(text: 'Bem-vindo, $nome'),
+      appBar: TopBar(
+          text:
+              'Bem-vindo${nome.isNotEmpty ? ', ' : ''}$nome'),
       //corpo
       body: Padding(
           padding: EdgeInsets.all(16.0),

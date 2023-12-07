@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iot_scrty/pages/_cad_environment.dart';
+import 'package:iot_scrty/pages/_environment.dart';
 import 'package:iot_scrty/pages/_cad_equip.dart';
 import 'package:iot_scrty/pages/_home_coordenador.dart';
 import 'package:iot_scrty/pages/_home_professor.dart';
@@ -104,7 +104,7 @@ class NavBarCoordenador extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      width: MediaQuery.of(cont).size.width * 50 / 100,
+      width: MediaQuery.of(cont).size.width * 55 / 100,
       child: ListView(
         padding: EdgeInsets.zero,
         children: [

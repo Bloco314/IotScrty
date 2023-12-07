@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iot_scrty/assets/colors.dart';
-import 'package:iot_scrty/components/navigation_bar.dart';
+import 'package:iot_scrty/components/navigatio_bar.dart';
 
 class CadEquip extends StatelessWidget {
 final String nome;

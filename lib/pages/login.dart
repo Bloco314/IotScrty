@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iot_scrty/assets/colors.dart';
-import 'package:iot_scrty/components/campo_cadastro.dart';
+import 'package:iot_scrty/components/input_fields.dart';
 import 'package:iot_scrty/components/top_bar.dart';
 import 'package:iot_scrty/pages/_home_coordenador.dart';
 import 'package:iot_scrty/pages/_home_professor.dart';

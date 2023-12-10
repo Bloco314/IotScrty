@@ -12,7 +12,6 @@ class HeaderCell extends StatelessWidget {
             alignment: Alignment.center,
             decoration: const BoxDecoration(
                 border: Border(
-                    bottom: BorderSide(color: Colors.black),
                     left: BorderSide(color: Colors.black),
                     right: BorderSide(color: Colors.black),
                     top: BorderSide(color: Colors.black))),

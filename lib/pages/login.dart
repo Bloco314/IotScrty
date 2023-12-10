@@ -16,6 +16,20 @@ class LoginState extends State<Login> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  void validarLogin(context) {
+    if (_emailController.text != 'professor') {
+      navigateTo(
+          context,
+          HomeCState(
+              email: _emailController.text, nome: _passwordController.text));
+    } else {
+      navigateTo(
+          context,
+          HomePState(
+              email: _emailController.text, nome: _passwordController.text));
+    }
+  }
+
   void navigateTo(context, Widget page) {
     Navigator.push(context, MaterialPageRoute(builder: (context) => page));
   }
@@ -46,15 +60,10 @@ class LoginState extends State<Login> {
               ]),
             ),
             PrimaryButton(
-                text: 'Entrar',
-                onPressed: () => navigateTo(
-                    context,
-                    HomeCState(
-                        email: _emailController.text,
-                        nome: _passwordController.text))),
+                text: 'Entrar', onPressed: () => validarLogin(context)),
             GenericButton(
-                text: 'Não tem uma conta?',
-                width: 180,
+                text: 'Esqueceu sua senha?',
+                width: 200,
                 height: 30,
                 onPressed: () => criarConta(),
                 color: Colors.transparent,

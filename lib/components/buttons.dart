@@ -8,6 +8,7 @@ class GenericButton extends StatelessWidget {
   final double? width;
   final double? height;
   final Color? textColor;
+  final IconData? icon;
 
   GenericButton(
       {required this.text,
@@ -15,7 +16,8 @@ class GenericButton extends StatelessWidget {
       this.color,
       this.height,
       this.width,
-      this.textColor});
+      this.textColor,
+      this.icon});
 
   @override
   Widget build(BuildContext context) {

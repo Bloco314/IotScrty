@@ -52,6 +52,10 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  assets:
+    - lib/assets/ueaLogo.jpg
+    - lib/assets/informatic_lab.png
+    - lib/assets/mori.jpeg
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

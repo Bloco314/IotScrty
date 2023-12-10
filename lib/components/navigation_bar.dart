@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iot_scrty/pages/_environment.dart';
-import 'package:iot_scrty/pages/_cad_equip.dart';
+import 'package:iot_scrty/pages/_equipments.dart';
 import 'package:iot_scrty/pages/_home_coordenador.dart';
 import 'package:iot_scrty/pages/_home_professor.dart';
 import 'package:iot_scrty/pages/_horarios_professor.dart';

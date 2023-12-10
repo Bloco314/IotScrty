@@ -8,10 +8,9 @@ class HomeCState extends StatelessWidget {
   final String email;
   final String nome;
   final List<String> images = [
-    'http://data.uea.edu.br/ssgp/noticia/1/77157.png',
-    'https://imgs.search.brave.com/oiikbAYjZui3eMw31BFZEDnrwwIkXAd5ylwjbFjv-cM/rs:fit:500:0:0/g:ce/aHR0cHM6Ly92ZXN0/aWJ1bGFyZXMyMDIy/LmNvbS5ici93cC1j/b250ZW50L3VwbG9h/ZHMvMjAyMS8wMi9h/bTEuanBn',
-    'https://imgs.search.brave.com/1rvZH2M_58rKizK8BcVNIzlyeyCSqNKLex6uq5t4STA/rs:fit:500:0:0/g:ce/aHR0cHM6Ly9mYXN0/bHkuNHNxaS5uZXQv/aW1nL2dlbmVyYWwv/NjAweDYwMC9sRmVR/TGtvTWhTT01nMHhx/c2J0a2RMWjdraHpP/VFdnQWZmV2FXM3pW/bEYwLmpwZw',
-    'https://imgs.search.brave.com/d8T8d6hf8FWoeRWIg6BGzFkPuKILhauNFwtqaTNCmx0/rs:fit:500:0:0/g:ce/aHR0cHM6Ly9mYXN0/bHkuNHNxaS5uZXQv/aW1nL2dlbmVyYWwv/NjAweDYwMC8zMTY0/NjQyM19yVkwyX3F0/ckxFMWVnYnhSQXN3/R00zQmRZZ1ZScFU5/T2gtSm9fRk1yYi1r/LmpwZw'
+    'lib/assets/ueaLogo.jpg',
+    'lib/assets/informatic_lab.png',
+    'lib/assets/mori.jpeg'
   ];
 
   HomeCState({required this.email, required this.nome});
@@ -41,17 +40,14 @@ class HomeCState extends StatelessWidget {
                 autoPlayAnimationDuration: const Duration(milliseconds: 800),
                 viewportFraction: 0.8,
               ),
-              items: images.map((String imageUrl) {
+              items: images.map((String image) {
                 return Builder(
                   builder: (BuildContext context) {
                     return Container(
                       width: MediaQuery.of(context).size.width,
                       margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                      decoration: BoxDecoration(
-                        color: Colors.green[100],
-                      ),
-                      child: Image.network(
-                        imageUrl,
+                      child: Image.asset(
+                        image,
                         fit: BoxFit.cover,
                       ),
                     );
@@ -60,22 +56,20 @@ class HomeCState extends StatelessWidget {
               }).toList(),
             ),
             Divider(),
-            Container(margin: EdgeInsets.only(top: 50)),
+            Text('Universidade do estado do Amazonas'),
+            Text('Escola superior de tecnologia'),
+            Divider(),
             //Outro
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                PrimaryButton(text: 'Acão 1'),
-                PrimaryButton(text: 'Acão 2')
+                PrimaryButton(
+                    width: 160, text: 'Trocar senha', onPressed: () => null),
+                PrimaryButton(
+                    width: 160, text: 'Creditos', onPressed: () => null)
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                PrimaryButton(text: 'Acão 3'),
-                PrimaryButton(text: 'Acão 4')
-              ],
-            )
+            Divider(),
           ]),
         ));
   }

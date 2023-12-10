@@ -32,9 +32,16 @@ class GenericButton extends StatelessWidget {
                 foregroundColor: Colors.white,
                 backgroundColor: color,
                 shape: const LinearBorder()),
-            child: Text(
-              text,
-              style: TextStyle(color: textColor),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  text,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: textColor),
+                ),
+                if (icon != null) Icon(icon)
+              ],
             )));
   }
 }
@@ -44,13 +51,15 @@ class PrimaryButton extends GenericButton {
       {required String text,
       VoidCallback? onPressed,
       double? width,
-      double? height})
+      double? height,
+      IconData? icon})
       : super(
             text: text,
             onPressed: onPressed,
             height: height,
             width: width,
-            color: PersonalColors.primaryGreen);
+            color: PersonalColors.green,
+            icon: icon);
 }
 
 class SecondaryButton extends GenericButton {
@@ -64,7 +73,7 @@ class SecondaryButton extends GenericButton {
             onPressed: onPressed,
             height: height,
             width: width,
-            color: PersonalColors.buttonRed);
+            color: PersonalColors.red);
 }
 
 class TableButton extends StatelessWidget {

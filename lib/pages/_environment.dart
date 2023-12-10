@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iot_scrty/assets/colors.dart';
 import 'package:iot_scrty/components/buttons.dart';
 import 'package:iot_scrty/components/input_fields.dart';
 import 'package:iot_scrty/components/navigation_bar.dart';
@@ -85,75 +86,56 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
               ],
             ),
             // Dados da tabela
-            Table(
-              border: TableBorder.all(color: Colors.black),
-              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-              children: currentData.asMap().entries.map((entry) {
-                int index = entry.key;
-
-                return TableRow(
-                  decoration: BoxDecoration(
-                    color: index % 2 == 0 ? Colors.grey[200] : Colors.white,
-                  ),
+            DefaultTable(
+                primaryAction: (context, index) => modalEquipamentos(context),
+                secondaryAction: (context, index) =>
+                    modalHorarios(context, index),
+                primaryIcon: Icons.computer_sharp,
+                secondaryIcon: Icons.watch_later,
+                items: currentData),
+            // Botões de navegação
+            Padding(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    BodyCell(text: entry.value),
-                    // Abre modal de equipamentos
-                    TableCell(
-                      child: TableButton(
-                        icone: Icons.computer_sharp,
-                        onPressed: () => modalEquipamentos(context),
-                      ),
-                    ),
-                    // Abre modal de horarios
-                    TableCell(
-                      child: TableButton(
-                        icone: Icons.watch_later,
-                        onPressed: () =>
-                            modalHorarios(context, currentData[index]),
-                      ),
+                    ElevatedButton(
+                        onPressed: currentPage > 0 ? previousPage : null,
+                        style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            disabledBackgroundColor: Colors.transparent,
+                            foregroundColor: PersonalColors.darkerGreen,
+                            shape: const LinearBorder()),
+                        child: const Row(children: [
+                          Icon(Icons.arrow_back),
+                          Text('Anterior'),
+                        ])),
+                    const SizedBox(width: 16),
+                    ElevatedButton(
+                      onPressed:
+                          currentPage < (dados.length / itemsPerPage).ceil() - 1
+                              ? nextPage
+                              : null,
+                      style: ElevatedButton.styleFrom(
+                          elevation: 0,
+                          disabledBackgroundColor: Colors.transparent,
+                          foregroundColor: PersonalColors.darkerGreen,
+                          shape: const LinearBorder()),
+                      child: const Row(children: [
+                        Text('Próximo'),
+                        Icon(Icons.arrow_forward)
+                      ]),
                     ),
                   ],
-                );
-              }).toList(),
-            ),
-            // Botões de navegação
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                    onPressed: currentPage > 0 ? previousPage : null,
-                    style: ElevatedButton.styleFrom(
-                        elevation: 0,
-                        disabledBackgroundColor: Colors.transparent,
-                        shape: const LinearBorder()),
-                    child: const Row(children: [
-                      Icon(Icons.arrow_back),
-                      Text('Anterior'),
-                    ])),
-                const SizedBox(width: 16),
-                ElevatedButton(
-                  onPressed:
-                      currentPage < (dados.length / itemsPerPage).ceil() - 1
-                          ? nextPage
-                          : null,
-                  style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      disabledBackgroundColor: Colors.transparent,
-                      shape: const LinearBorder()),
-                  child: const Row(
-                      children: [Text('Próximo'), Icon(Icons.arrow_forward)]),
-                ),
-              ],
-            ),
+                )),
             // Botão para novo ambiente
-            Container(
-              margin: const EdgeInsets.only(top: 16),
-              child: PrimaryButton(
-                text: 'Novo ambiente',
-                width: 160,
-                onPressed: () => navigateTo(context,
-                    CadEnviroment(nome: widget.nome, email: widget.email)),
-              ),
+            PrimaryButton(
+              text: 'Novo ',
+              width: 110,
+              height: 40,
+              onPressed: () => navigateTo(context,
+                  CadEnviroment(nome: widget.nome, email: widget.email)),
+              icon: Icons.add_sharp,
             ),
           ],
         ),
@@ -209,7 +191,7 @@ class ModalHorarios extends StatelessWidget {
   final String enviromentName;
 
   final Map<String, List<String>> horarios = {
-    'Ambiente 1': ['09:10 - 10:50','10:50 - 12:30'],
+    'Ambiente 1': ['09:10 - 10:50', '10:50 - 12:30'],
     'Ambiente 2': ['09:10 - 10:50']
   };
 
@@ -248,10 +230,11 @@ class ModalHorarios extends StatelessWidget {
               ),
       ),
       actions: [
-        ElevatedButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text('Fechar'),
-        ),
+        SecondaryButton(
+            text: 'Fechar',
+            width: 92,
+            height: 40,
+            onPressed: () => Navigator.pop(context)),
       ],
     );
   }

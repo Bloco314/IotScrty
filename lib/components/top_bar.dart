@@ -10,7 +10,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       title: Text("$text"),
-      backgroundColor: PersonalColors.primaryGreen,
+      backgroundColor: PersonalColors.green,
       foregroundColor: Colors.white,
     );
   }

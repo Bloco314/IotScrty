@@ -18,7 +18,7 @@ class Solicitacoes extends StatelessWidget {
             pageName: 'solicitacoes'),
         appBar: AppBar(
           title: const Text('Solicitações'),
-          backgroundColor: PersonalColors.primaryGreen,
+          backgroundColor: PersonalColors.green,
         ),
         body: Container());
   }

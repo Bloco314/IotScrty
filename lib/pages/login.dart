@@ -51,7 +51,7 @@ class LoginState extends State<Login> {
               padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 10),
               decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(7.5)),
-                  color: PersonalColors.backgroundGrey),
+                  color: PersonalColors.lightGrey),
               child: Column(children: [
                 CampoCadastro(labelText: 'email', controller: _emailController),
                 const SizedBox(height: 16.0),

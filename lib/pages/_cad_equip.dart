@@ -18,7 +18,7 @@ class CadEquip extends StatelessWidget {
             pageName: 'cadastrar_equipamentos'),
         appBar: AppBar(
           title: const Text('Equipamentos'),
-          backgroundColor: PersonalColors.primaryGreen,
+          backgroundColor: PersonalColors.green,
         ),
         body: Container());
   }

@@ -208,15 +208,17 @@ class CadEnviroment extends StatelessWidget {
 class ModalHorarios extends StatelessWidget {
   final String enviromentName;
 
-  final List<Map<String, String>> horarios = [
-    {'Ambiente 1': '10:50 - 12:30'},
-    {'Ambiente 2': '09:10 - 10:50'}
-  ];
+  final Map<String, List<String>> horarios = {
+    'Ambiente 1': ['09:10 - 10:50','10:50 - 12:30'],
+    'Ambiente 2': ['09:10 - 10:50']
+  };
 
   ModalHorarios({required this.enviromentName});
 
   @override
   Widget build(BuildContext context) {
+    List<String>? horariosList = horarios[enviromentName];
+
     return AlertDialog(
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -225,25 +227,30 @@ class ModalHorarios extends StatelessWidget {
       content: Container(
         height: 400,
         width: 300,
-        child: ListView.builder(
-          itemCount: horarios.length,
-          itemBuilder: (BuildContext context, int index) {
-            Map<String, String> horario = horarios[index];
-            String horarioValue = horario[enviromentName] ?? '';
+        child: horariosList != null && horariosList.isNotEmpty
+            ? ListView.builder(
+                itemCount: horariosList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  String horarioValue = horariosList[index];
 
-            return Column(children: [
-              ListTile(
-                title: Text(horarioValue),
+                  return Column(
+                    children: [
+                      ListTile(
+                        title: Text(horarioValue),
+                      ),
+                      if (index < horariosList.length - 1) Divider()
+                    ],
+                  );
+                },
+              )
+            : const Center(
+                child: Text('Nenhum registro encontrado.'),
               ),
-              Divider()
-            ]);
-          },
-        ),
       ),
       actions: [
-        PrimaryButton(
-          text: 'Fechar',
+        ElevatedButton(
           onPressed: () => Navigator.pop(context),
+          child: Text('Fechar'),
         ),
       ],
     );

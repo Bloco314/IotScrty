@@ -56,7 +56,14 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
     );
   }
 
-  void modalEquipamentos(context) {}
+  void modalEquipamentos(context, String name) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ModalEquipamentos(enviromentName: name);
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +94,8 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
             ),
             // Dados da tabela
             DefaultTable(
-                primaryAction: (context, index) => modalEquipamentos(context),
+                primaryAction: (context, index) =>
+                    modalEquipamentos(context, index),
                 secondaryAction: (context, index) =>
                     modalHorarios(context, index),
                 primaryIcon: Icons.computer_sharp,
@@ -95,7 +103,7 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
                 items: currentData),
             // Botões de navegação
             Padding(
-                padding: EdgeInsets.symmetric(vertical: 10),
+                padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -144,15 +152,26 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
   }
 }
 
-class CadEnviroment extends StatelessWidget {
+class CadEnviroment extends StatefulWidget {
   final String nome;
   final String email;
-  final TextEditingController nomeSala = TextEditingController();
-  final TextEditingController horariosSala = TextEditingController();
 
   CadEnviroment({required this.nome, required this.email});
 
-  void cadastrarEquipamento() {}
+  @override
+  _CadEnviromentState createState() => _CadEnviromentState();
+}
+
+class _CadEnviromentState extends State<CadEnviroment> {
+  final TextEditingController nomeSala = TextEditingController();
+  final TextEditingController horariosSala = TextEditingController();
+  final List<TextEditingController> horariosAdicionados = [];
+
+  void excluirHorario(int index) {
+    setState(() {
+      horariosAdicionados.removeAt(index);
+    });
+  }
 
   void cancelar(context) {
     Navigator.pop(context);
@@ -163,25 +182,68 @@ class CadEnviroment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: NavBarCoordenador(
-          email: email,
-          nome: nome,
-          cont: context,
-          pageName: 'cadastrar_ambientes'),
       appBar: TopBar(text: 'Ambientes'),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          CampoCadastro(labelText: 'Nome da sala', controller: nomeSala),
-          CampoCadastro(labelText: 'Horarios', controller: horariosSala),
-          PrimaryButton(text: 'Cadastrar', onPressed: cadastrar),
-          GenericButton(
+        child: Column(
+          children: [
+            CampoCadastro(labelText: 'Nome da sala', controller: nomeSala),
+            Row(
+              children: [
+                Expanded(
+                    child: CampoCadastro(
+                        labelText: 'Acrescentar horario',
+                        controller: horariosSala)),
+                IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: () {
+                    if (horariosSala.text.isNotEmpty) {
+                      setState(() {
+                        horariosAdicionados.add(
+                          TextEditingController(text: horariosSala.text),
+                        );
+                        horariosSala.clear();
+                      });
+                    }
+                  },
+                ),
+              ],
+            ),
+            Divider(),
+            Text('Horários:'),
+            Divider(),
+            Container(
+                height: 180,
+                child: Expanded(
+                    child: ListView.builder(
+                  itemCount: horariosAdicionados.length,
+                  itemBuilder: (context, index) {
+                    return Column(children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(horariosAdicionados[index].text,
+                              textAlign: TextAlign.center),
+                          IconButton(
+                            icon: Icon(Icons.delete),
+                            onPressed: () => excluirHorario(index),
+                          )
+                        ],
+                      ),
+                      Divider()
+                    ]);
+                  },
+                ))),
+            PrimaryButton(text: 'Cadastrar', onPressed: cadastrar),
+            GenericButton(
               text: 'Cancelar',
               onPressed: () => cancelar(context),
               color: Colors.transparent,
               textColor: Colors.red,
-              height: 20)
-        ]),
+              height: 20,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -201,7 +263,8 @@ class ModalHorarios extends StatelessWidget {
   Widget build(BuildContext context) {
     List<String>? horariosList = horarios[enviromentName];
 
-    return AlertDialog(
+    return Expanded(
+        child: AlertDialog(
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
@@ -236,6 +299,59 @@ class ModalHorarios extends StatelessWidget {
             height: 40,
             onPressed: () => Navigator.pop(context)),
       ],
-    );
+    ));
+  }
+}
+
+class ModalEquipamentos extends StatelessWidget {
+  final String enviromentName;
+
+  final Map<String, List<String>> equips = {
+    'Ambiente 1': ['equip 1', 'equip 2', 'equip 3'],
+    'Ambiente 2': ['equip 1']
+  };
+
+  ModalEquipamentos({required this.enviromentName});
+
+  @override
+  Widget build(BuildContext context) {
+    List<String>? equipsList = equips[enviromentName];
+    return Expanded(
+        child: AlertDialog(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
+      title: const Text('Equipamentos'),
+      content: Container(
+        height: 400,
+        width: 300,
+        child: equipsList != null && equipsList.isNotEmpty
+            ? ListView.builder(
+                itemCount: equipsList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  String horarioValue = equipsList[index];
+
+                  return Column(
+                    children: [
+                      ListTile(
+                        title: Text(horarioValue),
+                      ),
+                      if (index < equipsList.length - 1) Divider()
+                    ],
+                  );
+                },
+              )
+            : const Center(
+                child: Text('Nenhum registro encontrado.'),
+              ),
+      ),
+      actions: [
+        SecondaryButton(
+            text: 'Fechar',
+            width: 92,
+            height: 40,
+            onPressed: () => Navigator.pop(context)),
+      ],
+    ));
   }
 }

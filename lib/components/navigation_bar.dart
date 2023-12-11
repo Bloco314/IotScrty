@@ -101,10 +101,18 @@ class NavBarCoordenador extends StatelessWidget {
     Navigator.push(context, MaterialPageRoute(builder: (context) => page));
   }
 
+  double navBarSize (){
+    double width = MediaQuery.of(cont).size.width; 
+    if (width >= 600){
+      return width * 35 / 100;
+    }
+      return width * 55 / 100;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      width: MediaQuery.of(cont).size.width * 55 / 100,
+      width: navBarSize(),
       child: ListView(
         padding: EdgeInsets.zero,
         children: [

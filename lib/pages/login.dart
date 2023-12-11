@@ -47,7 +47,9 @@ class LoginState extends State<Login> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              margin: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.15,
+                  vertical: 10),
               padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 10),
               decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(7.5)),

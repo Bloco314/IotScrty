@@ -44,8 +44,8 @@ class NavBarProfessor extends StatelessWidget {
             accountEmail: Text(email),
             currentAccountPicture: CircleAvatar(
                 child: ClipOval(
-              child: Image.network(
-                "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Braz%C3%A3o_UEA.jpg/300px-Braz%C3%A3o_UEA.jpg",
+              child: Image.asset(
+                'lib/assets/mori.jpeg',
                 width: 100,
                 height: 100,
               ),
@@ -53,8 +53,7 @@ class NavBarProfessor extends StatelessWidget {
             decoration: const BoxDecoration(
                 color: Colors.green,
                 image: DecorationImage(
-                    image: NetworkImage(
-                        "https://imgs.search.brave.com/ybYeaAEnZLyWPPSCbokEc8qen6-wUyLCWfgUJuUNktI/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9mYXN0/bHkuNHNxaS5uZXQv/aW1nL2dlbmVyYWwv/NjAweDYwMC9USEpS/U0xKSVdXSEtYTFVB/QUY0REgyQk9YWEVJ/TEZBV1ZLMTExWDJI/TFRaVTFIRTEuanBn"),
+                    image: AssetImage('lib/assets/ueaLogo.jpg'),
                     fit: BoxFit.cover)),
           ),
           //itens da navbar
@@ -130,8 +129,8 @@ class NavBarCoordenador extends StatelessWidget {
             accountEmail: Text(email),
             currentAccountPicture: CircleAvatar(
                 child: ClipOval(
-              child: Image.network(
-                "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Braz%C3%A3o_UEA.jpg/300px-Braz%C3%A3o_UEA.jpg",
+              child: Image.asset(
+                'lib/assets/mori.jpeg',
                 width: 100,
                 height: 100,
               ),
@@ -139,8 +138,7 @@ class NavBarCoordenador extends StatelessWidget {
             decoration: const BoxDecoration(
                 color: Colors.green,
                 image: DecorationImage(
-                    image: NetworkImage(
-                        "https://imgs.search.brave.com/ybYeaAEnZLyWPPSCbokEc8qen6-wUyLCWfgUJuUNktI/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9mYXN0/bHkuNHNxaS5uZXQv/aW1nL2dlbmVyYWwv/NjAweDYwMC9USEpS/U0xKSVdXSEtYTFVB/QUY0REgyQk9YWEVJ/TEZBV1ZLMTExWDJI/TFRaVTFIRTEuanBn"),
+                    image: AssetImage('lib/assets/ueaLogo.jpg'),
                     fit: BoxFit.cover)),
           ),
           //itens da navbar

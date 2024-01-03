@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iot_scrty/pages/_environment.dart';
 import 'package:iot_scrty/pages/_equipments.dart';
-import 'package:iot_scrty/pages/_home_coordenador.dart';
-import 'package:iot_scrty/pages/_home_professor.dart';
+import 'package:iot_scrty/pages/_home_page.dart';
 import 'package:iot_scrty/pages/_horarios_professor.dart';
 import 'package:iot_scrty/pages/_register_loan.dart';
 import 'package:iot_scrty/pages/_solicitations.dart';
@@ -39,18 +38,13 @@ class NavBarProfessor extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           //cabeçalho
-          UserAccountsDrawerHeader(
-            accountName: Text(nome),
-            accountEmail: Text(email),
+          const UserAccountsDrawerHeader(
+            accountName: Text(''),
+            accountEmail: Text(''),
             currentAccountPicture: CircleAvatar(
-                child: ClipOval(
-              child: Image.asset(
-                'lib/assets/mori.jpeg',
-                width: 100,
-                height: 100,
-              ),
-            )),
-            decoration: const BoxDecoration(
+              backgroundImage: AssetImage('lib/assets/guest.png')
+            ),
+            decoration: BoxDecoration(
                 color: Colors.green,
                 image: DecorationImage(
                     image: AssetImage('lib/assets/ueaLogo.jpg'),
@@ -63,10 +57,11 @@ class NavBarProfessor extends StatelessWidget {
               onTap: () => {
                     if (pageName != 'professor_home')
                       {
-                        navigateTo(
-                            context, HomePState(email: email, nome: nome))
+                        navigateTo(context,
+                            HomePage(email: email, nome: nome, coord: false))
                       }
                   }),
+          const Divider(),
           ListTile(
             leading: const Icon(Icons.schedule),
             title: const Text('Emprestimo aluno'),
@@ -85,6 +80,12 @@ class NavBarProfessor extends StatelessWidget {
             title: const Text('Horarios'),
             onTap: () => navigateTo(context, Horarios()),
           ),
+          const Divider(),
+          ListTile(
+              leading: const Icon(Icons.exit_to_app_sharp),
+              title: const Text('Logout'),
+              onTap: () => Navigator.pushNamedAndRemoveUntil(
+                  context, '/', (route) => false)),
           const Divider()
         ],
       ),
@@ -147,7 +148,10 @@ class NavBarCoordenador extends StatelessWidget {
             title: const Text('Home'),
             onTap: () => {
               if (pageName != 'coordenador_home')
-                {navigateTo(context, HomeCState(email: email, nome: nome))}
+                {
+                  navigateTo(
+                      context, HomePage(email: email, nome: nome, coord: true))
+                }
               else
                 {Navigator.of(context).pop()}
             },

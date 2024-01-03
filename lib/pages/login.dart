@@ -3,8 +3,7 @@ import 'package:iot_scrty/assets/colors.dart';
 import 'package:iot_scrty/components/buttons.dart';
 import 'package:iot_scrty/components/input_fields.dart';
 import 'package:iot_scrty/components/top_bar.dart';
-import 'package:iot_scrty/pages/_home_coordenador.dart';
-import 'package:iot_scrty/pages/_home_professor.dart';
+import 'package:iot_scrty/pages/_home_page.dart';
 import 'package:iot_scrty/pages/_recoverPassword.dart';
 
 class Login extends StatefulWidget {
@@ -18,16 +17,16 @@ class LoginState extends State<Login> {
   final TextEditingController _passwordController = TextEditingController();
 
   void validarLogin(context) {
-    if (_emailController.text != 'professor') {
+    if (_emailController.text.trim() != 'p') {
       navigateTo(
           context,
-          HomeCState(
-              email: _emailController.text, nome: _passwordController.text));
+          HomePage(
+              email: _emailController.text, nome: _passwordController.text, coord: true));
     } else {
       navigateTo(
           context,
-          HomePState(
-              email: _emailController.text, nome: _passwordController.text));
+          HomePage(
+              email: _emailController.text, nome: _passwordController.text, coord: false));
     }
   }
 

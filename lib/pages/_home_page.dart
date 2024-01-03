@@ -4,29 +4,36 @@ import 'package:iot_scrty/components/buttons.dart';
 import 'package:iot_scrty/components/navigation_bar.dart';
 import 'package:iot_scrty/components/top_bar.dart';
 
-class HomeCState extends StatelessWidget {
+class HomePage extends StatelessWidget {
   final String email;
   final String nome;
+  final bool coord;
   final List<String> images = [
     'lib/assets/ueaLogo.jpg',
     'lib/assets/informatic_lab.png',
     'lib/assets/mori.jpeg'
   ];
 
-  HomeCState({required this.email, required this.nome});
+  HomePage({required this.email, required this.nome, required this.coord});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: NavBarCoordenador(
-            email: email,
-            nome: nome,
-            cont: context,
-            pageName: 'coordenador_home'),
+        drawer: coord
+            ? NavBarCoordenador(
+                email: email,
+                nome: nome,
+                cont: context,
+                pageName: 'coordenador_home')
+            : NavBarProfessor(
+                nome: nome,
+                email: email,
+                cont: context,
+                pageName: 'professor_home'),
         appBar: TopBar(text: 'Bem-vindo${nome.isNotEmpty ? ', ' : ''}$nome'),
         //corpo
         body: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(children: [
             //Carrosel com noticias
             CarouselSlider(
@@ -55,10 +62,10 @@ class HomeCState extends StatelessWidget {
                 );
               }).toList(),
             ),
-            Divider(),
-            Text('Universidade do estado do Amazonas'),
-            Text('Escola superior de tecnologia'),
-            Divider(),
+            const Divider(),
+            const Text('Universidade do estado do Amazonas'),
+            const Text('Escola superior de tecnologia'),
+            const Divider(),
             //Outro
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -69,7 +76,7 @@ class HomeCState extends StatelessWidget {
                     width: 160, text: 'Creditos', onPressed: () => null)
               ],
             ),
-            Divider(),
+            const Divider(),
           ]),
         ));
   }

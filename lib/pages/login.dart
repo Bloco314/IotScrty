@@ -5,6 +5,7 @@ import 'package:iot_scrty/components/input_fields.dart';
 import 'package:iot_scrty/components/top_bar.dart';
 import 'package:iot_scrty/pages/_home_coordenador.dart';
 import 'package:iot_scrty/pages/_home_professor.dart';
+import 'package:iot_scrty/pages/_recoverPassword.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -33,8 +34,6 @@ class LoginState extends State<Login> {
   void navigateTo(context, Widget page) {
     Navigator.push(context, MaterialPageRoute(builder: (context) => page));
   }
-
-  void criarConta() {}
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +66,7 @@ class LoginState extends State<Login> {
                 text: 'Esqueceu sua senha?',
                 width: 200,
                 height: 30,
-                onPressed: () => criarConta(),
+                onPressed: () => navigateTo(context, Recover()),
                 color: Colors.transparent,
                 textColor: Colors.grey)
           ],

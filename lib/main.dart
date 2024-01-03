@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'pages/login.dart';
 import 'package:flutter/services.dart';
+import 'pages/login.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized(); // Adicionado para garantir a inicialização do binding
+  WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,

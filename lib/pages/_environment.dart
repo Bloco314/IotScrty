@@ -18,7 +18,7 @@ class ViewEnvironments extends StatefulWidget {
 
 class ViewEnvironmentsState extends State<ViewEnvironments> {
   final List<String> dados =
-      List.generate(20, (index) => 'Ambiente ${index + 1}');
+      List.generate(2, (index) => 'Ambiente ${index + 1}');
 
   int currentPage = 0;
   static const int itemsPerPage = 5;
@@ -65,6 +65,8 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
     );
   }
 
+  void editarAmbiente(context, String name) {}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,28 +81,21 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
         padding: const EdgeInsets.all(5),
         child: Column(
           children: [
-            // Cabeçalho
-            Table(
-              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-              children: [
-                TableRow(
-                  children: [
-                    HeaderCell(text: 'Nome'),
-                    HeaderCell(text: 'Equipamentos'),
-                    HeaderCell(text: 'Horarios'),
-                  ],
-                ),
-              ],
-            ),
-            // Dados da tabela
-            DefaultTable(
-                primaryAction: (context, index) =>
-                    modalEquipamentos(context, index),
-                secondaryAction: (context, index) =>
-                    modalHorarios(context, index),
-                primaryIcon: Icons.computer_sharp,
-                secondaryIcon: Icons.watch_later,
-                items: currentData),
+            // Tabela
+            DefaultTable(headerTexts: const [
+              'Nome',
+              'Equipamentos',
+              'Horarios',
+              'Editar'
+            ], actions: [
+              (context, index) => modalEquipamentos(context, index),
+              (context, index) => modalHorarios(context, index),
+              (context, index) => editarAmbiente(context, index)
+            ], icones: const [
+              Icons.computer_sharp,
+              Icons.watch_later,
+              Icons.edit
+            ], items: currentData),
             // Botões de navegação
             Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
@@ -195,7 +190,7 @@ class _CadEnviromentState extends State<CadEnviroment> {
                         labelText: 'Acrescentar horario',
                         controller: horariosSala)),
                 IconButton(
-                  icon: Icon(Icons.add),
+                  icon: const Icon(Icons.add),
                   onPressed: () {
                     if (horariosSala.text.isNotEmpty) {
                       setState(() {
@@ -209,9 +204,9 @@ class _CadEnviromentState extends State<CadEnviroment> {
                 ),
               ],
             ),
-            Divider(),
-            Text('Horários:'),
-            Divider(),
+            const Divider(),
+            const Text('Horários:'),
+            const Divider(),
             Container(
                 height: 180,
                 child: Expanded(
@@ -225,12 +220,12 @@ class _CadEnviromentState extends State<CadEnviroment> {
                           Text(horariosAdicionados[index].text,
                               textAlign: TextAlign.center),
                           IconButton(
-                            icon: Icon(Icons.delete),
+                            icon: const Icon(Icons.delete),
                             onPressed: () => excluirHorario(index),
                           )
                         ],
                       ),
-                      Divider()
+                      const Divider()
                     ]);
                   },
                 ))),
@@ -336,7 +331,7 @@ class ModalEquipamentos extends StatelessWidget {
                       ListTile(
                         title: Text(horarioValue),
                       ),
-                      if (index < equipsList.length - 1) Divider()
+                      if (index < equipsList.length - 1) const Divider()
                     ],
                   );
                 },

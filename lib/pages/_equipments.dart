@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:iot_scrty/assets/colors.dart';
 import 'package:iot_scrty/components/navigation_bar.dart';
+import 'package:iot_scrty/components/top_bar.dart';
 
 class CadEquip extends StatelessWidget {
   final String nome;
@@ -16,10 +16,7 @@ class CadEquip extends StatelessWidget {
             nome: nome,
             cont: context,
             pageName: 'cadastrar_equipamentos'),
-        appBar: AppBar(
-          title: const Text('Equipamentos'),
-          backgroundColor: PersonalColors.green,
-        ),
+        appBar: TopBar(text: 'Equipamentos'),
         body: Container());
   }
 }

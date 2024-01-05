@@ -1,54 +1,63 @@
 import 'package:flutter/material.dart';
 
+/*
+DefaultTable é uma tabela expansiva  que associa botões e ações
+*/
 class DefaultTable extends StatelessWidget {
+  final List<String> headerTexts;
   final List<String> items;
-  final Function(BuildContext context, String) primaryAction;
-  final Function(BuildContext context, String) secondaryAction;
-  final IconData primaryIcon;
-  final IconData secondaryIcon;
+  final List<Function(BuildContext context, String)> actions;
+  final List<IconData> icones;
 
   DefaultTable({
-    required this.primaryIcon,
-    required this.secondaryIcon,
+    required this.headerTexts,
     required this.items,
-    required this.primaryAction,
-    required this.secondaryAction,
+    required this.actions,
+    required this.icones,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Table(
-      border: TableBorder.all(color: Colors.black),
-      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-      children: items.asMap().entries.map((entry) {
-        int index = entry.key;
+    return Column(children: [
+      // Cabeçalho
+      Table(
+        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+        children: [
+          TableRow(children: [
+            ...headerTexts.map((txt) => HeaderCell(text: txt)).toList(),
+          ])
+        ],
+      ),
+      // Corpo
+      Table(
+        border: TableBorder.all(color: Colors.black),
+        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+        children: items.asMap().entries.map((entry) {
+          int index = entry.key;
 
-        return TableRow(
-          decoration: BoxDecoration(
-            color: index % 2 == 0 ? Colors.grey[200] : Colors.white,
-          ),
-          children: [
-            TableCell(
-              child: BodyCell(text: entry.value),
+          return TableRow(
+            decoration: BoxDecoration(
+              color: index % 2 == 0 ? Colors.grey[200] : Colors.white,
             ),
-            TableCell(
-              child: TableButton(
-                icon: primaryIcon,
-                onPressed: () =>
-                    primaryAction(context, 'Ambiente ${index + 1}'),
-              ),
-            ),
-            TableCell(
-              child: TableButton(
-                icon: secondaryIcon,
-                onPressed: () =>
-                    secondaryAction(context, 'Ambiente ${index + 1}'),
-              ),
-            ),
-          ],
-        );
-      }).toList(),
-    );
+            children: [
+              TableCell(child: Center(child: BodyCell(text: entry.value))),
+              ...actions.asMap().entries.map((actionEntry) {
+                int actionIndex = actionEntry.key;
+                IconData icon = icones[actionIndex];
+
+                return TableCell(
+                  child: TableButton(
+                    icon: icon,
+                    onPressed: () =>
+                        actions[actionIndex](context, 'Ambiente ${index + 1}'),
+                  ),
+                );
+              }).toList(),
+            ],
+          );
+        }).toList(),
+      )
+    ]);
   }
 }
 

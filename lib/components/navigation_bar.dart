@@ -42,8 +42,7 @@ class NavBarProfessor extends StatelessWidget {
             accountName: Text(''),
             accountEmail: Text(''),
             currentAccountPicture: CircleAvatar(
-              backgroundImage: AssetImage('lib/assets/guest.png')
-            ),
+                backgroundImage: AssetImage('lib/assets/guest.png')),
             decoration: BoxDecoration(
                 color: Colors.green,
                 image: DecorationImage(
@@ -125,18 +124,12 @@ class NavBarCoordenador extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           //cabeçalho
-          UserAccountsDrawerHeader(
-            accountName: Text(nome),
-            accountEmail: Text(email),
+          const UserAccountsDrawerHeader(
+            accountName: Text(''),
+            accountEmail: Text(''),
             currentAccountPicture: CircleAvatar(
-                child: ClipOval(
-              child: Image.asset(
-                'lib/assets/mori.jpeg',
-                width: 100,
-                height: 100,
-              ),
-            )),
-            decoration: const BoxDecoration(
+                backgroundImage: AssetImage('lib/assets/guest.png')),
+            decoration: BoxDecoration(
                 color: Colors.green,
                 image: DecorationImage(
                     image: AssetImage('lib/assets/ueaLogo.jpg'),

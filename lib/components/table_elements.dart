@@ -20,6 +20,11 @@ class DefaultTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (items.isEmpty) {
+      return const Padding(
+          padding: EdgeInsets.all(10),
+          child: Center(child: Text('Sem itens cadastrados')));
+    }
     return Padding(
         padding: const EdgeInsets.all(5),
         child: Column(children: [

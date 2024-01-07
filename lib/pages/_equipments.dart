@@ -72,46 +72,61 @@ class Equipments extends State<ViewEquipment> {
               actions: [(context, index) => null],
               icones: const [Icons.edit]),
           // Botões de navegação
-          Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                      onPressed: currentPage > 0 ? previousPage : null,
+          if (dados.isNotEmpty)
+            Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                        onPressed: currentPage > 0 ? previousPage : null,
+                        style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            disabledBackgroundColor: Colors.transparent,
+                            foregroundColor: PersonalColors.darkerGreen,
+                            shape: const LinearBorder()),
+                        child: const Row(children: [
+                          Icon(Icons.arrow_back),
+                          Text('Anterior'),
+                        ])),
+                    const SizedBox(width: 16),
+                    ElevatedButton(
+                      onPressed:
+                          currentPage < (dados.length / itemsPerPage).ceil() - 1
+                              ? nextPage
+                              : null,
                       style: ElevatedButton.styleFrom(
                           elevation: 0,
                           disabledBackgroundColor: Colors.transparent,
                           foregroundColor: PersonalColors.darkerGreen,
                           shape: const LinearBorder()),
                       child: const Row(children: [
-                        Icon(Icons.arrow_back),
-                        Text('Anterior'),
-                      ])),
-                  const SizedBox(width: 16),
-                  ElevatedButton(
-                    onPressed:
-                        currentPage < (dados.length / itemsPerPage).ceil() - 1
-                            ? nextPage
-                            : null,
-                    style: ElevatedButton.styleFrom(
-                        elevation: 0,
-                        disabledBackgroundColor: Colors.transparent,
-                        foregroundColor: PersonalColors.darkerGreen,
-                        shape: const LinearBorder()),
-                    child: const Row(
-                        children: [Text('Próximo'), Icon(Icons.arrow_forward)]),
-                  )
-                ],
-              )),
+                        Text('Próximo'),
+                        Icon(Icons.arrow_forward)
+                      ]),
+                    )
+                  ],
+                )),
           // Botão para novo Equipamento
           PrimaryButton(
             text: 'Novo ',
             width: 110,
             height: 40,
-            onPressed: () => null,
+            onPressed: () => navigateTo(context, CadEquip()),
             icon: Icons.add_sharp,
           )
         ]));
+  }
+}
+
+class CadEquip extends StatefulWidget {
+  @override
+  CadEquipState createState() => CadEquipState();
+}
+
+class CadEquipState extends State<CadEquip> {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }

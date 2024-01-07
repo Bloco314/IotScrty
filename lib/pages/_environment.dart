@@ -96,6 +96,7 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
               Icons.edit
             ], items: currentData),
             // Botões de navegação
+            if(dados.isNotEmpty)
             Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Row(

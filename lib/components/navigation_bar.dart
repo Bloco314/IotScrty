@@ -168,7 +168,7 @@ class NavBarCoordenador extends StatelessWidget {
               title: const Text('Equipamentos'),
               onTap: () => {
                     if (pageName != 'cadastrar_equipamentos')
-                      {navigateTo(context, CadEquip(nome: nome, email: email))}
+                      {navigateTo(context, ViewEquipment(nome: nome, email: email))}
                     else
                       {Navigator.of(context).pop()}
                   }),

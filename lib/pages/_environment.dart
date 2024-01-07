@@ -17,8 +17,9 @@ class ViewEnvironments extends StatefulWidget {
 }
 
 class ViewEnvironmentsState extends State<ViewEnvironments> {
+  //Pegar dados do back
   final List<String> dados =
-      List.generate(2, (index) => 'Ambiente ${index + 1}');
+      List.generate(20, (index) => 'Ambiente ${index + 1}');
 
   int currentPage = 0;
   static const int itemsPerPage = 5;
@@ -70,16 +71,14 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: NavBarCoordenador(
-        email: widget.email,
-        nome: widget.nome,
-        cont: context,
-        pageName: 'visualizar_ambientes',
-      ),
-      appBar: TopBar(text: 'Ambientes'),
-      body: Padding(
-        padding: const EdgeInsets.all(5),
-        child: Column(
+        drawer: NavBarCoordenador(
+          email: widget.email,
+          nome: widget.nome,
+          cont: context,
+          pageName: 'visualizar_ambientes',
+        ),
+        appBar: TopBar(text: 'Ambientes'),
+        body: Column(
           children: [
             // Tabela
             DefaultTable(headerTexts: const [
@@ -139,11 +138,9 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
               onPressed: () => navigateTo(context,
                   CadEnviroment(nome: widget.nome, email: widget.email)),
               icon: Icons.add_sharp,
-            ),
+            )
           ],
-        ),
-      ),
-    );
+        ));
   }
 }
 
@@ -247,6 +244,7 @@ class _CadEnviromentState extends State<CadEnviroment> {
 class ModalHorarios extends StatelessWidget {
   final String enviromentName;
 
+  //Pegar dados do back
   final Map<String, List<String>> horarios = {
     'Ambiente 1': ['09:10 - 10:50', '10:50 - 12:30'],
     'Ambiente 2': ['09:10 - 10:50']
@@ -301,6 +299,7 @@ class ModalHorarios extends StatelessWidget {
 class ModalEquipamentos extends StatelessWidget {
   final String enviromentName;
 
+  //Pegar dados do back
   final Map<String, List<String>> equips = {
     'Ambiente 1': ['equip 1', 'equip 2', 'equip 3'],
     'Ambiente 2': ['equip 1']

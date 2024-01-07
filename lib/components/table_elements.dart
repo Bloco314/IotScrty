@@ -6,58 +6,69 @@ DefaultTable é uma tabela expansiva  que associa botões e ações
 class DefaultTable extends StatelessWidget {
   final List<String> headerTexts;
   final List<String> items;
+  final List<String>? secItems;
   final List<Function(BuildContext context, String)> actions;
   final List<IconData> icones;
 
   DefaultTable({
     required this.headerTexts,
     required this.items,
+    this.secItems,
     required this.actions,
     required this.icones,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      // Cabeçalho
-      Table(
-        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-        children: [
-          TableRow(children: [
-            ...headerTexts.map((txt) => HeaderCell(text: txt)).toList(),
-          ])
-        ],
-      ),
-      // Corpo
-      Table(
-        border: TableBorder.all(color: Colors.black),
-        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-        children: items.asMap().entries.map((entry) {
-          int index = entry.key;
-
-          return TableRow(
-            decoration: BoxDecoration(
-              color: index % 2 == 0 ? Colors.grey[200] : Colors.white,
-            ),
+    return Padding(
+        padding: const EdgeInsets.all(5),
+        child: Column(children: [
+          // Cabeçalho
+          Table(
+            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             children: [
-              TableCell(child: Center(child: BodyCell(text: entry.value))),
-              ...actions.asMap().entries.map((actionEntry) {
-                int actionIndex = actionEntry.key;
-                IconData icon = icones[actionIndex];
-
-                return TableCell(
-                  child: TableButton(
-                    icon: icon,
-                    onPressed: () =>
-                        actions[actionIndex](context, 'Ambiente ${index + 1}'),
-                  ),
-                );
-              }).toList(),
+              TableRow(
+                children:
+                    headerTexts.map((txt) => HeaderCell(text: txt)).toList(),
+              )
             ],
-          );
-        }).toList(),
-      )
-    ]);
+          ),
+          // Corpo
+          Table(
+            border: TableBorder.all(color: Colors.black),
+            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+            children: items.asMap().entries.map((entry) {
+              int index = entry.key;
+
+              return TableRow(
+                children: [
+                  //item principal, primeira coluna
+                  TableCell(child: Center(child: BodyCell(text: entry.value))),
+                  //item secundario, se houver, segunda coluna
+                  if (secItems != null && index < secItems!.length)
+                    TableCell(
+                      child: Center(
+                        child: BodyCell(text: secItems![index]),
+                      ),
+                    ),
+                  //resto da tabela definido pelos icones e suas ações
+                  ...actions.asMap().entries.map((actionEntry) {
+                    int actionIndex = actionEntry.key;
+                    IconData icon = icones[actionIndex];
+
+                    return TableCell(
+                      child: TableButton(
+                        icon: icon,
+                        onPressed: () =>
+                            actions[actionIndex](context, entry.value),
+                      ),
+                    );
+                  }).toList(),
+                ],
+              );
+            }).toList(),
+          )
+        ]));
   }
 }
 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:iot_scrty/components/buttons.dart';
 import 'package:iot_scrty/components/navigation_bar.dart';
 import 'package:iot_scrty/components/top_bar.dart';
+import 'package:iot_scrty/pages/_credits.dart';
 
 class HomePage extends StatelessWidget {
   final String email;
@@ -15,6 +16,10 @@ class HomePage extends StatelessWidget {
   ];
 
   HomePage({required this.email, required this.nome, required this.coord});
+
+  void navigateTo(context, Widget page) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => page));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +78,9 @@ class HomePage extends StatelessWidget {
                 PrimaryButton(
                     width: 160, text: 'Trocar senha', onPressed: () => null),
                 PrimaryButton(
-                    width: 160, text: 'Creditos', onPressed: () => null)
+                    width: 160,
+                    text: 'Creditos',
+                    onPressed: () => navigateTo(context, Credits()))
               ],
             ),
             const Divider(),

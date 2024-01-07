@@ -106,7 +106,7 @@ class HeaderCell extends StatelessWidget {
                     right: BorderSide(color: Colors.black),
                     top: BorderSide(color: Colors.black))),
             child: Text(text,
-                style: TextStyle(color: Colors.black),
+                style: const TextStyle(color: Colors.black),
                 textAlign: TextAlign.center)));
   }
 }

@@ -17,7 +17,7 @@ class LoginState extends State<Login> {
   final TextEditingController _passwordController = TextEditingController();
 
   void validarLogin(context) {
-    if (_emailController.text.trim() != 'p') {
+    if (_emailController.text.trim() == 'c') {
       navigateTo(
           context,
           HomePage(

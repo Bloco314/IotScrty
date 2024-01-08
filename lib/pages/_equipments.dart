@@ -16,6 +16,7 @@ class ViewEquipment extends StatefulWidget {
 }
 
 class Equipments extends State<ViewEquipment> {
+  //Preencher com dados do back
   final List<List<String>> dados = List.generate(
       20, (index) => ['Equipamento ${index + 1}', 'Ambiente ${index + 1}']);
 

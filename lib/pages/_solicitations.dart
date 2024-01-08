@@ -3,7 +3,16 @@ import 'package:iot_scrty/assets/colors.dart';
 import 'package:iot_scrty/components/navigation_bar.dart';
 import 'package:iot_scrty/components/top_bar.dart';
 
+//Pagina de Solicitações do professor
 class Solicitacoes extends StatelessWidget {
+  @override
+  Widget build(BuildContext context){
+    return  Container();
+  }
+}
+
+//Solicitações para o coordenador
+class ViewSolicitacoes extends StatelessWidget {
   final String nome;
   final String email;
 
@@ -19,7 +28,7 @@ class Solicitacoes extends StatelessWidget {
     'Ambiente 9': ['Professor Silva', '09:10- 10:50'],
   };
 
-  Solicitacoes({required this.email, required this.nome});
+  ViewSolicitacoes({required this.email, required this.nome});
 
   String truncate(String text) {
     return text.length >= 15 ? text.substring(0, 15) : text;

@@ -21,7 +21,7 @@ class Credits extends StatelessWidget {
       Text('Lucas Migliorin',
           style: TextStyle(
               color: PersonalColors.darkerGreen,
-              decoration: TextDecoration.none)),
+              decoration: TextDecoration.none))
     ]);
   }
 }

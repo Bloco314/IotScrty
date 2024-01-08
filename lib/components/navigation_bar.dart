@@ -52,7 +52,7 @@ class NavBarProfessor extends StatelessWidget {
           //itens da navbar
           ListTile(
               leading: const Icon(Icons.home),
-              title: const Text('Home'),
+              title: const Text('Inicio'),
               onTap: () => {
                     if (pageName != 'professor_home')
                       {
@@ -62,22 +62,23 @@ class NavBarProfessor extends StatelessWidget {
                   }),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.schedule),
-            title: const Text('Emprestimo aluno'),
-            onTap: () => navigateTo(context, CheckinEquip()),
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.location_searching),
-            title: const Text('Solicitações'),
+            leading: const Icon(Icons.monetization_on),
+            title: const Text('Emprestimos de aluno'),
             onTap: () =>
-                navigateTo(context, Solicitacoes(nome: nome, email: email)),
+                navigateTo(context, CheckinEquip(email: email, nome: nome)),
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.edit_calendar),
-            title: const Text('Horarios'),
-            onTap: () => navigateTo(context, Horarios()),
+            leading: const Icon(Icons.assignment),
+            title: const Text('Suas solicitações'),
+            onTap: () => navigateTo(context, Solicitacoes()),
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.schedule),
+            title: const Text('Meus horarios'),
+            onTap: () =>
+                navigateTo(context, Horarios(email: email, nome: nome)),
           ),
           const Divider(),
           ListTile(
@@ -138,7 +139,7 @@ class NavBarCoordenador extends StatelessWidget {
           //itens da navbar
           ListTile(
             leading: const Icon(Icons.home),
-            title: const Text('Home'),
+            title: const Text('Inicio'),
             onTap: () => {
               if (pageName != 'coordenador_home')
                 {
@@ -168,7 +169,10 @@ class NavBarCoordenador extends StatelessWidget {
               title: const Text('Equipamentos'),
               onTap: () => {
                     if (pageName != 'cadastrar_equipamentos')
-                      {navigateTo(context, ViewEquipment(nome: nome, email: email))}
+                      {
+                        navigateTo(
+                            context, ViewEquipment(nome: nome, email: email))
+                      }
                     else
                       {Navigator.of(context).pop()}
                   }),
@@ -180,7 +184,7 @@ class NavBarCoordenador extends StatelessWidget {
                     if (pageName != 'solicitacoes')
                       {
                         navigateTo(
-                            context, Solicitacoes(nome: nome, email: email))
+                            context, ViewSolicitacoes(nome: nome, email: email))
                       }
                     else
                       {Navigator.of(context).pop()}

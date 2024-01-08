@@ -18,19 +18,21 @@ class CheckinEquip extends StatefulWidget {
 class StateCheckinEquip extends State<CheckinEquip> {
   final String nome;
   final String email;
-  String code = '';
+  String matricula = '';
   bool leu = false;
 
   StateCheckinEquip({required this.email, required this.nome});
 
   Future<void> openReader(context) async {
-    String result = await Navigator.push(
+    final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => Leitor()),
     );
 
+    if (!mounted) return;
+
     setState(() {
-      code = result;
+      matricula = result;
     });
   }
 
@@ -48,7 +50,7 @@ class StateCheckinEquip extends State<CheckinEquip> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(code),
+            Text("Matricula: $matricula"),
             PrimaryButton(
               text: 'Ler',
               icon: Icons.qr_code,

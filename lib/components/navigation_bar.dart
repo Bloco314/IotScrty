@@ -6,17 +6,11 @@ import 'package:iot_scrty/pages/_horarios_professor.dart';
 import 'package:iot_scrty/pages/_register_loan.dart';
 import 'package:iot_scrty/pages/_solicitations.dart';
 
-class NavBarProfessor extends StatelessWidget {
+abstract class NavBase extends StatelessWidget {
   final String nome;
   final String email;
   final BuildContext cont;
   final String pageName;
-
-  NavBarProfessor(
-      {required this.nome,
-      required this.email,
-      required this.cont,
-      required this.pageName});
 
   void navigateTo(context, Widget page) {
     Navigator.push(context, MaterialPageRoute(builder: (context) => page));
@@ -29,6 +23,21 @@ class NavBarProfessor extends StatelessWidget {
     }
     return width * 55 / 100;
   }
+
+  NavBase(
+      {required this.nome,
+      required this.email,
+      required this.cont,
+      required this.pageName});
+}
+
+class NavBarProfessor extends NavBase {
+  NavBarProfessor(
+      {required String nome,
+      required String email,
+      required BuildContext cont,
+      required String pageName})
+      : super(nome: nome, email: email, cont: cont, pageName: pageName);
 
   @override
   Widget build(BuildContext context) {
@@ -62,11 +71,10 @@ class NavBarProfessor extends StatelessWidget {
                   }),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.monetization_on),
-            title: const Text('Emprestimos de aluno'),
-            onTap: () =>
-                navigateTo(context, CheckinEquip(email: email, nome: nome)),
-          ),
+              leading: const Icon(Icons.monetization_on),
+              title: const Text('Emprestimos de aluno'),
+              onTap: () =>
+                  navigateTo(context, CheckinEquip(email: email, nome: nome))),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.assignment),
@@ -93,29 +101,13 @@ class NavBarProfessor extends StatelessWidget {
   }
 }
 
-class NavBarCoordenador extends StatelessWidget {
-  final String nome;
-  final String email;
-  final BuildContext cont;
-  final String pageName;
-
+class NavBarCoordenador extends NavBase {
   NavBarCoordenador(
-      {required this.nome,
-      required this.email,
-      required this.cont,
-      required this.pageName});
-
-  void navigateTo(context, Widget page) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => page));
-  }
-
-  double navBarSize() {
-    double width = MediaQuery.of(cont).size.width;
-    if (width >= 600) {
-      return width * 35 / 100;
-    }
-    return width * 55 / 100;
-  }
+      {required String nome,
+      required String email,
+      required BuildContext cont,
+      required String pageName})
+      : super(nome: nome, email: email, cont: cont, pageName: pageName);
 
   @override
   Widget build(BuildContext context) {

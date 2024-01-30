@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:iot_scrty/components/buttons.dart';
-import 'package:iot_scrty/components/leitor.dart';
 import 'package:iot_scrty/components/navigation_bar.dart';
 import 'package:iot_scrty/components/top_bar.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 class CheckinEquip extends StatefulWidget {
   final String nome;
@@ -29,11 +29,15 @@ class StateCheckinEquip extends State<CheckinEquip> {
       MaterialPageRoute(builder: (context) => Leitor()),
     );
 
-    if (!mounted) return;
-
-    setState(() {
-      matricula = result;
-    });
+    if (result != null && mounted) {
+      setState(() {
+        matricula = result;
+      });
+    } else {
+      setState(() {
+        matricula = '';
+      });
+    }
   }
 
   @override
@@ -60,5 +64,15 @@ class StateCheckinEquip extends State<CheckinEquip> {
         ),
       ),
     );
+  }
+}
+
+class Leitor extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MobileScanner(onDetect: (capture) {
+      final result = capture.barcodes[0].rawValue.toString();
+      Navigator.pop(context, result);
+    });
   }
 }

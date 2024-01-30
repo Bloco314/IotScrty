@@ -10,19 +10,23 @@ class Credits extends StatelessWidget {
           Text('Prof. Jonathas Silva',
               style: TextStyle(
                   color: PersonalColors.darkerGreen,
-                  decoration: TextDecoration.none)),
+                  decoration: TextDecoration.none,
+                  fontSize: 20.0)),
           Text('José Manuel',
               style: TextStyle(
                   color: PersonalColors.darkerGreen,
-                  decoration: TextDecoration.none)),
+                  decoration: TextDecoration.none,
+                  fontSize: 20.0)),
           Text('Luis Henrique',
               style: TextStyle(
                   color: PersonalColors.darkerGreen,
-                  decoration: TextDecoration.none)),
+                  decoration: TextDecoration.none,
+                  fontSize: 20.0)),
           Text('Lucas Migliorin',
               style: TextStyle(
                   color: PersonalColors.darkerGreen,
-                  decoration: TextDecoration.none))
+                  decoration: TextDecoration.none,
+                  fontSize: 20.0))
         ]));
   }
 }

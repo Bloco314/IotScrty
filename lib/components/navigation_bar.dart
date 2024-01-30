@@ -79,7 +79,7 @@ class NavBarProfessor extends NavBase {
           ListTile(
             leading: const Icon(Icons.assignment),
             title: const Text('Suas solicitações'),
-            onTap: () => navigateTo(context, Solicitacoes()),
+            onTap: () => navigateTo(context, Solicitacoes(email: email, nome: nome)),
           ),
           const Divider(),
           ListTile(
@@ -180,7 +180,7 @@ class NavBarCoordenador extends NavBase {
                       }
                     else
                       {Navigator.of(context).pop()}
-                  }),
+                  }), 
           const Divider(),
           ListTile(
               leading: const Icon(Icons.exit_to_app_sharp),

@@ -5,9 +5,18 @@ import 'package:iot_scrty/components/top_bar.dart';
 
 //Pagina de Solicitações do professor
 class Solicitacoes extends StatelessWidget {
+  final String nome;
+  final String email;
+
+  Solicitacoes({required this.email,required this.nome});
+
   @override
   Widget build(BuildContext context){
-    return  Container();
+    return  Scaffold(
+      drawer: NavBarProfessor(cont: context,email: email,nome: nome, pageName: 'solicitacoes_professor'),
+      appBar: TopBar(text: 'Suas solicitações'),
+      body: Container()
+    );
   }
 }
 

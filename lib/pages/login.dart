@@ -5,6 +5,7 @@ import 'package:iot_scrty/components/input_fields.dart';
 import 'package:iot_scrty/components/top_bar.dart';
 import 'package:iot_scrty/pages/_home_page.dart';
 import 'package:iot_scrty/pages/_recoverPassword.dart';
+import 'package:http/http.dart' as http;
 
 class Login extends StatefulWidget {
   @override
@@ -16,17 +17,27 @@ class LoginState extends State<Login> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void validarLogin(context) {
-    if (_emailController.text.trim() == 'c') {
-      navigateTo(
-          context,
-          HomePage(
-              email: _emailController.text, nome: _passwordController.text, coord: true));
+  void validarLogin(context) async {
+    var url = Uri.parse(
+        'http://127.0.0.1:8000/users/login/${_emailController.text}/${_passwordController.text}');
+    var response = await http.get(url);
+      print(response.body);
+
+    if (response.statusCode != 200) {
+    } else if (true) {
+      // navigateTo(
+      //     context,
+      //     HomePage(
+      //         email: _emailController.text,
+      //         nome: _passwordController.text,
+      //         coord: true));
     } else {
-      navigateTo(
-          context,
-          HomePage(
-              email: _emailController.text, nome: _passwordController.text, coord: false));
+      // navigateTo(
+      //     context,
+      //     HomePage(
+      //         email: _emailController.text,
+      //         nome: _passwordController.text,
+      //         coord: false));
     }
   }
 

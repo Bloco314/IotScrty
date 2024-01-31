@@ -6,6 +6,7 @@ import 'package:iot_scrty/components/top_bar.dart';
 import 'package:iot_scrty/pages/_home_page.dart';
 import 'package:iot_scrty/pages/_recoverPassword.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Login extends StatefulWidget {
   @override
@@ -20,24 +21,25 @@ class LoginState extends State<Login> {
   void validarLogin(context) async {
     var url = Uri.parse(
         'http://127.0.0.1:8000/users/login/${_emailController.text}/${_passwordController.text}');
-    var response = await http.get(url);
-      print(response.body);
+    final response = await http.get(url);
 
-    if (response.statusCode != 200) {
-    } else if (true) {
-      // navigateTo(
-      //     context,
-      //     HomePage(
-      //         email: _emailController.text,
-      //         nome: _passwordController.text,
-      //         coord: true));
-    } else {
-      // navigateTo(
-      //     context,
-      //     HomePage(
-      //         email: _emailController.text,
-      //         nome: _passwordController.text,
-      //         coord: false));
+    if (response.statusCode == 200) {
+      final decode = json.decode(response.body);
+      if (decode["tipo"] == 'coordenador') {
+        navigateTo(
+            context,
+            HomePage(
+                email: _emailController.text,
+                nome: decode["name"],
+                coord: true));
+      } else if (decode["tipo"] == 'professor') {
+        navigateTo(
+            context,
+            HomePage(
+                email: _emailController.text,
+                nome: decode["name"],
+                coord: false));
+      }
     }
   }
 

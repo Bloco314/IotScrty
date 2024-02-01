@@ -21,7 +21,7 @@ class LoginState extends State<Login> {
 
   void validarLogin(context) async {
     var url = Uri.parse(
-        'http://${NetConfig.serverIP}/users/login/${_emailController.text}/${_passwordController.text}');
+        'http://${NetConfig.Link}/users/login/${_emailController.text}/${_passwordController.text}');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {

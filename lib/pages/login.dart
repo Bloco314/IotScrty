@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:iot_scrty/components/campo_cadastro.dart';
-import 'package:iot_scrty/components/navigation_bar.dart';
-import '../pages/cad_enviroment.dart';
+import 'package:iot_scrty/assets/colors.dart';
+import 'package:iot_scrty/components/buttons.dart';
+import 'package:iot_scrty/components/input_fields.dart';
+import 'package:iot_scrty/components/top_bar.dart';
+import 'package:iot_scrty/pages/_home_page.dart';
+import 'package:iot_scrty/pages/_recoverPassword.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Login extends StatefulWidget {
   @override
@@ -13,31 +18,69 @@ class LoginState extends State<Login> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void telaCadEnviroment(context) {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => CadEnviroment()));
+  void validarLogin(context) async {
+    var url = Uri.parse(
+        'http://127.0.0.1:8000/users/login/${_emailController.text}/${_passwordController.text}');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final decode = json.decode(response.body);
+      if (decode["tipo"] == 'coordenador') {
+        navigateTo(
+            context,
+            HomePage(
+                email: _emailController.text,
+                nome: decode["name"],
+                coord: true));
+      } else if (decode["tipo"] == 'professor') {
+        navigateTo(
+            context,
+            HomePage(
+                email: _emailController.text,
+                nome: decode["name"],
+                coord: false));
+      }
+    }
+  }
+
+  void navigateTo(context, Widget page) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => page));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: NavBar(),
-      appBar: AppBar(title: const Text('Login')),
+      appBar: TopBar(text: 'Login'),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(10),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CampoCadastro(labelText: 'email', controller: _emailController),
-            const SizedBox(height: 16.0),
-            CampoCadastro(labelText: 'senha', controller: _passwordController),
-            const SizedBox(height: 32.0),
-            ElevatedButton(
-                onPressed: () => {telaCadEnviroment(context)},
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromRGBO(74, 188, 216, 1),
-                    shape: const LinearBorder()),
-                child: const Text('Entrar')),
+            Container(
+              margin: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.15,
+                  vertical: 10),
+              padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 10),
+              decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(7.5)),
+                  color: PersonalColors.lightGrey),
+              child: Column(children: [
+                CampoCadastro(labelText: 'email', controller: _emailController),
+                const SizedBox(height: 16.0),
+                CampoCadastro(
+                    labelText: 'senha', controller: _passwordController)
+              ]),
+            ),
+            PrimaryButton(
+                text: 'Entrar', onPressed: () => validarLogin(context)),
+            GenericButton(
+                text: 'Esqueceu sua senha?',
+                width: 200,
+                height: 30,
+                onPressed: () => navigateTo(context, Recover()),
+                color: Colors.transparent,
+                textColor: Colors.grey)
           ],
         ),
       ),

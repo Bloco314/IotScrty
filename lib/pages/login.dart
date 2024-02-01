@@ -50,7 +50,7 @@ class LoginState extends State<Login> {
       }
     } catch (e) {
       setState(() {
-        text = 'Houve um erro';
+        text = 'Servidor indisponivel';
       });
     }
   }

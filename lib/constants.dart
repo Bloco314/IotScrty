@@ -1,5 +1,7 @@
 class NetConfig {
-  static const IP = '192.168.0.7';
+  static const IP = '192.168.0.10';
   static const Port = '8000';
-  static const Link = IP+':'+Port;
+  static const Link = IP + ':' + Port;
 }
+
+const List<String> tipos = ['coordenador', 'professor'];

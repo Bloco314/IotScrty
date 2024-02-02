@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:iot_scrty/assets/colors.dart';
 import 'package:iot_scrty/components/buttons.dart';
+import 'package:iot_scrty/components/input_fields.dart';
 import 'package:iot_scrty/components/top_bar.dart';
 
-class Recover extends StatelessWidget {
+class Recover extends StatefulWidget {
+  @override
+  RecoverState createState() => RecoverState();
+}
+
+class RecoverState extends State<Recover> {
+  TextEditingController email_controller = TextEditingController();
+
+  void send() {}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,17 +28,14 @@ class Recover extends StatelessWidget {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 20),
-              const TextField(
-                decoration: InputDecoration(labelText: 'E-mail'),
-                keyboardType: TextInputType.emailAddress,
-              ),
+              CampoCadastro(controller: email_controller, labelText: ''),
               const SizedBox(height: 20),
               GenericButton(
                   text: 'Enviar instruções',
                   color: PersonalColors.red,
                   width: 200,
                   height: 40,
-                  onPressed: () => {}),
+                  onPressed: () => send()),
             ],
           ),
         ));

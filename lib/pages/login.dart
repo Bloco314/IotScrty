@@ -18,29 +18,40 @@ class LoginState extends State<Login> {
   final key = 'LoginS';
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  var text = '';
 
   void validarLogin(context) async {
-    var url = Uri.parse(
-        'http://${NetConfig.Link}/users/login/${_emailController.text}/${_passwordController.text}');
-    final response = await http.get(url);
+    try {
+      var url = Uri.parse(
+          'http://${NetConfig.Link}/users/login/${_emailController.text}/${_passwordController.text}');
+      final response = await http.get(url);
 
-    if (response.statusCode == 200) {
-      final decode = json.decode(response.body);
-      if (decode["tipo"] == 'coordenador') {
-        navigateTo(
-            context,
-            HomePage(
-                email: _emailController.text,
-                nome: decode["name"],
-                coord: true));
-      } else if (decode["tipo"] == 'professor') {
-        navigateTo(
-            context,
-            HomePage(
-                email: _emailController.text,
-                nome: decode["name"],
-                coord: false));
+      if (response.statusCode == 200) {
+        final decode = json.decode(response.body);
+        if (decode["tipo"] == 'coordenador') {
+          navigateTo(
+              context,
+              HomePage(
+                  email: _emailController.text,
+                  nome: decode["name"],
+                  coord: true));
+        } else if (decode["tipo"] == 'professor') {
+          navigateTo(
+              context,
+              HomePage(
+                  email: _emailController.text,
+                  nome: decode["name"],
+                  coord: false));
+        } else {
+          setState(() {
+            text = 'Usuario não existe';
+          });
+        }
       }
+    } catch (e) {
+      setState(() {
+        text = 'Servidor indisponivel';
+      });
     }
   }
 
@@ -73,6 +84,7 @@ class LoginState extends State<Login> {
                     labelText: 'senha', controller: _passwordController)
               ]),
             ),
+            Text(text, style: const TextStyle(color: PersonalColors.red)),
             PrimaryButton(
                 text: 'Entrar', onPressed: () => validarLogin(context)),
             GenericButton(

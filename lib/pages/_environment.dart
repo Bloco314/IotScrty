@@ -222,10 +222,6 @@ class _CadEnviromentState extends State<CadEnviroment> {
       if (response.statusCode == 200) {
         final msg = json.decode(response.body)['msg'];
         if (msg == 'Created sucessfully!') {
-          setState(() {
-            nomeSala.text = '';
-            descricao.text = '';
-          });
           Fluttertoast.showToast(msg: 'Criado com sucesso');
           goback();
         } else if (msg == 'PK-ERROR') {

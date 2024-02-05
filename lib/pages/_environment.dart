@@ -10,6 +10,7 @@ import 'package:iot_scrty/components/table_elements.dart';
 import 'package:iot_scrty/components/top_bar.dart';
 import 'package:iot_scrty/constants.dart';
 import 'package:http/http.dart' as http;
+import 'package:iot_scrty/pages/_horarios_professor.dart';
 
 class ViewEnvironments extends StatefulWidget {
   final String nome;
@@ -34,7 +35,6 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
           for (var e in json.decode(response.body)['names']) {
             dados.add(e[0]);
           }
-          ;
         });
       }
     } catch (e) {
@@ -79,7 +79,7 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return ModalHorarios(enviromentName: name);
+        return ModalHorarios(env: name);
       },
     );
   }
@@ -191,7 +191,7 @@ class _CadEnviromentState extends State<CadEnviroment> {
   final TextEditingController nomeSala = TextEditingController();
   final TextEditingController descricao = TextEditingController();
   final TextEditingController horariosSala = TextEditingController();
-  final List<TextEditingController> horariosAdicionados = [];
+  final List<String> horariosAdicionados = [];
 
   _CadEnviromentState({required this.nome, required this.email});
 
@@ -213,8 +213,12 @@ class _CadEnviromentState extends State<CadEnviroment> {
 
     final url = Uri.parse(
         'http://${NetConfig.Link}/env/create/?name=${nomeSala.text}&description=${descricao.text}');
+
+    final body = jsonEncode({'list': horariosAdicionados});
     try {
-      final response = await http.post(url);
+      final response = await http
+          .post(url, body: body, headers: {'Content-Type': 'application/json'});
+
       if (response.statusCode == 200) {
         final msg = json.decode(response.body)['msg'];
         if (msg == 'Created sucessfully!') {
@@ -231,7 +235,7 @@ class _CadEnviromentState extends State<CadEnviroment> {
         }
       }
     } catch (e) {
-      Fluttertoast.showToast(msg: 'Houve um erro ao criar');
+      Fluttertoast.showToast(msg: '$e', timeInSecForIosWeb: 10);
     }
   }
 
@@ -255,52 +259,50 @@ class _CadEnviromentState extends State<CadEnviroment> {
             CampoCadastro(labelText: 'Nome da sala', controller: nomeSala),
             CampoCadastro(
                 labelText: 'Descrição (opcional)', controller: descricao),
-            // Row(
-            //   children: [
-            //     Expanded(
-            //         child: CampoCadastro(
-            //             labelText: 'Acrescentar horario',
-            //             controller: horariosSala)),
-            //     IconButton(
-            //       icon: const Icon(Icons.add),
-            //       onPressed: () {
-            //         if (horariosSala.text.isNotEmpty) {
-            //           setState(() {
-            //             horariosAdicionados.add(
-            //               TextEditingController(text: horariosSala.text),
-            //             );
-            //             horariosSala.clear();
-            //           });
-            //         }
-            //       },
-            //     ),
-            //   ],
-            // ),
-            // const Divider(),
-            // const Text('Horários:'),
-            // const Divider(),
-            // SizedBox(
-            //     height: 180,
-            //     child: Expanded(
-            //         child: ListView.builder(
-            //       itemCount: horariosAdicionados.length,
-            //       itemBuilder: (context, index) {
-            //         return Column(children: [
-            //           Row(
-            //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //             children: [
-            //               Text(horariosAdicionados[index].text,
-            //                   textAlign: TextAlign.center),
-            //               IconButton(
-            //                 icon: const Icon(Icons.delete),
-            //                 onPressed: () => excluirHorario(index),
-            //               )
-            //             ],
-            //           ),
-            //           const Divider()
-            //         ]);
-            //       },
-            //     ))),
+            Row(
+              children: [
+                Expanded(
+                    child: CampoCadastro(
+                        labelText: 'Acrescentar horario',
+                        controller: horariosSala)),
+                IconButton(
+                  icon: const Icon(Icons.add),
+                  onPressed: () {
+                    if (horariosSala.text.isNotEmpty) {
+                      setState(() {
+                        horariosAdicionados.add(horariosSala.text);
+                        horariosSala.clear();
+                      });
+                    }
+                  },
+                ),
+              ],
+            ),
+            const Divider(),
+            const Text('Horários:'),
+            const Divider(),
+            SizedBox(
+                height: 180,
+                child: Expanded(
+                    child: ListView.builder(
+                  itemCount: horariosAdicionados.length,
+                  itemBuilder: (context, index) {
+                    return Column(children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(horariosAdicionados[index],
+                              textAlign: TextAlign.center),
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () => excluirHorario(index),
+                          )
+                        ],
+                      ),
+                      const Divider()
+                    ]);
+                  },
+                ))),
             PrimaryButton(text: 'Cadastrar', onPressed: criarAmbiente),
             GenericButton(
               text: 'Cancelar',
@@ -316,39 +318,68 @@ class _CadEnviromentState extends State<CadEnviroment> {
   }
 }
 
-class ModalHorarios extends StatelessWidget {
+class ModalHorarios extends StatefulWidget {
+  final String env;
+
+  ModalHorarios({required this.env});
+
+  @override
+  ModalHorariosState createState() => ModalHorariosState(enviromentName: env);
+}
+
+class ModalHorariosState extends State<ModalHorarios> {
   final String enviromentName;
 
-  //Pegar dados do back
-  final Map<String, List<String>> horarios = {};
+  ModalHorariosState({required this.enviromentName});
 
-  ModalHorarios({required this.enviromentName});
+  List<String> horarios = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    final url =
+        Uri.parse('http://${NetConfig.Link}/hour/?env_name=$enviromentName');
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        for (var i in json.decode(response.body)['horarios']) {
+          horarios.add(i[0]);
+        }
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: 'Erro!');
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
-    List<String>? horariosList = horarios[enviromentName];
-
     return Expanded(
         child: AlertDialog(
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
       title: const Text('Horários'),
-      content: Container(
+      content: SizedBox(
         height: 400,
         width: 300,
-        child: horariosList != null && horariosList.isNotEmpty
+        child: horarios.isNotEmpty
             ? ListView.builder(
-                itemCount: horariosList.length,
+                itemCount: horarios.length,
                 itemBuilder: (BuildContext context, int index) {
-                  String horarioValue = horariosList[index];
+                  String horarioValue = horarios[index];
 
                   return Column(
                     children: [
                       ListTile(
                         title: Text(horarioValue),
                       ),
-                      if (index < horariosList.length - 1) Divider()
+                      if (index < horarios.length - 1) const Divider()
                     ],
                   );
                 },

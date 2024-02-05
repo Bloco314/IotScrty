@@ -51,8 +51,8 @@ class NavBarProfessor extends NavBase {
           const UserAccountsDrawerHeader(
             accountName: Text(''),
             accountEmail: Text(''),
-            currentAccountPicture: CircleAvatar(
-                backgroundImage: AssetImage('lib/assets/guest.png')),
+            // currentAccountPicture: CircleAvatar(
+            //     backgroundImage: AssetImage('lib/assets/guest.png')),
             decoration: BoxDecoration(
                 color: Colors.green,
                 image: DecorationImage(
@@ -113,7 +113,7 @@ class NavBarCoordenador extends NavBase {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(  
+    return Drawer(
       width: navBarSize(),
       child: ListView(
         padding: EdgeInsets.zero,
@@ -122,8 +122,8 @@ class NavBarCoordenador extends NavBase {
           const UserAccountsDrawerHeader(
             accountName: Text(''),
             accountEmail: Text(''),
-            currentAccountPicture: CircleAvatar(
-                backgroundImage: AssetImage('lib/assets/guest.png')),
+            // currentAccountPicture: CircleAvatar(
+            //     backgroundImage: AssetImage('lib/assets/guest.png')),
             decoration: BoxDecoration(
                 color: Colors.green,
                 image: DecorationImage(

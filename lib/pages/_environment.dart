@@ -93,8 +93,13 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
   }
 
   void editarAmbiente(context, String name) {
-    navigateTo(context,
-        Enviroment(nome: widget.nome, email: widget.email, editando: true));
+    navigateTo(
+        context,
+        Enviroment(
+            nome: widget.nome,
+            email: widget.email,
+            editando: true,
+            envName: name));
   }
 
   @override
@@ -181,38 +186,58 @@ class Enviroment extends StatefulWidget {
   final String nome;
   final String email;
   final bool editando;
+  final String? envName;
 
-  Enviroment({required this.nome, required this.email, required this.editando});
+  Enviroment(
+      {required this.nome,
+      required this.email,
+      required this.editando,
+      this.envName});
 
   @override
-  EnviromentState createState() => EnviromentState(nome: nome, email: email);
+  EnviromentState createState() => EnviromentState();
 }
 
 class EnviromentState extends State<Enviroment> {
-  final String nome;
-  final String email;
-
   final TextEditingController nomeSala = TextEditingController();
   final TextEditingController descricao = TextEditingController();
   final TextEditingController horariosSala = TextEditingController();
-  final List<String> horariosAdicionados = [];
-
-  EnviromentState({required this.nome, required this.email});
+  List<String> horariosAdicionados = [];
 
   @override
   void initState() {
     super.initState();
-    if(!widget.editando){
+    if (!widget.editando) {
       return;
     }
+    nomeSala.text = widget.envName ?? '';
+    fetchData();
+  }
 
+  Future<void> fetchData() async {
+    final url = Uri.parse('http://${NetConfig.Link}/env/get/${widget.envName}');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final dados = json.decode(response.body);
+        descricao.text = dados['descricao'];
+        for (var i in dados['horarios']) {
+          setState(() {
+            horariosAdicionados.add(i[0]);
+          });
+        }
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: 'Houve um erro ao carregar os dados');
+      Navigator.pop(context);
+    }
   }
 
   void excluirHorario(int index) {
     setState(() {
       horariosAdicionados.removeAt(index);
     });
-  }  
+  }
 
   Future<void> criarAmbiente() async {
     if (nomeSala.text.isEmpty) {
@@ -220,8 +245,11 @@ class EnviromentState extends State<Enviroment> {
       return;
     }
 
-    final url = Uri.parse(
-        'http://${NetConfig.Link}/env/create/?name=${nomeSala.text}&description=${descricao.text}');
+    final url = widget.editando
+        ? Uri.parse(
+            'http://${NetConfig.Link}/env/update/?description=${descricao.text}&name=${nomeSala.text}')
+        : Uri.parse(
+            'http://${NetConfig.Link}/env/create/?name=${nomeSala.text}&description=${descricao.text}');
     final body = jsonEncode({'list': horariosAdicionados});
 
     try {
@@ -230,8 +258,11 @@ class EnviromentState extends State<Enviroment> {
 
       if (response.statusCode == 200) {
         final msg = json.decode(response.body)['msg'];
-        if (msg == 'Created sucessfully!') {
-          Fluttertoast.showToast(msg: 'Criado com sucesso');
+        if (msg == 'Created sucessfully!' || msg == 'Updated sucessfully!') {
+          Fluttertoast.showToast(
+              msg: widget.editando
+                  ? 'Atualizado com sucesso'
+                  : 'Criado com sucesso');
           goback();
         } else if (msg == 'PK-ERROR') {
           Fluttertoast.showToast(msg: 'Nomes não devem se repetir');
@@ -240,7 +271,7 @@ class EnviromentState extends State<Enviroment> {
         }
       }
     } catch (e) {
-      Fluttertoast.showToast(msg: '$e', timeInSecForIosWeb: 10);
+      Fluttertoast.showToast(msg: '$e');
     }
   }
 
@@ -250,7 +281,8 @@ class EnviromentState extends State<Enviroment> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => ViewEnvironments(nome: nome, email: email)));
+            builder: (context) =>
+                ViewEnvironments(nome: widget.nome, email: widget.email)));
   }
 
   @override

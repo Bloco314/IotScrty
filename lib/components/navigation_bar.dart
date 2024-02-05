@@ -5,6 +5,7 @@ import 'package:iot_scrty/pages/_home_page.dart';
 import 'package:iot_scrty/pages/_horarios_professor.dart';
 import 'package:iot_scrty/pages/_register_loan.dart';
 import 'package:iot_scrty/pages/_solicitations.dart';
+import 'package:iot_scrty/pages/_colaborators.dart';
 
 abstract class NavBase extends StatelessWidget {
   final String nome;
@@ -50,8 +51,8 @@ class NavBarProfessor extends NavBase {
           const UserAccountsDrawerHeader(
             accountName: Text(''),
             accountEmail: Text(''),
-            currentAccountPicture: CircleAvatar(
-                backgroundImage: AssetImage('lib/assets/guest.png')),
+            // currentAccountPicture: CircleAvatar(
+            //     backgroundImage: AssetImage('lib/assets/guest.png')),
             decoration: BoxDecoration(
                 color: Colors.green,
                 image: DecorationImage(
@@ -79,7 +80,8 @@ class NavBarProfessor extends NavBase {
           ListTile(
             leading: const Icon(Icons.assignment),
             title: const Text('Suas solicitações'),
-            onTap: () => navigateTo(context, Solicitacoes(email: email, nome: nome)),
+            onTap: () =>
+                navigateTo(context, Solicitacoes(email: email, nome: nome)),
           ),
           const Divider(),
           ListTile(
@@ -120,8 +122,8 @@ class NavBarCoordenador extends NavBase {
           const UserAccountsDrawerHeader(
             accountName: Text(''),
             accountEmail: Text(''),
-            currentAccountPicture: CircleAvatar(
-                backgroundImage: AssetImage('lib/assets/guest.png')),
+            // currentAccountPicture: CircleAvatar(
+            //     backgroundImage: AssetImage('lib/assets/guest.png')),
             decoration: BoxDecoration(
                 color: Colors.green,
                 image: DecorationImage(
@@ -180,7 +182,20 @@ class NavBarCoordenador extends NavBase {
                       }
                     else
                       {Navigator.of(context).pop()}
-                  }), 
+                  }),
+          const Divider(),
+          ListTile(
+              leading: const Icon(Icons.person),
+              title: const Text('Colaboradores'),
+              onTap: () => {
+                    if (pageName != 'colaboradores')
+                      {
+                        navigateTo(
+                            context, Colaboradores(email: email, nome: nome))
+                      }
+                    else
+                      {Navigator.of(context).pop()}
+                  }),
           const Divider(),
           ListTile(
               leading: const Icon(Icons.exit_to_app_sharp),

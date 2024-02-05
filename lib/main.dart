@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'pages/login.dart';
 
 void main() {
@@ -17,7 +18,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      builder: FToastBuilder(),
       home: Login()
     );
   }
 }
+ 

@@ -1,10 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iot_scrty/assets/colors.dart';
 import 'package:iot_scrty/components/buttons.dart';
 import 'package:iot_scrty/components/input_fields.dart';
 import 'package:iot_scrty/components/navigation_bar.dart';
 import 'package:iot_scrty/components/table_elements.dart';
 import 'package:iot_scrty/components/top_bar.dart';
+import 'package:iot_scrty/constants.dart';
+import 'package:http/http.dart' as http;
 
 class ViewEnvironments extends StatefulWidget {
   final String nome;
@@ -17,9 +22,30 @@ class ViewEnvironments extends StatefulWidget {
 }
 
 class ViewEnvironmentsState extends State<ViewEnvironments> {
-  //Pegar dados do back
-  final List<String> dados =
-      List.generate(20, (index) => 'Ambiente ${index + 1}');
+  List<String> dados = [];
+
+  Future<void> getData() async {
+    try {
+      final url = Uri.parse('http://${NetConfig.Link}/env/list');
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        setState(() {
+          for (var e in json.decode(response.body)['names']) {
+            dados.add(e[0]);
+          }
+        });
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: 'Houve um erro ao carregar os dados$e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
 
   int currentPage = 0;
   static const int itemsPerPage = 5;
@@ -52,7 +78,7 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return ModalHorarios(enviromentName: name);
+        return ModalHorarios(env: name);
       },
     );
   }
@@ -66,7 +92,10 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
     );
   }
 
-  void editarAmbiente(context, String name) {}
+  void editarAmbiente(context, String name) {
+    navigateTo(context,
+        Enviroment(nome: widget.nome, email: widget.email, editando: true));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,81 +125,133 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
               Icons.edit
             ], items: currentData),
             // Botões de navegação
-            if(dados.isNotEmpty)
-            Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                        onPressed: currentPage > 0 ? previousPage : null,
+            if (dados.isNotEmpty)
+              Padding(
+                  padding: EdgeInsets.only(
+                      top: 10, bottom: 200 - currentData.length * 40),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                          onPressed: currentPage > 0 ? previousPage : null,
+                          style: ElevatedButton.styleFrom(
+                              elevation: 0,
+                              disabledBackgroundColor: Colors.transparent,
+                              foregroundColor: PersonalColors.darkerGreen,
+                              shape: const LinearBorder()),
+                          child: const Row(children: [
+                            Icon(Icons.arrow_back),
+                            Text('Anterior'),
+                          ])),
+                      const SizedBox(width: 16),
+                      ElevatedButton(
+                        onPressed: currentPage <
+                                (dados.length / itemsPerPage).ceil() - 1
+                            ? nextPage
+                            : null,
                         style: ElevatedButton.styleFrom(
                             elevation: 0,
                             disabledBackgroundColor: Colors.transparent,
                             foregroundColor: PersonalColors.darkerGreen,
                             shape: const LinearBorder()),
                         child: const Row(children: [
-                          Icon(Icons.arrow_back),
-                          Text('Anterior'),
-                        ])),
-                    const SizedBox(width: 16),
-                    ElevatedButton(
-                      onPressed:
-                          currentPage < (dados.length / itemsPerPage).ceil() - 1
-                              ? nextPage
-                              : null,
-                      style: ElevatedButton.styleFrom(
-                          elevation: 0,
-                          disabledBackgroundColor: Colors.transparent,
-                          foregroundColor: PersonalColors.darkerGreen,
-                          shape: const LinearBorder()),
-                      child: const Row(children: [
-                        Text('Próximo'),
-                        Icon(Icons.arrow_forward)
-                      ]),
-                    ),
-                  ],
-                )),
+                          Text('Próximo'),
+                          Icon(Icons.arrow_forward)
+                        ]),
+                      ),
+                    ],
+                  )),
             // Botão para novo ambiente
             PrimaryButton(
               text: 'Novo ',
               width: 110,
               height: 40,
-              onPressed: () => navigateTo(context,
-                  CadEnviroment(nome: widget.nome, email: widget.email)),
-              icon: Icons.add_sharp,
+              onPressed: () => navigateTo(
+                  context,
+                  Enviroment(
+                      nome: widget.nome, email: widget.email, editando: false)),
+              icon: Icons.add,
             )
           ],
         ));
   }
 }
 
-class CadEnviroment extends StatefulWidget {
+class Enviroment extends StatefulWidget {
+  final String nome;
+  final String email;
+  final bool editando;
+
+  Enviroment({required this.nome, required this.email, required this.editando});
+
+  @override
+  EnviromentState createState() => EnviromentState(nome: nome, email: email);
+}
+
+class EnviromentState extends State<Enviroment> {
   final String nome;
   final String email;
 
-  CadEnviroment({required this.nome, required this.email});
+  final TextEditingController nomeSala = TextEditingController();
+  final TextEditingController descricao = TextEditingController();
+  final TextEditingController horariosSala = TextEditingController();
+  final List<String> horariosAdicionados = [];
+
+  EnviromentState({required this.nome, required this.email});
 
   @override
-  _CadEnviromentState createState() => _CadEnviromentState();
-}
+  void initState() {
+    super.initState();
+    if(!widget.editando){
+      return;
+    }
 
-class _CadEnviromentState extends State<CadEnviroment> {
-  final TextEditingController nomeSala = TextEditingController();
-  final TextEditingController horariosSala = TextEditingController();
-  final List<TextEditingController> horariosAdicionados = [];
+  }
 
   void excluirHorario(int index) {
     setState(() {
       horariosAdicionados.removeAt(index);
     });
+  }  
+
+  Future<void> criarAmbiente() async {
+    if (nomeSala.text.isEmpty) {
+      Fluttertoast.showToast(msg: 'Preenha o nome por favor');
+      return;
+    }
+
+    final url = Uri.parse(
+        'http://${NetConfig.Link}/env/create/?name=${nomeSala.text}&description=${descricao.text}');
+    final body = jsonEncode({'list': horariosAdicionados});
+
+    try {
+      final response = await http
+          .post(url, body: body, headers: {'Content-Type': 'application/json'});
+
+      if (response.statusCode == 200) {
+        final msg = json.decode(response.body)['msg'];
+        if (msg == 'Created sucessfully!') {
+          Fluttertoast.showToast(msg: 'Criado com sucesso');
+          goback();
+        } else if (msg == 'PK-ERROR') {
+          Fluttertoast.showToast(msg: 'Nomes não devem se repetir');
+        } else if (msg == 'OP-ERROR') {
+          Fluttertoast.showToast(msg: 'Houve um erro no servidor');
+        }
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: '$e', timeInSecForIosWeb: 10);
+    }
   }
 
-  void cancelar(context) {
+  void goback() {
     Navigator.pop(context);
+    Navigator.pop(context);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ViewEnvironments(nome: nome, email: email)));
   }
-
-  void cadastrar() {}
 
   @override
   Widget build(BuildContext context) {
@@ -180,7 +261,12 @@ class _CadEnviromentState extends State<CadEnviroment> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            CampoCadastro(labelText: 'Nome da sala', controller: nomeSala),
+            CampoCadastro(
+                labelText: 'Nome da sala',
+                controller: nomeSala,
+                enabled: !widget.editando),
+            CampoCadastro(
+                labelText: 'Descrição (opcional)', controller: descricao),
             Row(
               children: [
                 Expanded(
@@ -192,9 +278,7 @@ class _CadEnviromentState extends State<CadEnviroment> {
                   onPressed: () {
                     if (horariosSala.text.isNotEmpty) {
                       setState(() {
-                        horariosAdicionados.add(
-                          TextEditingController(text: horariosSala.text),
-                        );
+                        horariosAdicionados.add(horariosSala.text);
                         horariosSala.clear();
                       });
                     }
@@ -205,7 +289,7 @@ class _CadEnviromentState extends State<CadEnviroment> {
             const Divider(),
             const Text('Horários:'),
             const Divider(),
-            Container(
+            SizedBox(
                 height: 180,
                 child: Expanded(
                     child: ListView.builder(
@@ -215,7 +299,7 @@ class _CadEnviromentState extends State<CadEnviroment> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(horariosAdicionados[index].text,
+                          Text(horariosAdicionados[index],
                               textAlign: TextAlign.center),
                           IconButton(
                             icon: const Icon(Icons.delete),
@@ -227,10 +311,12 @@ class _CadEnviromentState extends State<CadEnviroment> {
                     ]);
                   },
                 ))),
-            PrimaryButton(text: 'Cadastrar', onPressed: cadastrar),
+            PrimaryButton(
+                text: widget.editando ? 'Atualizar' : 'Cadastrar',
+                onPressed: criarAmbiente),
             GenericButton(
               text: 'Cancelar',
-              onPressed: () => cancelar(context),
+              onPressed: () => Navigator.pop(context),
               color: Colors.transparent,
               textColor: Colors.red,
               height: 20,
@@ -242,42 +328,64 @@ class _CadEnviromentState extends State<CadEnviroment> {
   }
 }
 
-class ModalHorarios extends StatelessWidget {
-  final String enviromentName;
+class ModalHorarios extends StatefulWidget {
+  final String env;
 
-  //Pegar dados do back
-  final Map<String, List<String>> horarios = {
-    'Ambiente 1': ['09:10 - 10:50', '10:50 - 12:30'],
-    'Ambiente 2': ['09:10 - 10:50']
-  };
+  ModalHorarios({required this.env});
 
-  ModalHorarios({required this.enviromentName});
+  @override
+  ModalHorariosState createState() => ModalHorariosState();
+}
+
+class ModalHorariosState extends State<ModalHorarios> {
+  List<String> horarios = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    final url =
+        Uri.parse('http://${NetConfig.Link}/hour/?env_name=${widget.env}');
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        for (var i in json.decode(response.body)['horarios']) {
+          horarios.add(i[0]);
+        }
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: 'Erro!');
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
-    List<String>? horariosList = horarios[enviromentName];
-
     return Expanded(
         child: AlertDialog(
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
       title: const Text('Horários'),
-      content: Container(
+      content: SizedBox(
         height: 400,
         width: 300,
-        child: horariosList != null && horariosList.isNotEmpty
+        child: horarios.isNotEmpty
             ? ListView.builder(
-                itemCount: horariosList.length,
+                itemCount: horarios.length,
                 itemBuilder: (BuildContext context, int index) {
-                  String horarioValue = horariosList[index];
+                  String horarioValue = horarios[index];
 
                   return Column(
                     children: [
                       ListTile(
                         title: Text(horarioValue),
                       ),
-                      if (index < horariosList.length - 1) Divider()
+                      if (index < horarios.length - 1) const Divider()
                     ],
                   );
                 },
@@ -301,10 +409,7 @@ class ModalEquipamentos extends StatelessWidget {
   final String enviromentName;
 
   //Pegar dados do back
-  final Map<String, List<String>> equips = {
-    'Ambiente 1': ['equip 1', 'equip 2', 'equip 3'],
-    'Ambiente 2': ['equip 1']
-  };
+  final Map<String, List<String>> equips = {};
 
   ModalEquipamentos({required this.enviromentName});
 

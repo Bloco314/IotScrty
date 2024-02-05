@@ -113,7 +113,7 @@ class NavBarCoordenador extends NavBase {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
+    return Drawer(  
       width: navBarSize(),
       child: ListView(
         padding: EdgeInsets.zero,

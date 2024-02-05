@@ -9,9 +9,24 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text("$text"),
-      backgroundColor: PersonalColors.green,
-      foregroundColor: Colors.white,
+      flexibleSpace: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              PersonalColors.green,
+              Color.fromARGB(255, 43, 112, 39),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            stops: [0.0, 1.0],
+            tileMode: TileMode.clamp,
+          ),
+        ),
+      ),
+      title: Text(
+        text,
+        style: const TextStyle(color: Colors.white),
+      ),
     );
   }
 

@@ -125,7 +125,8 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
             // Botões de navegação
             if (dados.isNotEmpty)
               Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  padding: EdgeInsets.only(
+                      top: 10, bottom: 200 - currentData.length * 40),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -165,7 +166,7 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
               height: 40,
               onPressed: () => navigateTo(context,
                   CadEnviroment(nome: widget.nome, email: widget.email)),
-              icon: Icons.add_sharp,
+              icon: Icons.add,
             )
           ],
         ));

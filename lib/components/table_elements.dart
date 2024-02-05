@@ -23,9 +23,11 @@ class DefaultTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (items.isEmpty) {
-      return const Padding(
-          padding: EdgeInsets.all(10),
-          child: Center(child: Text('Sem itens cadastrados')));
+      return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 120),
+          child: Center(
+              child:
+                  Texto(text: 'Sem cadastros.', size: 20, cor: Colors.black)));
     }
     return Padding(
         padding: const EdgeInsets.all(5),
@@ -79,23 +81,6 @@ class DefaultTable extends StatelessWidget {
   }
 }
 
-class BodyCell extends StatelessWidget {
-  final String text;
-
-  const BodyCell({required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Texto(
-          size: text.length > 20 ? 14 : 18,
-          text: text,
-          cor: PersonalColors.darkerGreen),
-    );
-  }
-}
-
 class TableButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onPressed;
@@ -107,6 +92,31 @@ class TableButton extends StatelessWidget {
     return IconButton(
       icon: Icon(icon),
       onPressed: onPressed,
+    );
+  }
+}
+
+double textSize(length) {
+  return length > 20
+      ? 10
+      : length >= 12
+          ? 14
+          : 18;
+}
+
+class BodyCell extends StatelessWidget {
+  final String text;
+
+  const BodyCell({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Texto(
+          size: textSize(text.length),
+          text: text,
+          cor: PersonalColors.darkerGreen),
     );
   }
 }
@@ -127,8 +137,6 @@ class HeaderCell extends StatelessWidget {
                     right: BorderSide(color: Colors.black),
                     top: BorderSide(color: Colors.black))),
             child: Texto(
-                size: text.length > 20 ? 14 : 18,
-                text: text,
-                cor: Colors.black)));
+                size: textSize(text.length), text: text, cor: Colors.black)));
   }
 }

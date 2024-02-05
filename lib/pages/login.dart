@@ -1,31 +1,27 @@
 import 'package:flutter/material.dart';
-
 import 'package:iot_scrty/assets/colors.dart';
-
 import 'package:iot_scrty/components/buttons.dart';
 import 'package:iot_scrty/components/input_fields.dart';
 import 'package:iot_scrty/components/top_bar.dart';
 import 'package:iot_scrty/constants.dart';
-
 import 'package:iot_scrty/pages/_home_page.dart';
 import 'package:iot_scrty/pages/_recoverPassword.dart';
 
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class Login extends StatefulWidget {
-  @override
-  LoginState createState() => LoginState();
-}
-
-class LoginState extends State<Login> {
-  final key = 'LoginS';
+class Login extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  var text = '';
 
   void validarLogin(context) async {
     try {
+      if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+        Fluttertoast.showToast(msg: 'Por favor, preencha os campos');
+        return;
+      }
+
       var url = Uri.parse(
           'http://${NetConfig.Link}/users/login/${_emailController.text}/${_passwordController.text}');
       final response = await http.get(url);
@@ -46,16 +42,10 @@ class LoginState extends State<Login> {
                   email: _emailController.text,
                   nome: decode["name"],
                   coord: false));
-        } else {
-          setState(() {
-            text = 'Usuario não existe';
-          });
         }
       }
     } catch (e) {
-      setState(() {
-        text = 'Servidor indisponivel';
-      });
+      Fluttertoast.showToast(msg: 'Houve um erro');
     }
   }
 
@@ -88,7 +78,6 @@ class LoginState extends State<Login> {
                     labelText: 'senha', controller: _passwordController)
               ]),
             ),
-            Text(text, style: const TextStyle(color: PersonalColors.red)),
             PrimaryButton(
                 text: 'Entrar', onPressed: () => validarLogin(context)),
             GenericButton(

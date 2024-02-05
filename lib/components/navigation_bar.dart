@@ -5,7 +5,7 @@ import 'package:iot_scrty/pages/_home_page.dart';
 import 'package:iot_scrty/pages/_horarios_professor.dart';
 import 'package:iot_scrty/pages/_register_loan.dart';
 import 'package:iot_scrty/pages/_solicitations.dart';
-import 'package:iot_scrty/pages/colaborators.dart';
+import 'package:iot_scrty/pages/_colaborators.dart';
 
 abstract class NavBase extends StatelessWidget {
   final String nome;

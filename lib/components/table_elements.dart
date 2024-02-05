@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:iot_scrty/assets/colors.dart';
+import 'package:iot_scrty/components/text.dart';
 
 /*
 DefaultTable é uma tabela expansiva  que associa botões e ações
@@ -86,7 +88,7 @@ class BodyCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Text(text),
+      child: Texto(size: 18, text: text, cor: PersonalColors.darkerGreen),
     );
   }
 }
@@ -121,8 +123,6 @@ class HeaderCell extends StatelessWidget {
                     left: BorderSide(color: Colors.black),
                     right: BorderSide(color: Colors.black),
                     top: BorderSide(color: Colors.black))),
-            child: Text(text,
-                style: const TextStyle(color: Colors.black),
-                textAlign: TextAlign.center)));
+            child: Texto(size: 18, text: text, cor: Colors.black)));
   }
 }

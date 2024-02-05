@@ -88,7 +88,10 @@ class BodyCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Texto(size: 18, text: text, cor: PersonalColors.darkerGreen),
+      child: Texto(
+          size: text.length > 20 ? 14 : 18,
+          text: text,
+          cor: PersonalColors.darkerGreen),
     );
   }
 }
@@ -123,6 +126,9 @@ class HeaderCell extends StatelessWidget {
                     left: BorderSide(color: Colors.black),
                     right: BorderSide(color: Colors.black),
                     top: BorderSide(color: Colors.black))),
-            child: Texto(size: 18, text: text, cor: Colors.black)));
+            child: Texto(
+                size: text.length > 20 ? 14 : 18,
+                text: text,
+                cor: Colors.black)));
   }
 }

@@ -54,7 +54,9 @@ class ColaboradoresState extends State<Colaboradores> {
           });
         });
       }
-    } catch (e) {}
+    } catch (e) {
+      Fluttertoast.showToast(msg: e.toString());
+    }
   }
 
   @override

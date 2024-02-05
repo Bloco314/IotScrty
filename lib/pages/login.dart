@@ -29,6 +29,8 @@ class Login extends StatelessWidget {
       if (response.statusCode == 200) {
         final decode = json.decode(response.body);
         if (decode["tipo"] == 'coordenador') {
+          _emailController.text = '';
+          _passwordController.text = '';
           navigateTo(
               context,
               HomePage(
@@ -36,6 +38,8 @@ class Login extends StatelessWidget {
                   nome: decode["name"],
                   coord: true));
         } else if (decode["tipo"] == 'professor') {
+          _emailController.text = '';
+          _passwordController.text = '';
           navigateTo(
               context,
               HomePage(

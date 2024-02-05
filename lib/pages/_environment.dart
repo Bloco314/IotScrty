@@ -10,7 +10,6 @@ import 'package:iot_scrty/components/table_elements.dart';
 import 'package:iot_scrty/components/top_bar.dart';
 import 'package:iot_scrty/constants.dart';
 import 'package:http/http.dart' as http;
-import 'package:iot_scrty/pages/_horarios_professor.dart';
 
 class ViewEnvironments extends StatefulWidget {
   final String nome;
@@ -93,7 +92,10 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
     );
   }
 
-  void editarAmbiente(context, String name) {}
+  void editarAmbiente(context, String name) {
+    navigateTo(context,
+        Enviroment(nome: widget.nome, email: widget.email, editando: true));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -164,8 +166,10 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
               text: 'Novo ',
               width: 110,
               height: 40,
-              onPressed: () => navigateTo(context,
-                  CadEnviroment(nome: widget.nome, email: widget.email)),
+              onPressed: () => navigateTo(
+                  context,
+                  Enviroment(
+                      nome: widget.nome, email: widget.email, editando: false)),
               icon: Icons.add,
             )
           ],
@@ -173,18 +177,18 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
   }
 }
 
-class CadEnviroment extends StatefulWidget {
+class Enviroment extends StatefulWidget {
   final String nome;
   final String email;
+  final bool editando;
 
-  CadEnviroment({required this.nome, required this.email});
+  Enviroment({required this.nome, required this.email, required this.editando});
 
   @override
-  _CadEnviromentState createState() =>
-      _CadEnviromentState(nome: nome, email: email);
+  EnviromentState createState() => EnviromentState(nome: nome, email: email);
 }
 
-class _CadEnviromentState extends State<CadEnviroment> {
+class EnviromentState extends State<Enviroment> {
   final String nome;
   final String email;
 
@@ -193,17 +197,22 @@ class _CadEnviromentState extends State<CadEnviroment> {
   final TextEditingController horariosSala = TextEditingController();
   final List<String> horariosAdicionados = [];
 
-  _CadEnviromentState({required this.nome, required this.email});
+  EnviromentState({required this.nome, required this.email});
+
+  @override
+  void initState() {
+    super.initState();
+    if(!widget.editando){
+      return;
+    }
+
+  }
 
   void excluirHorario(int index) {
     setState(() {
       horariosAdicionados.removeAt(index);
     });
-  }
-
-  void cancelar(context) {
-    Navigator.pop(context);
-  }
+  }  
 
   Future<void> criarAmbiente() async {
     if (nomeSala.text.isEmpty) {
@@ -213,8 +222,8 @@ class _CadEnviromentState extends State<CadEnviroment> {
 
     final url = Uri.parse(
         'http://${NetConfig.Link}/env/create/?name=${nomeSala.text}&description=${descricao.text}');
-
     final body = jsonEncode({'list': horariosAdicionados});
+
     try {
       final response = await http
           .post(url, body: body, headers: {'Content-Type': 'application/json'});
@@ -252,7 +261,10 @@ class _CadEnviromentState extends State<CadEnviroment> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            CampoCadastro(labelText: 'Nome da sala', controller: nomeSala),
+            CampoCadastro(
+                labelText: 'Nome da sala',
+                controller: nomeSala,
+                enabled: !widget.editando),
             CampoCadastro(
                 labelText: 'Descrição (opcional)', controller: descricao),
             Row(
@@ -299,10 +311,12 @@ class _CadEnviromentState extends State<CadEnviroment> {
                     ]);
                   },
                 ))),
-            PrimaryButton(text: 'Cadastrar', onPressed: criarAmbiente),
+            PrimaryButton(
+                text: widget.editando ? 'Atualizar' : 'Cadastrar',
+                onPressed: criarAmbiente),
             GenericButton(
               text: 'Cancelar',
-              onPressed: () => cancelar(context),
+              onPressed: () => Navigator.pop(context),
               color: Colors.transparent,
               textColor: Colors.red,
               height: 20,
@@ -320,14 +334,10 @@ class ModalHorarios extends StatefulWidget {
   ModalHorarios({required this.env});
 
   @override
-  ModalHorariosState createState() => ModalHorariosState(enviromentName: env);
+  ModalHorariosState createState() => ModalHorariosState();
 }
 
 class ModalHorariosState extends State<ModalHorarios> {
-  final String enviromentName;
-
-  ModalHorariosState({required this.enviromentName});
-
   List<String> horarios = [];
 
   @override
@@ -338,7 +348,7 @@ class ModalHorariosState extends State<ModalHorarios> {
 
   Future<void> fetchData() async {
     final url =
-        Uri.parse('http://${NetConfig.Link}/hour/?env_name=$enviromentName');
+        Uri.parse('http://${NetConfig.Link}/hour/?env_name=${widget.env}');
     try {
       final response = await http.get(url);
 

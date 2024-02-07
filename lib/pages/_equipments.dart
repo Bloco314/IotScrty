@@ -1,9 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iot_scrty/assets/colors.dart';
 import 'package:iot_scrty/components/buttons.dart';
 import 'package:iot_scrty/components/navigation_bar.dart';
 import 'package:iot_scrty/components/table_elements.dart';
 import 'package:iot_scrty/components/top_bar.dart';
+import 'package:iot_scrty/constants.dart';
+import 'package:http/http.dart' as http;
 
 class ViewEquipment extends StatefulWidget {
   final String nome;
@@ -16,35 +21,70 @@ class ViewEquipment extends StatefulWidget {
 }
 
 class Equipments extends State<ViewEquipment> {
-  final List<List<String>> dados = [
-    ['nome', 'ambiente'],
-    ['eq1', 'abc'],
-    ['eq2', 'bca']
-  ];
+  List<List<String>> dados = [];
+
+  Future<void> getData() async {
+    try {
+      final url = Uri.parse('http://${NetConfig.Link}/equips/list');
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        setState(() {
+          try {
+            for (var e in json.decode(response.body)['equips']) {
+              List<String> sub = [];
+              for (var i in e) {
+                sub.add(i);
+              }
+              dados.add(sub);
+            }
+          } catch (e) {
+            // Não a dados cadastrados de fato
+          }
+        });
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: 'Houve um erro ao carregar os dados');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
 
   int currentPage = 0;
   static const int itemsPerPage = 5;
 
-  List<String> get currentData {
+  List<List<String>> get currentData {
     int startIndex = currentPage * itemsPerPage;
     int endIndex = (currentPage + 1) * itemsPerPage;
-    return dados
-        .map((e) => e[0])
-        .toList()
-        .sublist(startIndex, endIndex.clamp(0, dados.length));
+    List<List<String>> result = [
+      const ['Nome', 'Descrição', 'Ambiente', 'Tag']
+    ];
+
+    List<List<String>> subset =
+        dados.sublist(startIndex, endIndex.clamp(0, dados.length));
+
+    for (var element in subset) {
+      result.add(element);
+    }
+
+    return result;
   }
 
   void nextPage() {
     setState(() {
-      currentPage =
-          (currentPage + 1).clamp(0, (dados.length / itemsPerPage).ceil() - 1);
+      currentPage = (currentPage + 1)
+          .clamp(0, ((dados.length - 1) / itemsPerPage).floor());
     });
   }
 
   void previousPage() {
     setState(() {
       currentPage =
-          (currentPage - 1).clamp(0, (dados.length / itemsPerPage).ceil() - 1);
+          (currentPage - 1).clamp(0, (dados.length - 1) / itemsPerPage).floor();
     });
   }
 
@@ -60,10 +100,10 @@ class Equipments extends State<ViewEquipment> {
             nome: widget.nome,
             cont: context,
             pageName: 'cadastrar_equipamentos'),
-        appBar: TopBar(text: 'Equipamentos'),
+        appBar: const TopBar(text: 'Equipamentos'),
         body: Column(children: [
-          DefaultTable(
-              items: dados, iconActions: const []), // Botões de navegação
+          DefaultTable(items: currentData, iconActions: const []),
+          // Botões de navegação
           if (dados.isNotEmpty)
             Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),

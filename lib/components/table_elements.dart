@@ -77,30 +77,7 @@ class DefaultTable extends StatelessWidget {
   }
 }
 
-class TableButton extends StatelessWidget {
-  final String text;
-  final IconData icon;
-  final VoidCallback onPressed;
 
-  const TableButton(
-      {super.key,
-      required this.icon,
-      required this.onPressed,
-      required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return GenericButton(
-      text: text,
-      icon: icon,
-      onPressed: onPressed,
-      color: PersonalColors.lightGrey,
-      iconColor: PersonalColors.darkerGreen,
-      textColor: PersonalColors.darkerGreen,
-      radius: 0.75,margin: 2,
-    );
-  }
-}
 
 double textSize(length) {
   return length > 20
@@ -115,7 +92,7 @@ class BodyCell extends StatelessWidget {
 
   const BodyCell({super.key, required this.text});
 
-  @override
+  @override 
   Widget build(BuildContext context) {
     return Texto(
         size: textSize(text.length),

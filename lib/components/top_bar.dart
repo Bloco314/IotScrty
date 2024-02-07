@@ -4,7 +4,7 @@ import 'package:iot_scrty/assets/colors.dart';
 class TopBar extends StatelessWidget implements PreferredSizeWidget {
   final String text;
 
-  TopBar({required this.text});
+  const TopBar({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       title: Text(
         text,
-        style: const TextStyle(color: Colors.white),
+        style: const TextStyle(color: PersonalColors.darkerGreen),
       ),
     );
   }

@@ -103,22 +103,32 @@ class SecondaryButton extends GenericButton {
 }
 
 class TableButton extends StatelessWidget {
-  final IconData icone;
-  final VoidCallback? onPressed;
+  final String text;
+  final IconData icon;
+  final VoidCallback onPressed;
 
-  TableButton({required this.icone, this.onPressed});
+  const TableButton(
+      {super.key,
+      required this.icon,
+      required this.onPressed,
+      required this.text});
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          minimumSize: const Size(10.0, 10.0),
-          maximumSize: const Size(10.0, 50.0),
-          shape: LinearBorder()),
-      child: Icon(icone, size: 30.0, color: Colors.black),
-    );
+    return Container(
+        margin: const EdgeInsets.all(5),
+        child: IconButton.filled(
+          onPressed: onPressed,
+          icon: Icon(icon),
+          iconSize: 30,
+          tooltip: text,
+          mouseCursor: MaterialStateMouseCursor.clickable,
+          color: PersonalColors.darkerGreen,
+          style: ButtonStyle(
+              side: MaterialStateProperty.resolveWith(
+                  (states) => const BorderSide(color: Colors.black)),
+              backgroundColor: MaterialStateProperty.resolveWith(
+                  (states) => PersonalColors.smoothWhite)),
+        ));
   }
 }

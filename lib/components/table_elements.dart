@@ -1,40 +1,38 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:iot_scrty/assets/colors.dart';
 import 'package:iot_scrty/components/buttons.dart';
 import 'package:iot_scrty/components/text.dart';
 
-/*
-DefaultTable é uma tabela expansiva  que associa botões e ações
-*/
 class DefaultTable extends StatelessWidget {
-  final List<String> headerTexts;
-  final List<String> items;
-  final List<String>? secItems;
-  final List<Function(BuildContext context, String)> actions;
-  final List<IconData> icones;
+  final List<List<String>> items;
+  final List<IconAction> iconActions;
 
-  DefaultTable({
-    required this.headerTexts,
+  const DefaultTable({
+    super.key,
     required this.items,
-    this.secItems,
-    required this.actions,
-    required this.icones,
+    required this.iconActions,
   });
 
   @override
   Widget build(BuildContext context) {
     if (items.isEmpty) {
-      return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 120),
-          child: Center(
-              child:
-                  Texto(text: 'Sem cadastros.', size: 20, cor: Colors.black)));
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 120),
+        child: Center(
+          child: Text(
+            'Sem cadastros.',
+            style: TextStyle(fontSize: 20, color: Colors.black),
+          ),
+        ),
+      );
     }
+
+    List<String> headerTexts = items.first;
+
     return Padding(
-        padding: const EdgeInsets.all(5),
-        child: Column(children: [
+      padding: const EdgeInsets.all(5),
+      child: Column(
+        children: [
           // Cabeçalho
           Table(
             border: TableBorder.all(color: Colors.black),
@@ -43,63 +41,63 @@ class DefaultTable extends StatelessWidget {
               TableRow(
                 children:
                     headerTexts.map((txt) => HeaderCell(text: txt)).toList(),
-              )
+              ),
             ],
           ),
           const SizedBox(height: 2),
-          // Corpo
+          // Corpo da tabela
           Table(
             border: TableBorder.all(color: Colors.black),
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            children: items.asMap().entries.map((entry) {
-              int index = entry.key;
-
+            children: items.skip(1).map((row) {
               return TableRow(
                 children: [
-                  //item principal, primeira coluna
-                  TableCell(child: Center(child: BodyCell(text: entry.value))),
-                  //item secundario, se houver, segunda coluna
-                  if (secItems != null && index < secItems!.length)
-                    TableCell(
-                      child: Center(
-                        child: BodyCell(text: secItems![index]),
+                  ...row.map(
+                    (cellText) => TableCell(
+                      child: Center(child: BodyCell(text: cellText)),
+                    ),
+                  ),
+                  ...iconActions.map(
+                    (iconAction) => TableCell(
+                      child: TableButton(
+                        icon: iconAction.icon,
+                        onPressed: () =>
+                            iconAction.action(context, row.join(',')),
+                        text: iconAction.text,
                       ),
                     ),
-                  //resto da tabela definido pelos icones e suas ações
-                  ...actions.asMap().entries.map((actionEntry) {
-                    int actionIndex = actionEntry.key;
-                    IconData icon = icones[actionIndex];
-
-                    return TableCell(
-                      child: TableButton(
-                        icon: icon,
-                        onPressed: () =>
-                            actions[actionIndex](context, entry.value),
-                      ),
-                    );
-                  }),
+                  )
                 ],
               );
             }).toList(),
-          )
-        ]));
+          ),
+        ],
+      ),
+    );
   }
 }
 
 class TableButton extends StatelessWidget {
+  final String text;
   final IconData icon;
   final VoidCallback onPressed;
 
-  const TableButton({required this.icon, required this.onPressed});
+  const TableButton(
+      {super.key,
+      required this.icon,
+      required this.onPressed,
+      required this.text});
 
   @override
   Widget build(BuildContext context) {
     return GenericButton(
-      text: '',
+      text: text,
       icon: icon,
       onPressed: onPressed,
-      iconColor: Colors.black,
-      radius: 0,
+      color: PersonalColors.lightGrey,
+      iconColor: PersonalColors.darkerGreen,
+      textColor: PersonalColors.darkerGreen,
+      radius: 0.75,margin: 2,
     );
   }
 }
@@ -115,7 +113,7 @@ double textSize(length) {
 class BodyCell extends StatelessWidget {
   final String text;
 
-  const BodyCell({required this.text});
+  const BodyCell({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +127,8 @@ class BodyCell extends StatelessWidget {
 class HeaderCell extends StatelessWidget {
   final String text;
 
-  HeaderCell({required this.text});
+  const HeaderCell({super.key, required this.text});
+
   @override
   Widget build(BuildContext context) {
     return TableCell(

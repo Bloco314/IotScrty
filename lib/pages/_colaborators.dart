@@ -26,8 +26,9 @@ class Colaboradores extends StatefulWidget {
 class ColaboradoresState extends State<Colaboradores> {
   final String nome;
   final String email;
-  List<String> emailNomes = [];
-  List<String> tipos = [];
+  List<List<String>> data = [
+    const ['Nome', 'Email', 'Tipo']
+  ];
 
   ColaboradoresState({required this.email, required this.nome});
 
@@ -48,8 +49,11 @@ class ColaboradoresState extends State<Colaboradores> {
               json.decode(response.body)['colaborators'];
           setState(() {
             for (var element in brute) {
-              emailNomes.add(element[1] + ' : ' + element[0]);
-              tipos.add(element[2]);
+              List<String> emailsTipos = [];
+              for (var e in element) {
+                emailsTipos.add(e);
+              }
+              data.add(emailsTipos);
             }
           });
         });
@@ -66,12 +70,7 @@ class ColaboradoresState extends State<Colaboradores> {
         drawer: NavBarCoordenador(
             nome: nome, email: email, cont: context, pageName: 'colaborador'),
         body: Column(children: [
-          DefaultTable(
-              headerTexts: const ['Nome: Email', 'Tipo'],
-              items: emailNomes,
-              secItems: tipos,
-              actions: const [],
-              icones: const []),
+          DefaultTable(items: data, iconActions: const []),
           PrimaryButton(
               text: 'Novo',
               onPressed: () => {

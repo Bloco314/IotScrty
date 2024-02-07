@@ -7,9 +7,16 @@ import 'package:iot_scrty/components/buttons.dart';
 import 'package:iot_scrty/components/input_fields.dart';
 import 'package:iot_scrty/components/navigation_bar.dart';
 import 'package:iot_scrty/components/table_elements.dart';
+import 'package:iot_scrty/components/text.dart';
 import 'package:iot_scrty/components/top_bar.dart';
 import 'package:iot_scrty/constants.dart';
 import 'package:http/http.dart' as http;
+
+void goback(context, farMuch) {
+  for (int i = 0; i < farMuch; i++) {
+    Navigator.pop(context);
+  }
+}
 
 class ViewEnvironments extends StatefulWidget {
   final String nome;
@@ -31,13 +38,17 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
 
       if (response.statusCode == 200) {
         setState(() {
-          for (var e in json.decode(response.body)['names']) {
-            dados.add(e[0]);
+          try {
+            for (var e in json.decode(response.body)['names']) {
+              dados.add(e[0]);
+            }
+          } catch (e) {
+            // Não a dados cadastrados de fato
           }
         });
       }
     } catch (e) {
-      Fluttertoast.showToast(msg: 'Houve um erro ao carregar os dados$e');
+      Fluttertoast.showToast(msg: 'Houve um erro ao carregar os dados');
     }
   }
 
@@ -115,95 +126,93 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
 
   @override
   Widget build(BuildContext context) {
-    return dados.isEmpty
-        ? const Center(child: CircularProgressIndicator())
-        : Scaffold(
-            drawer: NavBarCoordenador(
-              email: widget.email,
-              nome: widget.nome,
-              cont: context,
-              pageName: 'visualizar_ambientes',
-            ),
-            appBar: const TopBar(text: 'Ambientes'),
-            body: Column(
-              children: [
-                // Tabela
-                DefaultTable(
-                    items: currentData,
-                    iconActions: [
-                      IconAction(
-                        icon: Icons.computer_sharp,
-                        action: (context, index) =>
-                            modalEquipamentos(context, index),
-                        text: 'Equipamentos',
-                      ),
-                      IconAction(
-                        icon: Icons.watch_later,
-                        action: (context, index) =>
-                            modalHorarios(context, index),
-                        text: 'Horarios',
-                      ),
-                      IconAction(
-                        icon: Icons.edit,
-                        action: (context, index) =>
-                            editarAmbiente(context, index),
-                        text: 'Editar',
-                      ),
-                    ],
-                    cardmode: true),
-                // Botão para novo ambiente
-                const SizedBox(height: 10),
-                PrimaryButton(
-                  text: 'Novo ',
-                  width: 110,
-                  height: 40,
-                  onPressed: () => navigateTo(
-                      context,
-                      Enviroment(
-                          nome: widget.nome,
-                          email: widget.email,
-                          editando: false)),
-                  icon: Icons.add,
-                ),
-                // Botões de navegação
-                if (currentData.isNotEmpty)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                        onPressed: currentPage == 0 ? null : previousPage,
-                        style: ElevatedButton.styleFrom(
-                          elevation: 0,
-                          disabledBackgroundColor: Colors.transparent,
-                          foregroundColor: PersonalColors.darkerGreen,
-                          shape: const LinearBorder(),
-                        ),
-                        child: const Row(children: [
-                          Icon(Icons.arrow_back),
-                          Text('Anterior'),
-                        ]),
-                      ),
-                      const SizedBox(width: 16),
-                      ElevatedButton(
-                        onPressed: currentPage <
-                                ((dados.length - 1) / itemsPerPage).floor()
-                            ? nextPage
-                            : null,
-                        style: ElevatedButton.styleFrom(
-                          elevation: 0,
-                          disabledBackgroundColor: Colors.transparent,
-                          foregroundColor: PersonalColors.darkerGreen,
-                          shape: const LinearBorder(),
-                        ),
-                        child: const Row(children: [
-                          Text('Próximo'),
-                          Icon(Icons.arrow_forward),
-                        ]),
-                      ),
-                    ],
+    return Scaffold(
+        drawer: NavBarCoordenador(
+          email: widget.email,
+          nome: widget.nome,
+          cont: context,
+          pageName: 'visualizar_ambientes',
+        ),
+        appBar: const TopBar(text: 'Ambientes'),
+        body: Column(
+          children: [
+            // Tabela
+            DefaultTable(
+                items: currentData,
+                iconActions: [
+                  IconAction(
+                    icon: Icons.computer_sharp,
+                    action: (context, index) =>
+                        modalEquipamentos(context, index),
+                    text: '',
                   ),
-              ],
-            ));
+                  IconAction(
+                    icon: Icons.watch_later,
+                    action: (context, index) => modalHorarios(context, index),
+                    text: '',
+                  ),
+                  IconAction(
+                    icon: Icons.edit,
+                    action: (context, index) => editarAmbiente(context, index),
+                    text: '',
+                  ),
+                ],
+                cardmode: true),
+            // Botão para novo ambiente
+            if (dados.isEmpty)
+              Texto(
+                  size: 16,
+                  text: 'Sem registros, tente criar um ambiente',
+                  cor: PersonalColors.darkerGreen),
+            const SizedBox(height: 10),
+            PrimaryButton(
+              text: 'Novo ',
+              width: 110,
+              height: 40,
+              onPressed: () => navigateTo(
+                  context,
+                  Enviroment(
+                      nome: widget.nome, email: widget.email, editando: false)),
+              icon: Icons.add,
+            ),
+            if (dados.isNotEmpty)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: currentPage == 0 ? null : previousPage,
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      disabledBackgroundColor: Colors.transparent,
+                      foregroundColor: PersonalColors.darkerGreen,
+                      shape: const LinearBorder(),
+                    ),
+                    child: const Row(children: [
+                      Icon(Icons.arrow_back),
+                      Text('Anterior'),
+                    ]),
+                  ),
+                  const SizedBox(width: 16),
+                  ElevatedButton(
+                    onPressed: currentPage <
+                            ((dados.length - 1) / itemsPerPage).floor()
+                        ? nextPage
+                        : null,
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      disabledBackgroundColor: Colors.transparent,
+                      foregroundColor: PersonalColors.darkerGreen,
+                      shape: const LinearBorder(),
+                    ),
+                    child: const Row(children: [
+                      Text('Próximo'),
+                      Icon(Icons.arrow_forward),
+                    ]),
+                  ),
+                ],
+              ),
+          ],
+        ));
   }
 }
 
@@ -265,6 +274,15 @@ class EnviromentState extends State<Enviroment> {
     });
   }
 
+  void reload() {
+    goback(context, 2);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                ViewEnvironments(nome: widget.nome, email: widget.email)));
+  }
+
   Future<void> criarAmbiente() async {
     if (nomeSala.text.isEmpty) {
       Fluttertoast.showToast(msg: 'Preenha o nome por favor');
@@ -289,7 +307,7 @@ class EnviromentState extends State<Enviroment> {
               msg: widget.editando
                   ? 'Atualizado com sucesso'
                   : 'Criado com sucesso');
-          goback();
+          reload();
         } else if (msg == 'PK-ERROR') {
           Fluttertoast.showToast(msg: 'Nomes não devem se repetir');
         } else if (msg == 'OP-ERROR') {
@@ -301,14 +319,27 @@ class EnviromentState extends State<Enviroment> {
     }
   }
 
-  void goback() {
-    Navigator.pop(context);
-    Navigator.pop(context);
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                ViewEnvironments(nome: widget.nome, email: widget.email)));
+  void excluir(context) async {
+    bool deletar = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ModalConfirmarExclusao(envName: nomeSala.text);
+      },
+    );
+
+    if (deletar) {
+      final url =
+          Uri.parse('http://${NetConfig.Link}/env/delete/${nomeSala.text}');
+      try {
+        final response = await http.delete(url);
+        if (response.statusCode == 200) {
+          reload();
+          Fluttertoast.showToast(msg: 'Excluido!');
+        }
+      } catch (e) {
+        Fluttertoast.showToast(msg: 'Não foi possível deletar');
+      }
+    }
   }
 
   @override
@@ -369,9 +400,16 @@ class EnviromentState extends State<Enviroment> {
                     ]);
                   },
                 ))),
-            PrimaryButton(
-                text: widget.editando ? 'Atualizar' : 'Cadastrar',
-                onPressed: criarAmbiente),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              PrimaryButton(
+                  text: widget.editando ? 'Atualizar' : 'Cadastrar',
+                  onPressed: criarAmbiente),
+              const SizedBox(height: 10),
+              if (widget.editando) const SizedBox(width: 10),
+              if (widget.editando)
+                SecondaryButton(
+                    text: 'Excluir Ambiente', onPressed: () => excluir(context))
+            ]),
             const SizedBox(height: 10),
             GenericButton(
               text: 'Cancelar',
@@ -512,5 +550,38 @@ class ModalEquipamentos extends StatelessWidget {
             onPressed: () => Navigator.pop(context)),
       ],
     ));
+  }
+}
+
+class ModalConfirmarExclusao extends StatelessWidget {
+  final String envName;
+
+  const ModalConfirmarExclusao({super.key, required this.envName});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+        title: Texto(text: 'Confirmação', size: 22, cor: Colors.black),
+        content: SizedBox(
+            height: 80,
+            child: Texto(
+              text: 'Você tem certeza que deseja excluir $envName?',
+              size: 16,
+              cor: PersonalColors.red,
+            )),
+        actions: [
+          PrimaryButton(
+              text: 'Confimar',
+              height: 40,
+              onPressed: () => Navigator.pop(context, true)),
+          SecondaryButton(
+              text: 'Cancelar',
+              height: 40,
+              onPressed: () => Navigator.pop(context, false))
+        ],
+        actionsAlignment: MainAxisAlignment.center);
   }
 }

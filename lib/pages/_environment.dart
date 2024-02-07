@@ -372,6 +372,7 @@ class EnviromentState extends State<Enviroment> {
             PrimaryButton(
                 text: widget.editando ? 'Atualizar' : 'Cadastrar',
                 onPressed: criarAmbiente),
+            const SizedBox(height: 10),
             GenericButton(
               text: 'Cancelar',
               onPressed: () => Navigator.pop(context),

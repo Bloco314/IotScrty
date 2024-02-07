@@ -9,6 +9,8 @@ class GenericButton extends StatelessWidget {
   final double? height;
   final Color? textColor;
   final IconData? icon;
+  final Color? iconColor;
+  final double radius;
 
   GenericButton(
       {required this.text,
@@ -17,7 +19,9 @@ class GenericButton extends StatelessWidget {
       this.height,
       this.width,
       this.textColor,
-      this.icon});
+      this.icon,
+      this.iconColor = Colors.white,
+      this.radius = 0});
 
   @override
   Widget build(BuildContext context) {
@@ -28,11 +32,12 @@ class GenericButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          elevation: 0,
-          foregroundColor: Colors.white,
-          backgroundColor: color,
-          shape: const LinearBorder(),
-        ),
+            elevation: 0,
+            foregroundColor: Colors.white,
+            backgroundColor: color,
+            shape: radius == 0
+                ? const LinearBorder()
+                : OvalBorder(eccentricity: radius)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -45,7 +50,7 @@ class GenericButton extends StatelessWidget {
                   style: TextStyle(color: textColor),
                 ),
               ),
-            if (icon != null) Icon(icon),
+            if (icon != null) Icon(icon, color: iconColor),
           ],
         ),
       ),

@@ -15,7 +15,7 @@ class ViewEnvironments extends StatefulWidget {
   final String nome;
   final String email;
 
-  ViewEnvironments({required this.nome, required this.email});
+  const ViewEnvironments({super.key, required this.nome, required this.email});
 
   @override
   ViewEnvironmentsState createState() => ViewEnvironmentsState();
@@ -124,74 +124,35 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
               cont: context,
               pageName: 'visualizar_ambientes',
             ),
-            appBar: TopBar(text: 'Ambientes'),
+            appBar: const TopBar(text: 'Ambientes'),
             body: Column(
               children: [
                 // Tabela
                 DefaultTable(
-                  items: currentData,
-                  iconActions: [
-                    IconAction(
-                      icon: Icons.computer_sharp,
-                      action: (context, index) =>
-                          modalEquipamentos(context, index),
-                      text: 'Ver',
-                    ),
-                    IconAction(
-                      icon: Icons.watch_later,
-                      action: (context, index) => modalHorarios(context, index),
-                      text: 'Ver',
-                    ),
-                    IconAction(
-                      icon: Icons.edit,
-                      action: (context, index) =>
-                          editarAmbiente(context, index),
-                      text: 'Editar',
-                    ),
-                  ],
-                ),
-                // Botões de navegação
-                if (currentData.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 80, bottom: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ElevatedButton(
-                          onPressed: currentPage == 0 ? null : previousPage,
-                          style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                            disabledBackgroundColor: Colors.transparent,
-                            foregroundColor: PersonalColors.darkerGreen,
-                            shape: const LinearBorder(),
-                          ),
-                          child: const Row(children: [
-                            Icon(Icons.arrow_back),
-                            Text('Anterior'),
-                          ]),
-                        ),
-                        const SizedBox(width: 16),
-                        ElevatedButton(
-                          onPressed: currentPage <
-                                  ((dados.length - 1) / itemsPerPage).floor()
-                              ? nextPage
-                              : null,
-                          style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                            disabledBackgroundColor: Colors.transparent,
-                            foregroundColor: PersonalColors.darkerGreen,
-                            shape: const LinearBorder(),
-                          ),
-                          child: const Row(children: [
-                            Text('Próximo'),
-                            Icon(Icons.arrow_forward),
-                          ]),
-                        ),
-                      ],
-                    ),
-                  ),
-
+                    items: currentData,
+                    iconActions: [
+                      IconAction(
+                        icon: Icons.computer_sharp,
+                        action: (context, index) =>
+                            modalEquipamentos(context, index),
+                        text: 'Equipamentos',
+                      ),
+                      IconAction(
+                        icon: Icons.watch_later,
+                        action: (context, index) =>
+                            modalHorarios(context, index),
+                        text: 'Horarios',
+                      ),
+                      IconAction(
+                        icon: Icons.edit,
+                        action: (context, index) =>
+                            editarAmbiente(context, index),
+                        text: 'Editar',
+                      ),
+                    ],
+                    cardmode: true),
                 // Botão para novo ambiente
+                const SizedBox(height: 10),
                 PrimaryButton(
                   text: 'Novo ',
                   width: 110,
@@ -203,7 +164,44 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
                           email: widget.email,
                           editando: false)),
                   icon: Icons.add,
-                )
+                ),
+                // Botões de navegação
+                if (currentData.isNotEmpty)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: currentPage == 0 ? null : previousPage,
+                        style: ElevatedButton.styleFrom(
+                          elevation: 0,
+                          disabledBackgroundColor: Colors.transparent,
+                          foregroundColor: PersonalColors.darkerGreen,
+                          shape: const LinearBorder(),
+                        ),
+                        child: const Row(children: [
+                          Icon(Icons.arrow_back),
+                          Text('Anterior'),
+                        ]),
+                      ),
+                      const SizedBox(width: 16),
+                      ElevatedButton(
+                        onPressed: currentPage <
+                                ((dados.length - 1) / itemsPerPage).floor()
+                            ? nextPage
+                            : null,
+                        style: ElevatedButton.styleFrom(
+                          elevation: 0,
+                          disabledBackgroundColor: Colors.transparent,
+                          foregroundColor: PersonalColors.darkerGreen,
+                          shape: const LinearBorder(),
+                        ),
+                        child: const Row(children: [
+                          Text('Próximo'),
+                          Icon(Icons.arrow_forward),
+                        ]),
+                      ),
+                    ],
+                  ),
               ],
             ));
   }
@@ -316,7 +314,7 @@ class EnviromentState extends State<Enviroment> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: TopBar(text: 'Ambientes'),
+      appBar: const TopBar(text: 'Ambientes'),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

@@ -9,19 +9,18 @@ class ViewEquipment extends StatefulWidget {
   final String nome;
   final String email;
 
-  ViewEquipment({required this.email, required this.nome});
+  const ViewEquipment({super.key, required this.email, required this.nome});
 
   @override
-  Equipments createState() => Equipments(nome: nome, email: email);
+  Equipments createState() => Equipments();
 }
 
 class Equipments extends State<ViewEquipment> {
-  //Preencher com dados do back
-  final List<List<String>> dados = List.generate(
-      20, (index) => ['Equipamento ${index + 1}', 'Ambiente ${index + 1}']);
-
-  final String nome;
-  final String email;
+  final List<List<String>> dados = [
+    ['nome', 'ambiente'],
+    ['eq1', 'abc'],
+    ['eq2', 'bca']
+  ];
 
   int currentPage = 0;
   static const int itemsPerPage = 5;
@@ -53,26 +52,18 @@ class Equipments extends State<ViewEquipment> {
     Navigator.push(context, MaterialPageRoute(builder: (context) => page));
   }
 
-  Equipments({required this.nome, required this.email});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         drawer: NavBarCoordenador(
-            email: email,
-            nome: nome,
+            email: widget.email,
+            nome: widget.nome,
             cont: context,
             pageName: 'cadastrar_equipamentos'),
         appBar: TopBar(text: 'Equipamentos'),
         body: Column(children: [
-          //Conteudo da tabela
           DefaultTable(
-              headerTexts: const ['Nome', 'Ambiente associado', 'Editar'],
-              items: currentData,
-              secItems: dados.map((e) => e[1]).toList(),
-              actions: [(context, index) => null],
-              icones: const [Icons.edit]),
-          // Botões de navegação
+              items: dados, iconActions: const []), // Botões de navegação
           if (dados.isNotEmpty)
             Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),

@@ -6,11 +6,13 @@ import 'package:iot_scrty/components/top_bar.dart';
 class Horarios extends StatelessWidget {
   final String nome;
   final String email;
-  //puxar do back
-  final List<String> horarios = ['10:50 - 11:40','11:40 - 12:30'];
-  final List<String> locais = ['Sala 1','Sala 2'];
 
-  Horarios({required this.email, required this.nome});
+  final List<List<String>> horariosLocais = [
+    ['10:50 - 11:40', 'Sala 1'],
+    ['11:40 - 12:30', 'Sala 2']
+  ];
+
+  Horarios({super.key, required this.email, required this.nome});
 
   @override
   Widget build(BuildContext context) {
@@ -18,11 +20,6 @@ class Horarios extends StatelessWidget {
         drawer: NavBarProfessor(
             cont: context, pageName: 'Horarios', nome: nome, email: email),
         appBar: TopBar(text: 'Horarios'),
-        body: DefaultTable(
-            headerTexts: ['Horarios','Locais'],
-            items: horarios,
-            secItems: locais,
-            actions: [],
-            icones: []));
+        body: DefaultTable(items: horariosLocais, iconActions: const []));
   }
 }

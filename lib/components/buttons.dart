@@ -1,38 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:iot_scrty/assets/colors.dart';
 
-class GenericButton extends StatelessWidget {
+class IconAction {
+  final IconData icon;
+  final Function(BuildContext context, String) action;
   final String text;
-  final VoidCallback? onPressed;
-  final Color? color;
+
+  IconAction({
+    required this.icon,
+    required this.action,
+    required this.text,
+  });
+}
+
+class GenericButton extends StatelessWidget {
   final double? width;
   final double? height;
-  final Color? textColor;
+  final String text;
+  final VoidCallback? onPressed;
   final IconData? icon;
+  final Color? iconColor;
+  final Color? textColor;
+  final Color? color;
+  final double radius;
+  final double? margin;
 
-  GenericButton(
-      {required this.text,
+  const GenericButton(
+      {super.key,
+      required this.text,
       this.onPressed,
       this.color,
       this.height,
       this.width,
-      this.textColor,
-      this.icon});
+      this.textColor = Colors.white,
+      this.icon,
+      this.iconColor = Colors.white,
+      this.radius = 0,
+      this.margin});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: width ?? 120,
       height: height ?? 50,
-      margin: const EdgeInsets.all(5),
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          elevation: 0,
-          foregroundColor: Colors.white,
-          backgroundColor: color,
-          shape: const LinearBorder(),
-        ),
+            elevation: 0,
+            foregroundColor: textColor,
+            backgroundColor: color,
+            shape: radius == 0
+                ? const LinearBorder()
+                : OvalBorder(
+                    eccentricity: radius,
+                    side: const BorderSide(color: Colors.black))),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -45,7 +66,7 @@ class GenericButton extends StatelessWidget {
                   style: TextStyle(color: textColor),
                 ),
               ),
-            if (icon != null) Icon(icon),
+            if (icon != null) Icon(icon, color: iconColor),
           ],
         ),
       ),
@@ -54,52 +75,52 @@ class GenericButton extends StatelessWidget {
 }
 
 class PrimaryButton extends GenericButton {
-  PrimaryButton(
-      {required String text,
-      VoidCallback? onPressed,
-      double? width,
-      double? height,
-      IconData? icon})
-      : super(
-            text: text,
-            onPressed: onPressed,
-            height: height,
-            width: width,
-            color: PersonalColors.green,
-            icon: icon);
+  const PrimaryButton(
+      {super.key,
+      required super.text,
+      super.onPressed,
+      super.width,
+      super.height,
+      super.icon})
+      : super(color: PersonalColors.green);
 }
 
 class SecondaryButton extends GenericButton {
-  SecondaryButton(
-      {required String text,
-      VoidCallback? onPressed,
-      double? width,
-      double? height})
-      : super(
-            text: text,
-            onPressed: onPressed,
-            height: height,
-            width: width,
-            color: PersonalColors.red);
+  const SecondaryButton(
+      {super.key,
+      required super.text,
+      super.onPressed,
+      super.width,
+      super.height})
+      : super(color: PersonalColors.red);
 }
 
 class TableButton extends StatelessWidget {
-  final IconData icone;
-  final VoidCallback? onPressed;
+  final String text;
+  final IconData icon;
+  final VoidCallback onPressed;
 
-  TableButton({required this.icone, this.onPressed});
+  const TableButton(
+      {super.key,
+      required this.icon,
+      required this.onPressed,
+      required this.text});
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          minimumSize: const Size(10.0, 10.0),
-          maximumSize: const Size(10.0, 50.0),
-          shape: LinearBorder()),
-      child: Icon(icone, size: 30.0, color: Colors.black),
-    );
+    return Container(
+        decoration: BoxDecoration(
+            border: Border.all(color: PersonalColors.grey),
+            borderRadius: const BorderRadius.all(Radius.circular(2))),
+        margin: const EdgeInsets.symmetric(horizontal: 2),
+        child: GenericButton(
+            text: text.length <= 4 ? text : text.substring(0, 4),
+            onPressed: onPressed,
+            icon: icon,
+            iconColor: PersonalColors.darkerGreen,
+            textColor: PersonalColors.darkerGreen,
+            color: PersonalColors.smoothWhite,
+            height: 45,
+            width: 105));
   }
 }

@@ -15,7 +15,7 @@ class ViewEnvironments extends StatefulWidget {
   final String nome;
   final String email;
 
-  ViewEnvironments({required this.nome, required this.email});
+  const ViewEnvironments({super.key, required this.nome, required this.email});
 
   @override
   ViewEnvironmentsState createState() => ViewEnvironmentsState();
@@ -50,23 +50,34 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
   int currentPage = 0;
   static const int itemsPerPage = 5;
 
-  List<String> get currentData {
+  List<List<String>> get currentData {
     int startIndex = currentPage * itemsPerPage;
     int endIndex = (currentPage + 1) * itemsPerPage;
-    return dados.sublist(startIndex, endIndex.clamp(0, dados.length));
+    List<List<String>> result = [
+      const ['Nome', 'Ver equipamentos', 'Ver horarios', 'editar sala']
+    ];
+
+    List<String> subset =
+        dados.sublist(startIndex, endIndex.clamp(0, dados.length));
+
+    for (var element in subset) {
+      result.add([element]);
+    }
+
+    return result;
   }
 
   void nextPage() {
     setState(() {
-      currentPage =
-          (currentPage + 1).clamp(0, (dados.length / itemsPerPage).ceil() - 1);
+      currentPage = (currentPage + 1)
+          .clamp(0, ((dados.length - 1) / itemsPerPage).floor());
     });
   }
 
   void previousPage() {
     setState(() {
       currentPage =
-          (currentPage - 1).clamp(0, (dados.length / itemsPerPage).ceil() - 1);
+          (currentPage - 1).clamp(0, (dados.length - 1) / itemsPerPage).floor();
     });
   }
 
@@ -93,87 +104,106 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
   }
 
   void editarAmbiente(context, String name) {
-    navigateTo(context,
-        Enviroment(nome: widget.nome, email: widget.email, editando: true));
+    navigateTo(
+        context,
+        Enviroment(
+            nome: widget.nome,
+            email: widget.email,
+            editando: true,
+            envName: name));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        drawer: NavBarCoordenador(
-          email: widget.email,
-          nome: widget.nome,
-          cont: context,
-          pageName: 'visualizar_ambientes',
-        ),
-        appBar: TopBar(text: 'Ambientes'),
-        body: Column(
-          children: [
-            // Tabela
-            DefaultTable(headerTexts: const [
-              'Nome',
-              'Equipamentos',
-              'Horarios',
-              'Editar'
-            ], actions: [
-              (context, index) => modalEquipamentos(context, index),
-              (context, index) => modalHorarios(context, index),
-              (context, index) => editarAmbiente(context, index)
-            ], icones: const [
-              Icons.computer_sharp,
-              Icons.watch_later,
-              Icons.edit
-            ], items: currentData),
-            // Botões de navegação
-            if (dados.isNotEmpty)
-              Padding(
-                  padding: EdgeInsets.only(
-                      top: 10, bottom: 200 - currentData.length * 40),
-                  child: Row(
+    return dados.isEmpty
+        ? const Center(child: CircularProgressIndicator())
+        : Scaffold(
+            drawer: NavBarCoordenador(
+              email: widget.email,
+              nome: widget.nome,
+              cont: context,
+              pageName: 'visualizar_ambientes',
+            ),
+            appBar: const TopBar(text: 'Ambientes'),
+            body: Column(
+              children: [
+                // Tabela
+                DefaultTable(
+                    items: currentData,
+                    iconActions: [
+                      IconAction(
+                        icon: Icons.computer_sharp,
+                        action: (context, index) =>
+                            modalEquipamentos(context, index),
+                        text: 'Equipamentos',
+                      ),
+                      IconAction(
+                        icon: Icons.watch_later,
+                        action: (context, index) =>
+                            modalHorarios(context, index),
+                        text: 'Horarios',
+                      ),
+                      IconAction(
+                        icon: Icons.edit,
+                        action: (context, index) =>
+                            editarAmbiente(context, index),
+                        text: 'Editar',
+                      ),
+                    ],
+                    cardmode: true),
+                // Botão para novo ambiente
+                const SizedBox(height: 10),
+                PrimaryButton(
+                  text: 'Novo ',
+                  width: 110,
+                  height: 40,
+                  onPressed: () => navigateTo(
+                      context,
+                      Enviroment(
+                          nome: widget.nome,
+                          email: widget.email,
+                          editando: false)),
+                  icon: Icons.add,
+                ),
+                // Botões de navegação
+                if (currentData.isNotEmpty)
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ElevatedButton(
-                          onPressed: currentPage > 0 ? previousPage : null,
-                          style: ElevatedButton.styleFrom(
-                              elevation: 0,
-                              disabledBackgroundColor: Colors.transparent,
-                              foregroundColor: PersonalColors.darkerGreen,
-                              shape: const LinearBorder()),
-                          child: const Row(children: [
-                            Icon(Icons.arrow_back),
-                            Text('Anterior'),
-                          ])),
+                        onPressed: currentPage == 0 ? null : previousPage,
+                        style: ElevatedButton.styleFrom(
+                          elevation: 0,
+                          disabledBackgroundColor: Colors.transparent,
+                          foregroundColor: PersonalColors.darkerGreen,
+                          shape: const LinearBorder(),
+                        ),
+                        child: const Row(children: [
+                          Icon(Icons.arrow_back),
+                          Text('Anterior'),
+                        ]),
+                      ),
                       const SizedBox(width: 16),
                       ElevatedButton(
                         onPressed: currentPage <
-                                (dados.length / itemsPerPage).ceil() - 1
+                                ((dados.length - 1) / itemsPerPage).floor()
                             ? nextPage
                             : null,
                         style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                            disabledBackgroundColor: Colors.transparent,
-                            foregroundColor: PersonalColors.darkerGreen,
-                            shape: const LinearBorder()),
+                          elevation: 0,
+                          disabledBackgroundColor: Colors.transparent,
+                          foregroundColor: PersonalColors.darkerGreen,
+                          shape: const LinearBorder(),
+                        ),
                         child: const Row(children: [
                           Text('Próximo'),
-                          Icon(Icons.arrow_forward)
+                          Icon(Icons.arrow_forward),
                         ]),
                       ),
                     ],
-                  )),
-            // Botão para novo ambiente
-            PrimaryButton(
-              text: 'Novo ',
-              width: 110,
-              height: 40,
-              onPressed: () => navigateTo(
-                  context,
-                  Enviroment(
-                      nome: widget.nome, email: widget.email, editando: false)),
-              icon: Icons.add,
-            )
-          ],
-        ));
+                  ),
+              ],
+            ));
   }
 }
 
@@ -181,38 +211,59 @@ class Enviroment extends StatefulWidget {
   final String nome;
   final String email;
   final bool editando;
+  final String? envName;
 
-  Enviroment({required this.nome, required this.email, required this.editando});
+  const Enviroment(
+      {super.key,
+      required this.nome,
+      required this.email,
+      required this.editando,
+      this.envName});
 
   @override
-  EnviromentState createState() => EnviromentState(nome: nome, email: email);
+  EnviromentState createState() => EnviromentState();
 }
 
 class EnviromentState extends State<Enviroment> {
-  final String nome;
-  final String email;
-
   final TextEditingController nomeSala = TextEditingController();
   final TextEditingController descricao = TextEditingController();
   final TextEditingController horariosSala = TextEditingController();
-  final List<String> horariosAdicionados = [];
-
-  EnviromentState({required this.nome, required this.email});
+  List<String> horariosAdicionados = [];
 
   @override
   void initState() {
     super.initState();
-    if(!widget.editando){
+    if (!widget.editando) {
       return;
     }
+    nomeSala.text = widget.envName ?? '';
+    fetchData();
+  }
 
+  Future<void> fetchData() async {
+    final url = Uri.parse('http://${NetConfig.Link}/env/get/${widget.envName}');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final dados = json.decode(response.body);
+        descricao.text = dados['descricao'];
+        for (var i in dados['horarios']) {
+          setState(() {
+            horariosAdicionados.add(i[0]);
+          });
+        }
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: 'Houve um erro ao carregar os dados');
+      Navigator.pop(context);
+    }
   }
 
   void excluirHorario(int index) {
     setState(() {
       horariosAdicionados.removeAt(index);
     });
-  }  
+  }
 
   Future<void> criarAmbiente() async {
     if (nomeSala.text.isEmpty) {
@@ -220,8 +271,11 @@ class EnviromentState extends State<Enviroment> {
       return;
     }
 
-    final url = Uri.parse(
-        'http://${NetConfig.Link}/env/create/?name=${nomeSala.text}&description=${descricao.text}');
+    final url = widget.editando
+        ? Uri.parse(
+            'http://${NetConfig.Link}/env/update/?description=${descricao.text}&name=${nomeSala.text}')
+        : Uri.parse(
+            'http://${NetConfig.Link}/env/create/?name=${nomeSala.text}&description=${descricao.text}');
     final body = jsonEncode({'list': horariosAdicionados});
 
     try {
@@ -230,8 +284,11 @@ class EnviromentState extends State<Enviroment> {
 
       if (response.statusCode == 200) {
         final msg = json.decode(response.body)['msg'];
-        if (msg == 'Created sucessfully!') {
-          Fluttertoast.showToast(msg: 'Criado com sucesso');
+        if (msg == 'Created sucessfully!' || msg == 'Updated sucessfully!') {
+          Fluttertoast.showToast(
+              msg: widget.editando
+                  ? 'Atualizado com sucesso'
+                  : 'Criado com sucesso');
           goback();
         } else if (msg == 'PK-ERROR') {
           Fluttertoast.showToast(msg: 'Nomes não devem se repetir');
@@ -240,7 +297,7 @@ class EnviromentState extends State<Enviroment> {
         }
       }
     } catch (e) {
-      Fluttertoast.showToast(msg: '$e', timeInSecForIosWeb: 10);
+      Fluttertoast.showToast(msg: '$e');
     }
   }
 
@@ -250,13 +307,14 @@ class EnviromentState extends State<Enviroment> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => ViewEnvironments(nome: nome, email: email)));
+            builder: (context) =>
+                ViewEnvironments(nome: widget.nome, email: widget.email)));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: TopBar(text: 'Ambientes'),
+      appBar: const TopBar(text: 'Ambientes'),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -314,6 +372,7 @@ class EnviromentState extends State<Enviroment> {
             PrimaryButton(
                 text: widget.editando ? 'Atualizar' : 'Cadastrar',
                 onPressed: criarAmbiente),
+            const SizedBox(height: 10),
             GenericButton(
               text: 'Cancelar',
               onPressed: () => Navigator.pop(context),
@@ -331,7 +390,7 @@ class EnviromentState extends State<Enviroment> {
 class ModalHorarios extends StatefulWidget {
   final String env;
 
-  ModalHorarios({required this.env});
+  const ModalHorarios({super.key, required this.env});
 
   @override
   ModalHorariosState createState() => ModalHorariosState();
@@ -411,7 +470,7 @@ class ModalEquipamentos extends StatelessWidget {
   //Pegar dados do back
   final Map<String, List<String>> equips = {};
 
-  ModalEquipamentos({required this.enviromentName});
+  ModalEquipamentos({super.key, required this.enviromentName});
 
   @override
   Widget build(BuildContext context) {
@@ -422,7 +481,7 @@ class ModalEquipamentos extends StatelessWidget {
         borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
       title: const Text('Equipamentos'),
-      content: Container(
+      content: SizedBox(
         height: 400,
         width: 300,
         child: equipsList != null && equipsList.isNotEmpty

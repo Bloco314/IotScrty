@@ -13,24 +13,16 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class Colaboradores extends StatefulWidget {
-  final String nome;
-  final String email;
-
-  Colaboradores({required this.email, required this.nome});
+  const Colaboradores({super.key});
 
   @override
-  ColaboradoresState createState() =>
-      ColaboradoresState(email: email, nome: nome);
+  ColaboradoresState createState() => ColaboradoresState();
 }
 
 class ColaboradoresState extends State<Colaboradores> {
-  final String nome;
-  final String email;
   List<List<String>> data = [
     const ['Nome', 'Email', 'Tipo']
   ];
-
-  ColaboradoresState({required this.email, required this.nome});
 
   @override
   void initState() {
@@ -66,9 +58,8 @@ class ColaboradoresState extends State<Colaboradores> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: TopBar(text: 'Colaboradores'),
-        drawer: NavBarCoordenador(
-            nome: nome, email: email, cont: context, pageName: 'colaborador'),
+        appBar: const TopBar(text: 'Colaboradores'),
+        drawer: NavBarCoordenador(cont: context, pageName: 'colaborador'),
         body: Column(children: [
           DefaultTable(items: data, iconActions: const []),
           PrimaryButton(
@@ -77,38 +68,29 @@ class ColaboradoresState extends State<Colaboradores> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                ColaboradoresC(email: email, nome: nome)))
+                            builder: (context) => const ColaboradoresC()))
                   })
         ]));
   }
 }
 
 class ColaboradoresC extends StatefulWidget {
-  final String nome;
-  final String email;
-
-  ColaboradoresC({required this.email, required this.nome});
+  const ColaboradoresC({super.key});
 
   @override
-  ColaboradoresCState createState() =>
-      ColaboradoresCState(email: email, nome: nome);
+  ColaboradoresCState createState() => ColaboradoresCState();
 }
 
 class ColaboradoresCState extends State<ColaboradoresC> {
-  final String nome;
-  final String email;
   TextEditingController emailController = TextEditingController();
   TextEditingController senhaController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   String tipo = tipos.first;
 
-  ColaboradoresCState({required this.email, required this.nome});
-
   Future<void> criaUsuario() async {
     try {
       var url = Uri.parse(
-          'http://${NetConfig.Link}/users/?email=${emailController.text}&senha=${senhaController.text}&name=${nameController.text}&tipo=${tipo}');
+          'http://${NetConfig.Link}/users/?email=${emailController.text}&senha=${senhaController.text}&name=${nameController.text}&tipo=$tipo');
       final response = await http.post(url);
 
       if (response.statusCode == 200) {
@@ -129,7 +111,7 @@ class ColaboradoresCState extends State<ColaboradoresC> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: TopBar(text: 'Criar novo usuario'),
+      appBar: const TopBar(text: 'Criar novo usuario'),
       body: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         CampoCadastro(labelText: 'Nome', controller: nameController),
         CampoCadastro(labelText: 'Email', controller: emailController),

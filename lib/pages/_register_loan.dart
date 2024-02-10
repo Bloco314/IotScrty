@@ -5,23 +5,14 @@ import 'package:iot_scrty/components/top_bar.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class CheckinEquip extends StatefulWidget {
-  final String nome;
-  final String email;
-
-  CheckinEquip({required this.email, required this.nome});
-
   @override
   StateCheckinEquip createState() =>
-      StateCheckinEquip(email: email, nome: nome);
+      StateCheckinEquip();
 }
 
 class StateCheckinEquip extends State<CheckinEquip> {
-  final String nome;
-  final String email;
   String matricula = '';
   bool leu = false;
-
-  StateCheckinEquip({required this.email, required this.nome});
 
   Future<void> openReader(context) async {
     final result = await Navigator.push(
@@ -46,10 +37,8 @@ class StateCheckinEquip extends State<CheckinEquip> {
       drawer: NavBarProfessor(
         cont: context,
         pageName: 'Checkin',
-        nome: nome,
-        email: email,
       ),
-      appBar: TopBar(text: 'Leitor'),
+      appBar: const TopBar(text: 'Leitor'),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

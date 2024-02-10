@@ -11,10 +11,7 @@ import 'package:iot_scrty/constants.dart';
 import 'package:http/http.dart' as http;
 
 class ViewEquipment extends StatefulWidget {
-  final String nome;
-  final String email;
-
-  const ViewEquipment({super.key, required this.email, required this.nome});
+  const ViewEquipment({super.key});
 
   @override
   Equipments createState() => Equipments();
@@ -36,6 +33,8 @@ class Equipments extends State<ViewEquipment> {
               for (var i in e) {
                 sub.add(i);
               }
+              //ignora a descrição
+              sub.removeAt(1);
               dados.add(sub);
             }
           } catch (e) {
@@ -61,7 +60,7 @@ class Equipments extends State<ViewEquipment> {
     int startIndex = currentPage * itemsPerPage;
     int endIndex = (currentPage + 1) * itemsPerPage;
     List<List<String>> result = [
-      const ['Nome', 'Descrição', 'Ambiente', 'Tag']
+      const ['Nome', 'Ambiente', 'Tipo', 'Editar']
     ];
 
     List<List<String>> subset =
@@ -96,13 +95,16 @@ class Equipments extends State<ViewEquipment> {
   Widget build(BuildContext context) {
     return Scaffold(
         drawer: NavBarCoordenador(
-            email: widget.email,
-            nome: widget.nome,
-            cont: context,
-            pageName: 'cadastrar_equipamentos'),
+            cont: context, pageName: 'cadastrar_equipamentos'),
         appBar: const TopBar(text: 'Equipamentos'),
         body: Column(children: [
-          DefaultTable(items: currentData, iconActions: const []),
+          DefaultTable(items: currentData, iconActions: [
+            IconAction(
+              icon: Icons.edit,
+              action: (context, index) => null,
+              text: '',
+            )
+          ]),
           // Botões de navegação
           if (dados.isNotEmpty)
             Padding(
@@ -144,7 +146,7 @@ class Equipments extends State<ViewEquipment> {
             text: 'Novo ',
             width: 110,
             height: 40,
-            onPressed: () => navigateTo(context, CadEquip()),
+            onPressed: () => navigateTo(context, const CadEquip()),
             icon: Icons.add_sharp,
           )
         ]));
@@ -152,6 +154,8 @@ class Equipments extends State<ViewEquipment> {
 }
 
 class CadEquip extends StatefulWidget {
+  const CadEquip({super.key});
+
   @override
   CadEquipState createState() => CadEquipState();
 }
@@ -159,6 +163,10 @@ class CadEquip extends StatefulWidget {
 class CadEquipState extends State<CadEquip> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: const TopBar(text: 'Cadastrar Equipamento'),
+      drawer: NavBarCoordenador(cont: context, pageName: 'cad_equip'),
+      body: Container(),
+    );
   }
 }

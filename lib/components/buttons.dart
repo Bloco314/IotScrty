@@ -50,7 +50,8 @@ class GenericButton extends StatelessWidget {
             foregroundColor: textColor,
             backgroundColor: color,
             shape: radius == 0
-                ? const LinearBorder()
+                ? const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8)))
                 : OvalBorder(
                     eccentricity: radius,
                     side: const BorderSide(color: Colors.black))),

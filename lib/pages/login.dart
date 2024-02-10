@@ -15,6 +15,8 @@ class Login extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  Login({super.key});
+
   void validarLogin(context) async {
     try {
       if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
@@ -31,21 +33,11 @@ class Login extends StatelessWidget {
         if (decode["tipo"] == 'coordenador') {
           _emailController.text = '';
           _passwordController.text = '';
-          navigateTo(
-              context,
-              HomePage(
-                  email: _emailController.text,
-                  nome: decode["name"],
-                  coord: true));
+          navigateTo(context, HomePage(coord: true));
         } else if (decode["tipo"] == 'professor') {
           _emailController.text = '';
           _passwordController.text = '';
-          navigateTo(
-              context,
-              HomePage(
-                  email: _emailController.text,
-                  nome: decode["name"],
-                  coord: false));
+          navigateTo(context, HomePage(coord: false));
         }
       }
     } catch (e) {
@@ -60,7 +52,7 @@ class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: TopBar(text: 'Login'),
+      appBar: const TopBar(text: 'Login'),
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: Column(

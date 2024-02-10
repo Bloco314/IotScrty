@@ -6,8 +6,6 @@ import 'package:iot_scrty/components/top_bar.dart';
 import 'package:iot_scrty/pages/_credits.dart';
 
 class HomePage extends StatelessWidget {
-  final String email;
-  final String nome;
   final bool coord;
   final List<String> images = [
     'lib/assets/ueaLogo.jpg',
@@ -15,7 +13,7 @@ class HomePage extends StatelessWidget {
     'lib/assets/mori.jpeg'
   ];
 
-  HomePage({required this.email, required this.nome, required this.coord});
+  HomePage({super.key, required this.coord});
 
   void navigateTo(context, Widget page) {
     Navigator.push(context, MaterialPageRoute(builder: (context) => page));
@@ -25,17 +23,9 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         drawer: coord
-            ? NavBarCoordenador(
-                email: email,
-                nome: nome,
-                cont: context,
-                pageName: 'coordenador_home')
-            : NavBarProfessor(
-                nome: nome,
-                email: email,
-                cont: context,
-                pageName: 'professor_home'),
-        appBar: TopBar(text: 'Bem-vindo${nome.isNotEmpty ? ', ' : ''}$nome'),
+            ? NavBarCoordenador(cont: context, pageName: 'coordenador_home')
+            : NavBarProfessor(cont: context, pageName: 'professor_home'),
+        appBar: const TopBar(text: 'Bem-vindo'),
         //corpo
         body: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -77,6 +67,7 @@ class HomePage extends StatelessWidget {
               children: [
                 PrimaryButton(
                     width: 160, text: 'Trocar senha', onPressed: () => null),
+                const SizedBox(width: 10),
                 PrimaryButton(
                     width: 160,
                     text: 'Creditos',

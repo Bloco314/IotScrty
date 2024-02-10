@@ -19,10 +19,7 @@ void goback(context, farMuch) {
 }
 
 class ViewEnvironments extends StatefulWidget {
-  final String nome;
-  final String email;
-
-  const ViewEnvironments({super.key, required this.nome, required this.email});
+  const ViewEnvironments({super.key});
 
   @override
   ViewEnvironmentsState createState() => ViewEnvironmentsState();
@@ -115,21 +112,13 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
   }
 
   void editarAmbiente(context, String name) {
-    navigateTo(
-        context,
-        Enviroment(
-            nome: widget.nome,
-            email: widget.email,
-            editando: true,
-            envName: name));
+    navigateTo(context, Enviroment(editando: true, envName: name));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         drawer: NavBarCoordenador(
-          email: widget.email,
-          nome: widget.nome,
           cont: context,
           pageName: 'visualizar_ambientes',
         ),
@@ -169,10 +158,8 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
               text: 'Novo ',
               width: 110,
               height: 40,
-              onPressed: () => navigateTo(
-                  context,
-                  Enviroment(
-                      nome: widget.nome, email: widget.email, editando: false)),
+              onPressed: () =>
+                  navigateTo(context, const Enviroment(editando: false)),
               icon: Icons.add,
             ),
             if (dados.isNotEmpty)
@@ -217,17 +204,10 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
 }
 
 class Enviroment extends StatefulWidget {
-  final String nome;
-  final String email;
   final bool editando;
   final String? envName;
 
-  const Enviroment(
-      {super.key,
-      required this.nome,
-      required this.email,
-      required this.editando,
-      this.envName});
+  const Enviroment({super.key, required this.editando, this.envName});
 
   @override
   EnviromentState createState() => EnviromentState();
@@ -276,11 +256,8 @@ class EnviromentState extends State<Enviroment> {
 
   void reload() {
     goback(context, 2);
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                ViewEnvironments(nome: widget.nome, email: widget.email)));
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => const ViewEnvironments()));
   }
 
   Future<void> criarAmbiente() async {

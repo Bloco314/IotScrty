@@ -8,8 +8,6 @@ import 'package:iot_scrty/pages/_solicitations.dart';
 import 'package:iot_scrty/pages/_colaborators.dart';
 
 abstract class NavBase extends StatelessWidget {
-  final String nome;
-  final String email;
   final BuildContext cont;
   final String pageName;
 
@@ -25,20 +23,12 @@ abstract class NavBase extends StatelessWidget {
     return width * 55 / 100;
   }
 
-  NavBase(
-      {required this.nome,
-      required this.email,
-      required this.cont,
-      required this.pageName});
+  const NavBase({super.key, required this.cont, required this.pageName});
 }
 
 class NavBarProfessor extends NavBase {
-  NavBarProfessor(
-      {required String nome,
-      required String email,
-      required BuildContext cont,
-      required String pageName})
-      : super(nome: nome, email: email, cont: cont, pageName: pageName);
+  const NavBarProfessor(
+      {super.key, required super.cont, required super.pageName});
 
   @override
   Widget build(BuildContext context) {
@@ -51,8 +41,6 @@ class NavBarProfessor extends NavBase {
           const UserAccountsDrawerHeader(
             accountName: Text(''),
             accountEmail: Text(''),
-            // currentAccountPicture: CircleAvatar(
-            //     backgroundImage: AssetImage('lib/assets/guest.png')),
             decoration: BoxDecoration(
                 color: Colors.green,
                 image: DecorationImage(
@@ -65,30 +53,24 @@ class NavBarProfessor extends NavBase {
               title: const Text('Inicio'),
               onTap: () => {
                     if (pageName != 'professor_home')
-                      {
-                        navigateTo(context,
-                            HomePage(email: email, nome: nome, coord: false))
-                      }
+                      {navigateTo(context, HomePage(coord: false))}
                   }),
           const Divider(),
           ListTile(
               leading: const Icon(Icons.monetization_on),
               title: const Text('Emprestimos de aluno'),
-              onTap: () =>
-                  navigateTo(context, CheckinEquip(email: email, nome: nome))),
+              onTap: () => navigateTo(context, CheckinEquip())),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.assignment),
             title: const Text('Suas solicitações'),
-            onTap: () =>
-                navigateTo(context, Solicitacoes(email: email, nome: nome)),
+            onTap: () => navigateTo(context, const Solicitacoes()),
           ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.schedule),
             title: const Text('Meus horarios'),
-            onTap: () =>
-                navigateTo(context, Horarios(email: email, nome: nome)),
+            onTap: () => navigateTo(context, Horarios()),
           ),
           const Divider(),
           ListTile(
@@ -104,12 +86,8 @@ class NavBarProfessor extends NavBase {
 }
 
 class NavBarCoordenador extends NavBase {
-  NavBarCoordenador(
-      {required String nome,
-      required String email,
-      required BuildContext cont,
-      required String pageName})
-      : super(nome: nome, email: email, cont: cont, pageName: pageName);
+  const NavBarCoordenador(
+      {super.key, required super.cont, required super.pageName});
 
   @override
   Widget build(BuildContext context) {
@@ -122,8 +100,6 @@ class NavBarCoordenador extends NavBase {
           const UserAccountsDrawerHeader(
             accountName: Text(''),
             accountEmail: Text(''),
-            // currentAccountPicture: CircleAvatar(
-            //     backgroundImage: AssetImage('lib/assets/guest.png')),
             decoration: BoxDecoration(
                 color: Colors.green,
                 image: DecorationImage(
@@ -136,10 +112,7 @@ class NavBarCoordenador extends NavBase {
             title: const Text('Inicio'),
             onTap: () => {
               if (pageName != 'coordenador_home')
-                {
-                  navigateTo(
-                      context, HomePage(email: email, nome: nome, coord: true))
-                }
+                {navigateTo(context, HomePage(coord: true))}
               else
                 {Navigator.of(context).pop()}
             },
@@ -150,10 +123,7 @@ class NavBarCoordenador extends NavBase {
               title: const Text('Ambientes'),
               onTap: () => {
                     if (pageName != 'visualizar_ambientes')
-                      {
-                        navigateTo(
-                            context, ViewEnvironments(nome: nome, email: email))
-                      }
+                      {navigateTo(context, const ViewEnvironments())}
                     else
                       {Navigator.of(context).pop()}
                   }),
@@ -163,10 +133,7 @@ class NavBarCoordenador extends NavBase {
               title: const Text('Equipamentos'),
               onTap: () => {
                     if (pageName != 'cadastrar_equipamentos')
-                      {
-                        navigateTo(
-                            context, ViewEquipment(nome: nome, email: email))
-                      }
+                      {navigateTo(context, const ViewEquipment())}
                     else
                       {Navigator.of(context).pop()}
                   }),
@@ -176,10 +143,7 @@ class NavBarCoordenador extends NavBase {
               title: const Text('Solicitações'),
               onTap: () => {
                     if (pageName != 'solicitacoes')
-                      {
-                        navigateTo(
-                            context, ViewSolicitacoes(nome: nome, email: email))
-                      }
+                      {navigateTo(context, ViewSolicitacoes())}
                     else
                       {Navigator.of(context).pop()}
                   }),
@@ -189,10 +153,7 @@ class NavBarCoordenador extends NavBase {
               title: const Text('Colaboradores'),
               onTap: () => {
                     if (pageName != 'colaboradores')
-                      {
-                        navigateTo(
-                            context, Colaboradores(email: email, nome: nome))
-                      }
+                      {navigateTo(context, const Colaboradores())}
                     else
                       {Navigator.of(context).pop()}
                   }),

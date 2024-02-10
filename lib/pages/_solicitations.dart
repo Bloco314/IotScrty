@@ -5,25 +5,20 @@ import 'package:iot_scrty/components/top_bar.dart';
 
 //Pagina de Solicitações do professor
 class Solicitacoes extends StatelessWidget {
-  final String nome;
-  final String email;
-
-  Solicitacoes({required this.email,required this.nome});
+  const Solicitacoes({super.key});
 
   @override
-  Widget build(BuildContext context){
-    return  Scaffold(
-      drawer: NavBarProfessor(cont: context,email: email,nome: nome, pageName: 'solicitacoes_professor'),
-      appBar: TopBar(text: 'Suas solicitações'),
-      body: Container()
-    );
+  Widget build(BuildContext context) {
+    return Scaffold(
+        drawer:
+            NavBarProfessor(cont: context, pageName: 'solicitacoes_professor'),
+        appBar: const TopBar(text: 'Suas solicitações'),
+        body: Container());
   }
 }
 
 //Solicitações para o coordenador
 class ViewSolicitacoes extends StatelessWidget {
-  final String nome;
-  final String email;
 
   final Map<String, List<String>> solicitacoes = {
     'Ambiente 1': ['Professor Santos', '10:50 - 12:30'],
@@ -37,7 +32,7 @@ class ViewSolicitacoes extends StatelessWidget {
     'Ambiente 9': ['Professor Silva', '09:10- 10:50'],
   };
 
-  ViewSolicitacoes({required this.email, required this.nome});
+  ViewSolicitacoes({super.key});
 
   String truncate(String text) {
     return text.length >= 15 ? text.substring(0, 15) : text;
@@ -47,12 +42,11 @@ class ViewSolicitacoes extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: NavBarCoordenador(
-        email: email,
-        nome: nome,
+        
         cont: context,
         pageName: 'solicitacoes',
       ),
-      appBar: TopBar(text: 'Solicitações'),
+      appBar: const TopBar(text: 'Solicitações'),
       body: solicitacoes.isNotEmpty
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,7 +63,7 @@ class ViewSolicitacoes extends StatelessWidget {
                         style: TextStyle(fontWeight: FontWeight.bold)),
                   ],
                 ),
-                Divider(),
+                const Divider(),
                 Expanded(
                   child: ListView.builder(
                     itemCount: solicitacoes.length,
@@ -127,7 +121,7 @@ class ViewSolicitacoes extends StatelessWidget {
                                       color: PersonalColors.red))
                             ],
                           ),
-                          Divider()
+                          const Divider()
                         ],
                       );
                     },

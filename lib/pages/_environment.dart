@@ -12,12 +12,6 @@ import 'package:iot_scrty/components/top_bar.dart';
 import 'package:iot_scrty/constants.dart';
 import 'package:http/http.dart' as http;
 
-void goback(context, farMuch) {
-  for (int i = 0; i < farMuch; i++) {
-    Navigator.pop(context);
-  }
-}
-
 class ViewEnvironments extends StatefulWidget {
   const ViewEnvironments({super.key});
 
@@ -89,8 +83,10 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
     });
   }
 
-  void navigateTo(context, Widget page) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => page));
+  void navigateToAndReload(context, Widget page) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => page)).then(
+        (value) => Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const ViewEnvironments())));
   }
 
   void modalHorarios(context, String name) {
@@ -112,7 +108,7 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
   }
 
   void editarAmbiente(context, String name) {
-    navigateTo(context, Enviroment(editando: true, envName: name));
+    navigateToAndReload(context, Enviroment(editando: true, envName: name));
   }
 
   @override
@@ -158,8 +154,8 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
               text: 'Novo ',
               width: 110,
               height: 40,
-              onPressed: () =>
-                  navigateTo(context, const Enviroment(editando: false)),
+              onPressed: () => navigateToAndReload(
+                  context, const Enviroment(editando: false)),
               icon: Icons.add,
             ),
             if (dados.isNotEmpty)
@@ -254,12 +250,6 @@ class EnviromentState extends State<Enviroment> {
     });
   }
 
-  void reload() {
-    goback(context, 2);
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => const ViewEnvironments()));
-  }
-
   Future<void> criarAmbiente() async {
     if (nomeSala.text.isEmpty) {
       Fluttertoast.showToast(msg: 'Preenha o nome por favor');
@@ -284,7 +274,7 @@ class EnviromentState extends State<Enviroment> {
               msg: widget.editando
                   ? 'Atualizado com sucesso'
                   : 'Criado com sucesso');
-          reload();
+          Navigator.pop(context);
         } else if (msg == 'PK-ERROR') {
           Fluttertoast.showToast(msg: 'Nomes não devem se repetir');
         } else if (msg == 'OP-ERROR') {
@@ -310,7 +300,7 @@ class EnviromentState extends State<Enviroment> {
       try {
         final response = await http.delete(url);
         if (response.statusCode == 200) {
-          reload();
+          Navigator.pop(context);
           Fluttertoast.showToast(msg: 'Excluido!');
         }
       } catch (e) {

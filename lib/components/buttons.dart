@@ -112,7 +112,7 @@ class TableButton extends StatelessWidget {
     return Container(
         decoration: BoxDecoration(
             border: Border.all(color: PersonalColors.grey),
-            borderRadius: const BorderRadius.all(Radius.circular(2))),
+            borderRadius: const BorderRadius.all(Radius.circular(8))),
         margin: const EdgeInsets.symmetric(horizontal: 2),
         child: GenericButton(
             text: text.length <= 4 ? text : text.substring(0, 4),

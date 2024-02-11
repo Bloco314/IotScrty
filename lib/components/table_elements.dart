@@ -56,7 +56,7 @@ class DefaultTable extends StatelessWidget {
                         ...iconActions.map((iconAction) => TableButton(
                             icon: iconAction.icon,
                             onPressed: () =>
-                                iconAction.action(context, row.join(',')),
+                                iconAction.action(context, row.first),
                             text: iconAction.text)),
                       ],
                     ),
@@ -99,7 +99,7 @@ class DefaultTable extends StatelessWidget {
                         child: TableButton(
                           icon: iconAction.icon,
                           onPressed: () =>
-                              iconAction.action(context, row.join(',')),
+                              iconAction.action(context, row.first),
                           text: iconAction.text,
                         ),
                       ),

@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iot_scrty/assets/colors.dart';
 import 'package:iot_scrty/components/buttons.dart';
 import 'package:iot_scrty/components/input_fields.dart';
+import 'package:iot_scrty/components/modal_exclusao.dart';
 import 'package:iot_scrty/components/navigation_bar.dart';
 import 'package:iot_scrty/components/table_elements.dart';
 import 'package:iot_scrty/components/top_bar.dart';
@@ -241,15 +242,24 @@ class CadEquipState extends State<CadEquip> {
   }
 
   Future<void> deleteEquip() async {
-    final url =
-        Uri.parse('http://${NetConfig.Link}/equip/delete/${widget.equipName}');
-    try {
-      final response = await http.delete(url);
-      if (response.statusCode == 200) {
-        Navigator.pop(context);
+    bool deletar = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ModalConfirmarExclusao(envName: widget.equipName!);
+      },
+    );
+
+    if (deletar) {
+      final url = Uri.parse(
+          'http://${NetConfig.Link}/equip/delete/${widget.equipName}');
+      try {
+        final response = await http.delete(url);
+        if (response.statusCode == 200) {
+          Navigator.pop(context);
+        }
+      } catch (e) {
+        Fluttertoast.showToast(msg: '$e');
       }
-    } catch (e) {
-      Fluttertoast.showToast(msg: '$e');
     }
   }
 

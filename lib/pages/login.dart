@@ -68,7 +68,11 @@ class Login extends StatelessWidget {
                   borderRadius: BorderRadius.all(Radius.circular(7.5)),
                   color: PersonalColors.lightGrey),
               child: Column(children: [
-                CampoCadastro(labelText: 'email', controller: _emailController),
+                CampoCadastro(
+                  labelText: 'email',
+                  controller: _emailController,
+                  tipo: TextInputType.emailAddress,
+                ),
                 const SizedBox(height: 16.0),
                 CampoCadastro(
                     labelText: 'senha', controller: _passwordController)

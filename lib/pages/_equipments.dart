@@ -61,7 +61,7 @@ class Equipments extends State<ViewEquipment> {
     int startIndex = currentPage * itemsPerPage;
     int endIndex = (currentPage + 1) * itemsPerPage;
     List<List<String>> result = [
-      const ['Nome', 'Ambiente', 'Tipo', 'Editar']
+      const ['Nome', 'Tipo', 'Ambiente', 'Editar']
     ];
 
     List<List<String>> subset =
@@ -196,8 +196,8 @@ class CadEquipState extends State<CadEquip> {
         setState(() {
           nome.text = widget.equipName!;
           descricao.text = data[1];
-          selected = data[2];
-          tipo.text = data[3];
+          tipo.text = data[2];
+          selected = data[3];
         });
       }
     } catch (e) {

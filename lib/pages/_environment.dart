@@ -34,7 +34,7 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
               dados.add(e[0]);
             }
           } catch (e) {
-            // Não a dados cadastrados de fato
+            // Não há dados cadastrados de fato
           }
         });
       }
@@ -212,7 +212,8 @@ class Enviroment extends StatefulWidget {
 class EnviromentState extends State<Enviroment> {
   final TextEditingController nomeSala = TextEditingController();
   final TextEditingController descricao = TextEditingController();
-  final TextEditingController horariosSala = TextEditingController();
+  final TextEditingController hora = TextEditingController();
+  final TextEditingController minuto = TextEditingController();
   List<String> horariosAdicionados = [];
 
   @override
@@ -234,7 +235,8 @@ class EnviromentState extends State<Enviroment> {
         descricao.text = dados['descricao'];
         for (var i in dados['horarios']) {
           setState(() {
-            horariosAdicionados.add(i[0]);
+            final String h = i[0];
+            horariosAdicionados.add('${h.substring(0, 2)}:${h.substring(2)}');
           });
         }
       }
@@ -261,7 +263,10 @@ class EnviromentState extends State<Enviroment> {
             'http://${NetConfig.Link}/env/update/?description=${descricao.text}&name=${nomeSala.text}')
         : Uri.parse(
             'http://${NetConfig.Link}/env/create/?name=${nomeSala.text}&description=${descricao.text}');
-    final body = jsonEncode({'list': horariosAdicionados});
+
+    final body = jsonEncode({
+      'list': horariosAdicionados.map((e) => e.replaceAll(':', '')).toList()
+    });
 
     try {
       final response = await http
@@ -325,18 +330,29 @@ class EnviromentState extends State<Enviroment> {
                 labelText: 'Descrição (opcional)', controller: descricao),
             Row(
               children: [
-                Expanded(
-                    child: CampoCadastro(
-                        labelText: 'Acrescentar horario',
-                        controller: horariosSala)),
+                HoraMinuto(hora: hora, minuto: minuto),
                 IconButton(
                   icon: const Icon(Icons.add),
                   onPressed: () {
-                    if (horariosSala.text.isNotEmpty) {
-                      setState(() {
-                        horariosAdicionados.add(horariosSala.text);
-                        horariosSala.clear();
-                      });
+                    if (hora.text.isNotEmpty && minuto.text.isNotEmpty) {
+                      if (horariosAdicionados
+                          .contains('${hora.text}:${minuto.text}')) {
+                        Fluttertoast.showToast(
+                            msg: 'Este horario já está adicionado');
+                      } else {
+                        if (int.parse(hora.text) < 10) {
+                          hora.text = '0${hora.text}';
+                        }
+                        if (int.parse(minuto.text) < 10) {
+                          minuto.text = '0${minuto.text}';
+                        }
+                        setState(() {
+                          horariosAdicionados
+                              .add('${hora.text}:${minuto.text}');
+                          hora.clear();
+                          minuto.clear();
+                        });
+                      }
                     }
                   },
                 ),
@@ -418,7 +434,8 @@ class ModalHorariosState extends State<ModalHorarios> {
 
       if (response.statusCode == 200) {
         for (var i in json.decode(response.body)['horarios']) {
-          horarios.add(i[0]);
+          final String h = i[0];
+          horarios.add('${h.substring(0, 2)}:${h.substring(2)}');
         }
       }
     } catch (e) {
@@ -469,17 +486,42 @@ class ModalHorariosState extends State<ModalHorarios> {
   }
 }
 
-class ModalEquipamentos extends StatelessWidget {
+class ModalEquipamentos extends StatefulWidget {
   final String enviromentName;
 
-  //Pegar dados do back
-  final Map<String, List<String>> equips = {};
+  const ModalEquipamentos({super.key, required this.enviromentName});
 
-  ModalEquipamentos({super.key, required this.enviromentName});
+  @override
+  ModalEquipamentosState createState() => ModalEquipamentosState();
+}
+
+class ModalEquipamentosState extends State<ModalEquipamentos> {
+  List<String> equips = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  void fetchData() async {
+    final url = Uri.parse(
+        'http://${NetConfig.Link}/equip/list/${widget.enviromentName}');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body)['names'];
+        for (var e in data) {
+          setState(() {
+            equips.add(e[0]);
+          });
+        }
+      }
+    } catch (e) {}
+  }
 
   @override
   Widget build(BuildContext context) {
-    List<String>? equipsList = equips[enviromentName];
     return Expanded(
         child: AlertDialog(
       shape: const RoundedRectangleBorder(
@@ -489,18 +531,16 @@ class ModalEquipamentos extends StatelessWidget {
       content: SizedBox(
         height: 400,
         width: 300,
-        child: equipsList != null && equipsList.isNotEmpty
+        child: equips.isNotEmpty
             ? ListView.builder(
-                itemCount: equipsList.length,
+                itemCount: equips.length,
                 itemBuilder: (BuildContext context, int index) {
-                  String horarioValue = equipsList[index];
-
                   return Column(
                     children: [
                       ListTile(
-                        title: Text(horarioValue),
+                        title: Text(equips[index]),
                       ),
-                      if (index < equipsList.length - 1) const Divider()
+                      if (index < equips.length - 1) const Divider()
                     ],
                   );
                 },

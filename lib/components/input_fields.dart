@@ -27,11 +27,10 @@ class CampoCadastro extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Container(
           width: width ?? MediaQuery.of(context).size.width,
-          height: height ?? 60,
+          height: height ?? 50,
           decoration: const BoxDecoration(color: Colors.white),
           child: TextFormField(
               enabled: enabled,
-              textAlign: TextAlign.center,
               decoration: InputDecoration(
                 labelText: labelText,
                 border: border

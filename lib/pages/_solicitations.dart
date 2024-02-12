@@ -1,25 +1,103 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:iot_scrty/assets/colors.dart';
+import 'package:iot_scrty/components/buttons.dart';
 import 'package:iot_scrty/components/navigation_bar.dart';
+import 'package:iot_scrty/components/text.dart';
 import 'package:iot_scrty/components/top_bar.dart';
 
-//Pagina de Solicitações do professor
-class Solicitacoes extends StatelessWidget {
+class Solicitacoes extends StatefulWidget {
   const Solicitacoes({super.key});
+
+  @override
+  SolicitacoesState createState() => SolicitacoesState();
+}
+
+class SolicitacoesState extends State<Solicitacoes> {
+  final random = Random();
+
+  List<List<String>> lista = [];
+
+  void novo() {}
+
+  @override
+  void initState() {
+    super.initState();
+    lista = List.generate(110, (index) => ['Solicitação $index', stateRandom()]);
+  }
+
+  String stateRandom() {
+    final states = ['Aceito', 'Analise', 'Negado'];
+    return states[random.nextInt(states.length)];
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer:
-            NavBarProfessor(cont: context, pageName: 'solicitacoes_professor'),
+        drawer: NavBarProfessor(cont: context, pageName: 'solicitacoes'),
         appBar: const TopBar(text: 'Suas solicitações'),
-        body: Container());
+        body: Column(children: [
+          Container(
+            height: MediaQuery.of(context).size.height * 0.75,
+            margin: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [PersonalColors.lightGrey, Colors.white]),
+                border: Border.all(color: Colors.black),
+                borderRadius: const BorderRadius.all(Radius.circular(10))),
+            child: Expanded(
+                child: ListView.builder(
+                    itemCount: lista.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                          margin: EdgeInsets.symmetric(
+                              horizontal:
+                                  MediaQuery.of(context).size.width * 0.2,
+                              vertical: 5),
+                          padding: const EdgeInsets.all(7),
+                          width: 500,
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(8)),
+                              color: PersonalColors.smoothWhite,
+                              border: Border.all(color: Colors.black)),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Texto(
+                                    text: lista[index][0],
+                                    cor: PersonalColors.darkerGreen,
+                                    size: 16),
+                                const SizedBox(width: 10),
+                                if (lista[index][1] == 'Aceito')
+                                  const Icon(
+                                    Icons.check,
+                                    color: Colors.green,
+                                  )
+                                else if (lista[index][1] == 'Analise')
+                                  const Icon(
+                                    Icons.restore_outlined,
+                                    color: Colors.blueAccent,
+                                  )
+                                else
+                                  const Icon(Icons.close, color: Colors.red),
+                              ]));
+                    })),
+          ),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            PrimaryButton(text: 'Novo', onPressed: novo),
+            const SizedBox(width: 10),
+            SecondaryButton(text: 'Cancelar', onPressed: novo),
+          ])
+        ]));
   }
 }
 
 //Solicitações para o coordenador
 class ViewSolicitacoes extends StatelessWidget {
-
   final Map<String, List<String>> solicitacoes = {
     'Ambiente 1': ['Professor Santos', '10:50 - 12:30'],
     'Ambiente 2': ['Professor Silva', '09:10- 10:50'],
@@ -42,7 +120,6 @@ class ViewSolicitacoes extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: NavBarCoordenador(
-        
         cont: context,
         pageName: 'solicitacoes',
       ),

@@ -75,7 +75,10 @@ class Login extends StatelessWidget {
                 ),
                 const SizedBox(height: 16.0),
                 CampoCadastro(
-                    labelText: 'senha', controller: _passwordController)
+                    labelText: 'senha',
+                    controller: _passwordController,
+                    tipo: TextInputType.visiblePassword,
+                    obscure: true)
               ]),
             ),
             PrimaryButton(

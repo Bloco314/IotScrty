@@ -228,8 +228,11 @@ class CadEquipState extends State<CadEquip> {
       Fluttertoast.showToast(msg: 'Preencha o campo nome');
       return;
     }
+
+    final mode = widget.editando ? 'update' : 'create';
+
     final url = Uri.parse(
-        'http://${NetConfig.Link}/equip/create/?name=${nome.text}&description=${descricao.text}&tag=${tipo.text}&env=$selected');
+        'http://${NetConfig.Link}/equip/$mode/?name=${nome.text}&description=${descricao.text}&tag=${tipo.text}&env=$selected');
     try {
       final response = await http.post(url);
       if (response.statusCode == 200) {
@@ -302,7 +305,9 @@ class CadEquipState extends State<CadEquip> {
                   },
                 )),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              PrimaryButton(text: 'Cadastrar', onPressed: cadastrar),
+              PrimaryButton(
+                  text: widget.editando ? 'Atualizar' : 'Cadastrar',
+                  onPressed: cadastrar),
               if (widget.editando) const SizedBox(width: 10),
               if (widget.editando)
                 SecondaryButton(text: 'Deletar', onPressed: deleteEquip)

@@ -64,7 +64,12 @@ class NavBarProfessor extends NavBase {
           ListTile(
             leading: const Icon(Icons.assignment),
             title: const Text('Suas solicitações'),
-            onTap: () => navigateTo(context, const Solicitacoes()),
+            onTap: () => {
+              if (pageName != 'solicitacoes')
+                {navigateTo(context, const Solicitacoes())}
+              else
+                {Navigator.of(context).pop()}
+            },
           ),
           const Divider(),
           ListTile(

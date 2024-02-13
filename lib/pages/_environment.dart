@@ -215,6 +215,8 @@ class EnviromentState extends State<Enviroment> {
   final TextEditingController descricao = TextEditingController();
   final TextEditingController hora = TextEditingController();
   final TextEditingController minuto = TextEditingController();
+  final List<String> dias = ['SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB', 'DOM'];
+  String dia = ' ';
   List<String> horariosAdicionados = [];
 
   @override
@@ -223,6 +225,7 @@ class EnviromentState extends State<Enviroment> {
     if (!widget.editando) {
       return;
     }
+    dia = dias.first;
     nomeSala.text = widget.envName ?? '';
     fetchData();
   }
@@ -247,6 +250,28 @@ class EnviromentState extends State<Enviroment> {
     }
   }
 
+  void adicionaHorario() {
+    if (hora.text.isNotEmpty && minuto.text.isNotEmpty) {
+      if (horariosAdicionados.contains('${hora.text}:${minuto.text} - $dia')) {
+        Fluttertoast.showToast(msg: 'Este horario já está adicionado');
+      } else {
+        if (int.parse(hora.text) < 10) {
+          hora.text = '0${hora.text}';
+        }
+        if (int.parse(minuto.text) < 10) {
+          minuto.text = '0${minuto.text}';
+        }
+        setState(() {
+          horariosAdicionados.add('${hora.text}:${minuto.text} - $dia');
+          hora.clear();
+          minuto.clear();
+        });
+      }
+    } else {
+      Fluttertoast.showToast(msg: 'Preencha os campos');
+    }
+  }
+
   void excluirHorario(int index) {
     setState(() {
       horariosAdicionados.removeAt(index);
@@ -266,7 +291,11 @@ class EnviromentState extends State<Enviroment> {
             'http://${NetConfig.Link}/env/create/?name=${nomeSala.text}&description=${descricao.text}');
 
     final body = jsonEncode({
-      'list': horariosAdicionados.map((e) => e.replaceAll(':', '')).toList()
+      'list': horariosAdicionados
+          .map((e) => e.replaceAll(':', ''))
+          .toList()
+          .map((e) => e.replaceAll('-', ''))
+          .toList()
     });
 
     try {
@@ -329,61 +358,77 @@ class EnviromentState extends State<Enviroment> {
                 enabled: !widget.editando),
             CampoCadastro(
                 labelText: 'Descrição (opcional)', controller: descricao),
-            Row(
-              children: [
-                HoraMinuto(hora: hora, minuto: minuto),
-                IconButton(
-                  icon: const Icon(Icons.add),
-                  onPressed: () {
-                    if (hora.text.isNotEmpty && minuto.text.isNotEmpty) {
-                      if (horariosAdicionados
-                          .contains('${hora.text}:${minuto.text}')) {
-                        Fluttertoast.showToast(
-                            msg: 'Este horario já está adicionado');
-                      } else {
-                        if (int.parse(hora.text) < 10) {
-                          hora.text = '0${hora.text}';
-                        }
-                        if (int.parse(minuto.text) < 10) {
-                          minuto.text = '0${minuto.text}';
-                        }
-                        setState(() {
-                          horariosAdicionados
-                              .add('${hora.text}:${minuto.text}');
-                          hora.clear();
-                          minuto.clear();
-                        });
-                      }
-                    }
-                  },
-                ),
-              ],
-            ),
-            const Divider(),
-            const Text('Horários:'),
-            const Divider(),
-            SizedBox(
-                height: 180,
-                child: Expanded(
-                    child: ListView.builder(
-                  itemCount: horariosAdicionados.length,
-                  itemBuilder: (context, index) {
+            const Text('Horarios:'),
+            Expanded(
+                child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8),
+              decoration:
+                  BoxDecoration(border: Border.all(color: PersonalColors.grey)),
+              child: ListView.builder(
+                itemCount: horariosAdicionados.length + 1,
+                itemBuilder: (context, index) {
+                  if (index < horariosAdicionados.length) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          height: 50,
+                          width: 100,
+                          margin: EdgeInsets.only(
+                              left: 8, bottom: 5, top: index == 0 ? 10 : 5),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              border: Border.all(color: PersonalColors.grey)),
+                          child: Text(horariosAdicionados[index]),
+                        ),
+                        GenericButton(
+                          text: '',
+                          icon: Icons.delete,
+                          iconColor: PersonalColors.red,
+                          onPressed: () => excluirHorario(index),
+                        ),
+                      ],
+                    );
+                  } else {
                     return Column(children: [
+                      const Divider(),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(horariosAdicionados[index],
-                              textAlign: TextAlign.center),
-                          IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () => excluirHorario(index),
+                          HoraMinuto(hora: hora, minuto: minuto),
+                          Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 5),
+                            child: DropdownButton(
+                              value: dia,
+                              items: dias.map((String v) {
+                                return DropdownMenuItem<String>(
+                                  value: v,
+                                  child: Text(v),
+                                );
+                              }).toList(),
+                              onChanged: (String? value) {
+                                setState(() {
+                                  dia = value!;
+                                });
+                              },
+                            ),
+                          ),
+                          GenericButton(
+                            text: '',
+                            width: 80,
+                            icon: Icons.add,
+                            iconColor: PersonalColors.darkerGreen,
+                            textColor: PersonalColors.darkerGreen,
+                            color: PersonalColors.smoothWhite,
+                            onPressed: adicionaHorario,
                           )
                         ],
-                      ),
-                      const Divider()
+                      )
                     ]);
-                  },
-                ))),
+                  }
+                },
+              ),
+            )),
+            const SizedBox(height:20),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               PrimaryButton(
                   text: widget.editando ? 'Atualizar' : 'Cadastrar',
@@ -394,14 +439,7 @@ class EnviromentState extends State<Enviroment> {
                 SecondaryButton(
                     text: 'Excluir Ambiente', onPressed: () => excluir(context))
             ]),
-            const SizedBox(height: 10),
-            GenericButton(
-              text: 'Cancelar',
-              onPressed: () => Navigator.pop(context),
-              color: Colors.transparent,
-              textColor: Colors.red,
-              height: 20,
-            ),
+            const SizedBox(height:20)
           ],
         ),
       ),

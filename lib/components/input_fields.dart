@@ -8,6 +8,7 @@ class CampoCadastro extends StatelessWidget {
   final double? width;
   final double? height;
   final TextInputType? tipo;
+  final bool? obscure;
 
   const CampoCadastro(
       {super.key,
@@ -17,7 +18,8 @@ class CampoCadastro extends StatelessWidget {
       this.enabled = true,
       this.width,
       this.height,
-      this.tipo});
+      this.tipo,
+      this.obscure = false});
 
   void validacao(value) {}
 
@@ -31,6 +33,7 @@ class CampoCadastro extends StatelessWidget {
           decoration: const BoxDecoration(color: Colors.white),
           child: TextFormField(
               enabled: enabled,
+              obscureText: obscure!,
               decoration: InputDecoration(
                 labelText: labelText,
                 border: border
@@ -82,10 +85,10 @@ class HoraMinuto extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(children: [
       InputHorario(true,
-          labelText: 'HH', controller: hora, width: 100, height: 50),
+          labelText: 'HH', controller: hora, width: 80, height: 50),
       const Text(':'),
       InputHorario(false,
-          labelText: 'MM', controller: minuto, width: 100, height: 50),
+          labelText: 'MM', controller: minuto, width: 80, height: 50),
     ]);
   }
 }

@@ -9,6 +9,8 @@ class Horarios extends StatelessWidget {
     ['11:40 - 12:30', 'Sala 2']
   ];
 
+  Horarios({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

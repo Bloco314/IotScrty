@@ -24,7 +24,7 @@ class Equipments extends State<ViewEquipment> {
 
   Future<void> getData() async {
     try {
-      final url = Uri.parse('http://${NetConfig.Link}/equips/list');
+      final url = Uri.parse('http://${NetConfig.link}/equips/list');
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
@@ -188,7 +188,7 @@ class CadEquipState extends State<CadEquip> {
 
   Future<void> getEquipInformation() async {
     final url =
-        Uri.parse('http://${NetConfig.Link}/equip/get/${widget.equipName}');
+        Uri.parse('http://${NetConfig.link}/equip/get/${widget.equipName}');
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
@@ -207,7 +207,7 @@ class CadEquipState extends State<CadEquip> {
   }
 
   Future<void> fillEnvNames() async {
-    final url = Uri.parse('http://${NetConfig.Link}/env/list/');
+    final url = Uri.parse('http://${NetConfig.link}/env/list/');
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
@@ -232,7 +232,7 @@ class CadEquipState extends State<CadEquip> {
     final mode = widget.editando ? 'update' : 'create';
 
     final url = Uri.parse(
-        'http://${NetConfig.Link}/equip/$mode/?name=${nome.text}&description=${descricao.text}&tag=${tipo.text}&env=$selected');
+        'http://${NetConfig.link}/equip/$mode/?name=${nome.text}&description=${descricao.text}&tag=${tipo.text}&env=$selected');
     try {
       final response = await http.post(url);
       if (response.statusCode == 200) {
@@ -254,7 +254,7 @@ class CadEquipState extends State<CadEquip> {
 
     if (deletar) {
       final url = Uri.parse(
-          'http://${NetConfig.Link}/equip/delete/${widget.equipName}');
+          'http://${NetConfig.link}/equip/delete/${widget.equipName}');
       try {
         final response = await http.delete(url);
         if (response.statusCode == 200) {

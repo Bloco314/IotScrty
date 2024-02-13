@@ -5,9 +5,10 @@ import 'package:iot_scrty/components/top_bar.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class CheckinEquip extends StatefulWidget {
+  const CheckinEquip({super.key});
+
   @override
-  StateCheckinEquip createState() =>
-      StateCheckinEquip();
+  StateCheckinEquip createState() => StateCheckinEquip();
 }
 
 class StateCheckinEquip extends State<CheckinEquip> {
@@ -17,7 +18,7 @@ class StateCheckinEquip extends State<CheckinEquip> {
   Future<void> openReader(context) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Leitor()),
+      MaterialPageRoute(builder: (context) => const Leitor()),
     );
 
     if (result != null && mounted) {
@@ -57,6 +58,8 @@ class StateCheckinEquip extends State<CheckinEquip> {
 }
 
 class Leitor extends StatelessWidget {
+  const Leitor({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MobileScanner(onDetect: (capture) {

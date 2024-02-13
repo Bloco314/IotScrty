@@ -59,7 +59,7 @@ class NavBarProfessor extends NavBase {
           ListTile(
               leading: const Icon(Icons.monetization_on),
               title: const Text('Emprestimos de aluno'),
-              onTap: () => navigateTo(context, CheckinEquip())),
+              onTap: () => navigateTo(context, const CheckinEquip())),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.assignment),

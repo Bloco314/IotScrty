@@ -5,19 +5,21 @@ import 'package:iot_scrty/components/input_fields.dart';
 import 'package:iot_scrty/components/top_bar.dart';
 
 class Recover extends StatefulWidget {
+  const Recover({super.key});
+
   @override
   RecoverState createState() => RecoverState();
 }
 
 class RecoverState extends State<Recover> {
-  TextEditingController email_controller = TextEditingController();
+  final TextEditingController email = TextEditingController();
 
   void send() {}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: TopBar(text: 'Recuperar senha'),
+        appBar: const TopBar(text: 'Recuperar senha'),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -28,7 +30,7 @@ class RecoverState extends State<Recover> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 20),
-              CampoCadastro(controller: email_controller, labelText: ''),
+              CampoCadastro(controller: email, labelText: ''),
               const SizedBox(height: 20),
               GenericButton(
                   text: 'Enviar instruções',

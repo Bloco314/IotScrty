@@ -68,7 +68,11 @@ class ColaboradoresState extends State<Colaboradores> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const ColaboradoresC()))
+                            builder: (context) => const ColaboradoresC())).then(
+                        (value) => Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Colaboradores())))
                   })
         ]));
   }

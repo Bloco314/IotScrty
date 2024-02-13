@@ -240,7 +240,8 @@ class EnviromentState extends State<Enviroment> {
         for (var i in dados['horarios']) {
           setState(() {
             final String h = i[0];
-            horariosAdicionados.add('${h.substring(0, 2)}:${h.substring(2)}');
+            horariosAdicionados.add(
+                '${h.substring(0, 2)}:${h.substring(2, 4)} - ${h.substring(4, 7)}');
           });
         }
       }
@@ -292,9 +293,7 @@ class EnviromentState extends State<Enviroment> {
 
     final body = jsonEncode({
       'list': horariosAdicionados
-          .map((e) => e.replaceAll(':', ''))
-          .toList()
-          .map((e) => e.replaceAll('-', ''))
+          .map((e) => e[0] + e[1] + e[3] + e[4] + e[8] + e[9] + e[10])
           .toList()
     });
 
@@ -474,7 +473,8 @@ class ModalHorariosState extends State<ModalHorarios> {
       if (response.statusCode == 200) {
         for (var i in json.decode(response.body)['horarios']) {
           final String h = i[0];
-          horarios.add('${h.substring(0, 2)}:${h.substring(2)}');
+          horarios.add(
+              '${h.substring(0, 2)}:${h.substring(2, 4)} - ${h.substring(4, 7)}');
         }
       }
     } catch (e) {

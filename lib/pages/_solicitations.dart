@@ -24,7 +24,8 @@ class SolicitacoesState extends State<Solicitacoes> {
   @override
   void initState() {
     super.initState();
-    lista = List.generate(110, (index) => ['Solicitação $index', stateRandom()]);
+    lista =
+        List.generate(110, (index) => ['Ambiente $index HH:MM - DIA', stateRandom()]);
   }
 
   String stateRandom() {
@@ -70,7 +71,7 @@ class SolicitacoesState extends State<Solicitacoes> {
                                 Texto(
                                     text: lista[index][0],
                                     cor: PersonalColors.darkerGreen,
-                                    size: 16),
+                                    size: 12),
                                 const SizedBox(width: 10),
                                 if (lista[index][1] == 'Aceito')
                                   const Icon(
@@ -87,11 +88,7 @@ class SolicitacoesState extends State<Solicitacoes> {
                               ]));
                     })),
           ),
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            PrimaryButton(text: 'Novo', onPressed: novo),
-            const SizedBox(width: 10),
-            SecondaryButton(text: 'Cancelar', onPressed: novo),
-          ])
+          PrimaryButton(text: 'Novo', onPressed: novo)
         ]));
   }
 }

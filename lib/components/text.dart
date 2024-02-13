@@ -5,7 +5,8 @@ class Texto extends StatelessWidget {
   final double size;
   final Color cor;
 
-  Texto({required this.size, required this.text, required this.cor});
+  const Texto(
+      {super.key, required this.size, required this.text, required this.cor});
 
   @override
   Widget build(BuildContext context) {

@@ -32,7 +32,7 @@ class ColaboradoresState extends State<Colaboradores> {
 
   void listaColaboradores() async {
     try {
-      final url = Uri.parse('http://${NetConfig.Link}/users/list_colaborator/');
+      final url = Uri.parse('http://${NetConfig.link}/users/list_colaborator/');
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
@@ -90,7 +90,7 @@ class ColaboradoresCState extends State<ColaboradoresC> {
   Future<void> criaUsuario() async {
     try {
       var url = Uri.parse(
-          'http://${NetConfig.Link}/users/?email=${emailController.text}&senha=${senhaController.text}&name=${nameController.text}&tipo=$tipo');
+          'http://${NetConfig.link}/users/?email=${emailController.text}&senha=${senhaController.text}&name=${nameController.text}&tipo=$tipo');
       final response = await http.post(url);
 
       if (response.statusCode == 200) {

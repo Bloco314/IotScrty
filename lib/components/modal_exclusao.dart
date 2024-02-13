@@ -14,7 +14,7 @@ class ModalConfirmarExclusao extends StatelessWidget {
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(10)),
         ),
-        title: Texto(text: 'Confirmação', size: 22, cor: Colors.black),
+        title: const Texto(text: 'Confirmação', size: 22, cor: Colors.black),
         content: SizedBox(
             height: 80,
             child: Texto(

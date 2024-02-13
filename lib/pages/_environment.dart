@@ -25,7 +25,7 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
 
   Future<void> getData() async {
     try {
-      final url = Uri.parse('http://${NetConfig.Link}/env/list');
+      final url = Uri.parse('http://${NetConfig.link}/env/list');
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
@@ -146,7 +146,7 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
                 cardmode: true),
             // Botão para novo ambiente
             if (dados.isEmpty)
-              Texto(
+              const Texto(
                   size: 16,
                   text: 'Sem registros, tente criar um ambiente',
                   cor: PersonalColors.darkerGreen),
@@ -231,7 +231,7 @@ class EnviromentState extends State<Enviroment> {
   }
 
   Future<void> fetchData() async {
-    final url = Uri.parse('http://${NetConfig.Link}/env/get/${widget.envName}');
+    final url = Uri.parse('http://${NetConfig.link}/env/get/${widget.envName}');
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
@@ -286,9 +286,9 @@ class EnviromentState extends State<Enviroment> {
 
     final url = widget.editando
         ? Uri.parse(
-            'http://${NetConfig.Link}/env/update/?description=${descricao.text}&name=${nomeSala.text}')
+            'http://${NetConfig.link}/env/update/?description=${descricao.text}&name=${nomeSala.text}')
         : Uri.parse(
-            'http://${NetConfig.Link}/env/create/?name=${nomeSala.text}&description=${descricao.text}');
+            'http://${NetConfig.link}/env/create/?name=${nomeSala.text}&description=${descricao.text}');
 
     final body = jsonEncode({
       'list': horariosAdicionados
@@ -331,7 +331,7 @@ class EnviromentState extends State<Enviroment> {
 
     if (deletar) {
       final url =
-          Uri.parse('http://${NetConfig.Link}/env/delete/${nomeSala.text}');
+          Uri.parse('http://${NetConfig.link}/env/delete/${nomeSala.text}');
       try {
         final response = await http.delete(url);
         if (response.statusCode == 200) {
@@ -428,7 +428,7 @@ class EnviromentState extends State<Enviroment> {
                 },
               ),
             )),
-            const SizedBox(height:20),
+            const SizedBox(height: 20),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               PrimaryButton(
                   text: widget.editando ? 'Atualizar' : 'Cadastrar',
@@ -439,7 +439,7 @@ class EnviromentState extends State<Enviroment> {
                 SecondaryButton(
                     text: 'Excluir Ambiente', onPressed: () => excluir(context))
             ]),
-            const SizedBox(height:20)
+            const SizedBox(height: 20)
           ],
         ),
       ),
@@ -467,7 +467,7 @@ class ModalHorariosState extends State<ModalHorarios> {
 
   Future<void> fetchData() async {
     final url =
-        Uri.parse('http://${NetConfig.Link}/hour/?env_name=${widget.env}');
+        Uri.parse('http://${NetConfig.link}/hour/?env_name=${widget.env}');
     try {
       final response = await http.get(url);
 
@@ -545,7 +545,7 @@ class ModalEquipamentosState extends State<ModalEquipamentos> {
 
   void fetchData() async {
     final url = Uri.parse(
-        'http://${NetConfig.Link}/equip/list/${widget.enviromentName}');
+        'http://${NetConfig.link}/equip/list/${widget.enviromentName}');
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
@@ -556,7 +556,9 @@ class ModalEquipamentosState extends State<ModalEquipamentos> {
           });
         }
       }
-    } catch (e) {}
+    } catch (e) {
+      Fluttertoast.showToast(msg: '$e');
+    }
   }
 
   @override

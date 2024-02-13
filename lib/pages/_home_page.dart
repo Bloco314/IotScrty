@@ -66,12 +66,12 @@ class HomePage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 PrimaryButton(
-                    width: 160, text: 'Trocar senha', onPressed: () => null),
+                    width: 160, text: 'Trocar senha', onPressed: () => {}),
                 const SizedBox(width: 10),
                 PrimaryButton(
                     width: 160,
                     text: 'Creditos',
-                    onPressed: () => navigateTo(context, Credits()))
+                    onPressed: () => navigateTo(context, const Credits()))
               ],
             ),
             const Divider(),

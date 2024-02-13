@@ -5,11 +5,12 @@ import 'package:iot_scrty/components/input_fields.dart';
 import 'package:iot_scrty/components/top_bar.dart';
 import 'package:iot_scrty/constants.dart';
 import 'package:iot_scrty/pages/_home_page.dart';
-import 'package:iot_scrty/pages/_recoverPassword.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:iot_scrty/pages/_recover_password.dart';
 
 class Login extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
@@ -25,7 +26,7 @@ class Login extends StatelessWidget {
       }
 
       var url = Uri.parse(
-          'http://${NetConfig.Link}/users/login/${_emailController.text}/${_passwordController.text}');
+          'http://${NetConfig.link}/users/login/${_emailController.text}/${_passwordController.text}');
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
@@ -87,7 +88,7 @@ class Login extends StatelessWidget {
                 text: 'Esqueceu sua senha?',
                 width: 200,
                 height: 30,
-                onPressed: () => navigateTo(context, Recover()),
+                onPressed: () => navigateTo(context, const Recover()),
                 color: Colors.transparent,
                 textColor: Colors.grey)
           ],

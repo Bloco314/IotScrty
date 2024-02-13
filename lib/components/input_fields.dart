@@ -85,10 +85,10 @@ class HoraMinuto extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(children: [
       InputHorario(true,
-          labelText: 'HH', controller: hora, width: 100, height: 50),
+          labelText: 'HH', controller: hora, width: 80, height: 50),
       const Text(':'),
       InputHorario(false,
-          labelText: 'MM', controller: minuto, width: 100, height: 50),
+          labelText: 'MM', controller: minuto, width: 80, height: 50),
     ]);
   }
 }

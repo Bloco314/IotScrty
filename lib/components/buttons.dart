@@ -23,7 +23,6 @@ class GenericButton extends StatelessWidget {
   final Color? textColor;
   final Color? color;
   final double radius;
-  final double? margin;
 
   const GenericButton(
       {super.key,
@@ -35,8 +34,7 @@ class GenericButton extends StatelessWidget {
       this.textColor = Colors.white,
       this.icon,
       this.iconColor = Colors.white,
-      this.radius = 0,
-      this.margin});
+      this.radius = 0});
 
   @override
   Widget build(BuildContext context) {

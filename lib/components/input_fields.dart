@@ -21,7 +21,11 @@ class CampoCadastro extends StatelessWidget {
       this.tipo,
       this.obscure = false});
 
-  void validacao(value) {}
+  void validacao(value) {
+    if (value.length > 80) {
+      controller.text = controller.text.substring(0, 80);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +64,7 @@ class InputHorario extends CampoCadastro {
 
   @override
   void validacao(value) {
+    super.validacao(value);
     RegExp regex;
 
     if (validaHora) {

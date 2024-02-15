@@ -3,7 +3,7 @@ import 'package:iot_scrty/assets/colors.dart';
 import 'package:iot_scrty/components/buttons.dart';
 import 'package:iot_scrty/components/input_fields.dart';
 import 'package:iot_scrty/components/top_bar.dart';
-import 'package:iot_scrty/constants.dart';
+import 'package:iot_scrty/utils.dart';
 import 'package:iot_scrty/pages/_home_page.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
@@ -64,7 +64,9 @@ class Login extends StatelessWidget {
               margin: EdgeInsets.symmetric(
                   horizontal: MediaQuery.of(context).size.width * 0.15,
                   vertical: 10),
-              padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 10),
+              padding: EdgeInsets.symmetric(
+                  vertical: MediaQuery.of(context).size.height * 0.05,
+                  horizontal: 10),
               decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(7.5)),
                   color: PersonalColors.lightGrey),

@@ -10,7 +10,7 @@ import 'package:iot_scrty/components/navigation_bar.dart';
 import 'package:iot_scrty/components/table_elements.dart';
 import 'package:iot_scrty/components/text.dart';
 import 'package:iot_scrty/components/top_bar.dart';
-import 'package:iot_scrty/constants.dart';
+import 'package:iot_scrty/utils.dart';
 import 'package:http/http.dart' as http;
 
 class ViewEnvironments extends StatefulWidget {
@@ -51,9 +51,11 @@ class ViewEnvironmentsState extends State<ViewEnvironments> {
   }
 
   int currentPage = 0;
-  static const int itemsPerPage = 5;
+  int itemsPerPage = 5;
 
   List<List<String>> get currentData {
+    itemsPerPage =
+        MediaQuery.of(context).orientation == Orientation.landscape ? 2 : 5;
     int startIndex = currentPage * itemsPerPage;
     int endIndex = (currentPage + 1) * itemsPerPage;
     List<List<String>> result = [
@@ -222,12 +224,13 @@ class EnviromentState extends State<Enviroment> {
   @override
   void initState() {
     super.initState();
+    dia = dias.first;
     if (!widget.editando) {
       return;
     }
-    dia = dias.first;
-    nomeSala.text = widget.envName ?? '';
     fetchData();
+
+    nomeSala.text = widget.envName ?? '';
   }
 
   Future<void> fetchData() async {
@@ -239,9 +242,8 @@ class EnviromentState extends State<Enviroment> {
         descricao.text = dados['descricao'];
         for (var i in dados['horarios']) {
           setState(() {
-            final String h = i[0];
-            horariosAdicionados.add(
-                '${h.substring(0, 2)}:${h.substring(2, 4)} - ${h.substring(4, 7)}');
+            final String text = i[0];
+            horariosAdicionados.add(textToData(text));
           });
         }
       }
@@ -253,7 +255,8 @@ class EnviromentState extends State<Enviroment> {
 
   void adicionaHorario() {
     if (hora.text.isNotEmpty && minuto.text.isNotEmpty) {
-      if (horariosAdicionados.contains('${hora.text}:${minuto.text} - $dia')) {
+      if (horariosAdicionados
+          .contains(textToDataJoin(hora.text, minuto.text, dia))) {
         Fluttertoast.showToast(msg: 'Este horario já está adicionado');
       } else {
         if (int.parse(hora.text) < 10) {
@@ -263,7 +266,7 @@ class EnviromentState extends State<Enviroment> {
           minuto.text = '0${minuto.text}';
         }
         setState(() {
-          horariosAdicionados.add('${hora.text}:${minuto.text} - $dia');
+          horariosAdicionados.add(textToDataJoin(hora.text, minuto.text, dia));
           hora.clear();
           minuto.clear();
         });
@@ -291,11 +294,8 @@ class EnviromentState extends State<Enviroment> {
         : Uri.parse(
             'http://${NetConfig.link}/env/create/?name=${nomeSala.text}&description=${descricao.text}');
 
-    final body = jsonEncode({
-      'list': horariosAdicionados
-          .map((e) => e[0] + e[1] + e[3] + e[4] + e[8] + e[9] + e[10])
-          .toList()
-    });
+    final body = jsonEncode(
+        {'list': horariosAdicionados.map((e) => dataToText(e)).toList()});
 
     try {
       final response = await http
@@ -473,8 +473,7 @@ class ModalHorariosState extends State<ModalHorarios> {
       if (response.statusCode == 200) {
         for (var i in json.decode(response.body)['horarios']) {
           final String h = i[0];
-          horarios.add(
-              '${h.substring(0, 2)}:${h.substring(2, 4)} - ${h.substring(4, 7)}');
+          horarios.add(textToData(h));
         }
       }
     } catch (e) {

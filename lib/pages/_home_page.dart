@@ -33,7 +33,7 @@ class HomePage extends StatelessWidget {
             //Carrosel com noticias
             CarouselSlider(
               options: CarouselOptions(
-                height: 200.0,
+                height: MediaQuery.of(context).size.height * 0.35,
                 enlargeCenterPage: true,
                 autoPlay: true,
                 aspectRatio: 16 / 9,

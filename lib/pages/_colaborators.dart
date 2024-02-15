@@ -7,7 +7,7 @@ import 'package:iot_scrty/components/navigation_bar.dart';
 import 'package:iot_scrty/components/table_elements.dart';
 import 'package:iot_scrty/components/top_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:iot_scrty/constants.dart';
+import 'package:iot_scrty/utils.dart';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -61,7 +61,7 @@ class ColaboradoresState extends State<Colaboradores> {
         appBar: const TopBar(text: 'Colaboradores'),
         drawer: NavBarCoordenador(cont: context, pageName: 'colaborador'),
         body: Column(children: [
-          DefaultTable(items: data, iconActions: const []),
+          Expanded(child: DefaultTable(items: data, iconActions: const [])),
           PrimaryButton(
               text: 'Novo',
               onPressed: () => {
@@ -73,7 +73,8 @@ class ColaboradoresState extends State<Colaboradores> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => const Colaboradores())))
-                  })
+                  }),
+          const SizedBox(height: 50)
         ]));
   }
 }

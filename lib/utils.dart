@@ -12,13 +12,18 @@ String dataToText(String e) {
 }
 
 // Recebe três parametros de texto e retorna em 'texto1:texto2 - texto3'
-String textToData(String h) {
-  return '${h.substring(0, 2)}:${h.substring(2, 4)} - ${h.substring(4, 7)}';
+String textToDataHora(String h) {
+  return '${h.substring(0, 2)}:${h.substring(2, 4)} - ${h.substring(4)}';
 }
 
 // Recebe um texto em formato HHMMDIA e retorna em HH:MM - DIA
 String textToDataJoin(String hora, String minuto, String dia) {
   return '$hora:$minuto - $dia';
+}
+
+// Recebe um texto em DDMMAAAA e retorn em DD/MM/AAAA
+String textToData(String h) {
+  return '${h.substring(0, 2)}/${h.substring(2, 4)}/${h.substring(4, 8)}';
 }
 
 // recebe um dia da semana em formato DIA e retorna a proxima data correspondente

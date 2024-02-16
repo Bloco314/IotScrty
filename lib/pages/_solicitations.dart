@@ -1,15 +1,16 @@
 import 'dart:convert';
-import 'dart:math';
+import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:iot_scrty/pages/login.dart';
+
+import 'package:iot_scrty/utils.dart';
 import 'package:iot_scrty/assets/colors.dart';
 import 'package:iot_scrty/components/buttons.dart';
 import 'package:iot_scrty/components/navigation_bar.dart';
 import 'package:iot_scrty/components/text.dart';
 import 'package:iot_scrty/components/top_bar.dart';
-import 'package:iot_scrty/utils.dart';
-import 'package:http/http.dart' as http;
 
 class Solicitacoes extends StatefulWidget {
   const Solicitacoes({super.key});
@@ -19,9 +20,7 @@ class Solicitacoes extends StatefulWidget {
 }
 
 class SolicitacoesState extends State<Solicitacoes> {
-  final random = Random();
-
-  List<List<String>> lista = [];
+  List<List<dynamic>> lista = [];
 
   void novo() {
     Navigator.push(context,
@@ -33,13 +32,26 @@ class SolicitacoesState extends State<Solicitacoes> {
   @override
   void initState() {
     super.initState();
-    lista = List.generate(
-        110, (index) => ['Ambiente $index HH:MM - DIA', stateRandom()]);
+    fetchData();
   }
 
-  String stateRandom() {
-    final states = ['Aceito', 'Analise', 'Negado'];
-    return states[random.nextInt(states.length)];
+  void fetchData() async {
+    final url =
+        Uri.parse('http://${NetConfig.link}/solicitation/get/$userEmail/');
+
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final dados = json.decode(response.body)['solicitacoes'];
+        setState(() {
+          for (var e in dados) {
+            lista.add(e);
+          }
+        });
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: 'Não foi possivel carregar seus dados');
+    }
   }
 
   @override
@@ -65,10 +77,9 @@ class SolicitacoesState extends State<Solicitacoes> {
                       return Container(
                           margin: EdgeInsets.symmetric(
                               horizontal:
-                                  MediaQuery.of(context).size.width * 0.2,
+                                  MediaQuery.of(context).size.width * 0.05,
                               vertical: 5),
                           padding: const EdgeInsets.all(7),
-                          width: 500,
                           decoration: BoxDecoration(
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(8)),
@@ -78,16 +89,17 @@ class SolicitacoesState extends State<Solicitacoes> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Texto(
-                                    text: lista[index][0],
+                                    text:
+                                        'Solicitado: ${lista[index][1]}, em: ${lista[index][0]} ${textToData(lista[index][3])}',
                                     cor: PersonalColors.darkerGreen,
                                     size: 12),
                                 const SizedBox(width: 10),
-                                if (lista[index][1] == 'Aceito')
+                                if (lista[index].last == 'Aceito')
                                   const Icon(
                                     Icons.check,
                                     color: Colors.green,
                                   )
-                                else if (lista[index][1] == 'Analise')
+                                else if (lista[index].last == 'Analise')
                                   const Icon(
                                     Icons.restore_outlined,
                                     color: Colors.blueAccent,
@@ -114,6 +126,7 @@ class CreateSolicitacaoState extends State<CreateSolicitacao> {
   late List<String> envs = [];
   late String horariosSelected = ' ';
   late String envSelected = ' ';
+  late String day = '';
 
   @override
   void initState() {
@@ -153,17 +166,18 @@ class CreateSolicitacaoState extends State<CreateSolicitacao> {
         horarios.clear();
         for (var e in json.decode(response.body)['horarios']) {
           setState(() {
-            horarios.add(textToData(e[0]));
+            horarios.add(textToDataHora(e[0]));
           });
         }
         setState(() {
           if (horarios.isNotEmpty) {
             horariosSelected = horarios.first;
           }
+          day = nextDay(horariosSelected.substring(8));
         });
       }
     } catch (e) {
-      Fluttertoast.showToast(msg: '$e', timeInSecForIosWeb: 10);
+      Fluttertoast.showToast(msg: '$e');
     }
   }
 
@@ -176,19 +190,39 @@ class CreateSolicitacaoState extends State<CreateSolicitacao> {
     }
   }
 
-  void emprestar() {}
+  void emprestar() async {
+    day = day.replaceAll('/', '');
+    String email = userEmail ?? '';
+    final url = Uri.parse(
+        "http://${NetConfig.link}/solicitation/create/?horario_valor=$horariosSelected&env_name=$envSelected&user_email=$email&dia=$day");
+
+    try {
+      final response = await http.post(url);
+      if (response.statusCode == 200) {
+        Fluttertoast.showToast(msg: 'Solicitado com sucesso');
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: 'Não foi possível criar sua solicitação');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: const TopBar(text: 'Solicitar emprestimo'),
         body: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Texto(
+              text: "Fazendo solicitação como: ${userName ?? 'Anonimo'}",
+              size: 16,
+              cor: PersonalColors.darkerGreen),
           Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
             // DropDown de ambiente
             Container(
                 margin: const EdgeInsets.symmetric(vertical: 15),
                 color: PersonalColors.lightGrey,
-                padding: const EdgeInsets.all(10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                 child: Column(children: [
                   const Texto(
                       size: 14,
@@ -207,8 +241,7 @@ class CreateSolicitacaoState extends State<CreateSolicitacao> {
                       return DropdownMenuItem<String>(value: v, child: Text(v));
                     }).toList(),
                     onChanged: onchangeEnv,
-                  ),
-                  const Text('')
+                  )
                 ])),
 
             // DropDown do horario
@@ -238,10 +271,11 @@ class CreateSolicitacaoState extends State<CreateSolicitacao> {
                       onChanged: (String? value) {
                         setState(() {
                           horariosSelected = value!;
+                          day = nextDay(horariosSelected.substring(8));
                         });
                       },
                     ),
-                    Text(nextDay(horariosSelected.substring(8)))
+                    Text(day)
                   ]))
             else
               const Text('sem horarios livres'),
@@ -251,119 +285,109 @@ class CreateSolicitacaoState extends State<CreateSolicitacao> {
   }
 }
 
-//Solicitações para o coordenador
-class ViewSolicitacoes extends StatelessWidget {
-  final Map<String, List<String>> solicitacoes = {
-    'Ambiente 1': ['Professor Santos', '10:50 - 12:30'],
-    'Ambiente 2': ['Professor Silva', '09:10- 10:50'],
-    'Ambiente 3': ['Professor Silva', '09:10- 10:50'],
-    'Ambiente 4': ['Professor Silva', '09:10- 10:50'],
-    'Ambiente 5': ['Professor Silva', '09:10- 10:50'],
-    'Ambiente 6': ['Professor Silva', '09:10- 10:50'],
-    'Ambiente 7': ['Professor Silva', '09:10- 10:50'],
-    'Ambiente 8': ['Professor Silva', '09:10- 10:50'],
-    'Ambiente 9': ['Professor Silva', '09:10- 10:50'],
-  };
+class SolicitacoesCoord extends StatefulWidget {
+  const SolicitacoesCoord({super.key});
 
-  ViewSolicitacoes({super.key});
+  @override
+  SolicitacoesCoordState createState() => SolicitacoesCoordState();
+}
 
-  String truncate(String text) {
-    return text.length >= 15 ? text.substring(0, 15) : text;
+class SolicitacoesCoordState extends State<SolicitacoesCoord> {
+  List<List<dynamic>> lista = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
   }
+
+  void fetchData() async {
+    final url = Uri.parse('http://${NetConfig.link}/solicitation/list/');
+
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final dados = json.decode(response.body)['solicitacoes'];
+        setState(() {
+          for (var e in dados) {
+            lista.add(e);
+          }
+        });
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: 'Não foi possivel carregar seus dados');
+    }
+  }
+
+  void editar() {}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: NavBarCoordenador(
-        cont: context,
-        pageName: 'solicitacoes',
-      ),
-      appBar: const TopBar(text: 'Solicitações'),
-      body: solicitacoes.isNotEmpty
-          ? Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 10),
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Text('Ambiente',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text('Solicitante',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text('Horário',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                  ],
-                ),
-                const Divider(),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: solicitacoes.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      final ambiente =
-                          truncate(solicitacoes.keys.elementAt(index));
-                      final solicitante =
-                          truncate(solicitacoes[ambiente]?[0] ?? '');
-                      final horario =
-                          truncate(solicitacoes[ambiente]?[1] ?? '');
-
-                      return Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Expanded(
-                                  child: Text(ambiente,
-                                      maxLines: 1,
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(fontSize: 16))),
-                              Expanded(
-                                  child: Text(solicitante,
-                                      maxLines: 1,
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(fontSize: 16))),
-                              Expanded(
-                                  child: Text(horario,
-                                      maxLines: 1,
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(fontSize: 16))),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ElevatedButton(
-                                  onPressed: () {},
-                                  style: ElevatedButton.styleFrom(
-                                      elevation: 0,
-                                      side: const BorderSide(
-                                          color: PersonalColors.lightGrey),
-                                      backgroundColor: Colors.transparent),
-                                  child: const Icon(Icons.check,
-                                      color: PersonalColors.darkerGreen)),
-                              const SizedBox(width: 2),
-                              ElevatedButton(
-                                  onPressed: () {},
-                                  style: ElevatedButton.styleFrom(
-                                      elevation: 0,
-                                      side: const BorderSide(
-                                          color: PersonalColors.lightGrey),
-                                      backgroundColor: Colors.transparent),
-                                  child: const Icon(Icons.cancel_outlined,
-                                      color: PersonalColors.red))
-                            ],
-                          ),
-                          const Divider()
-                        ],
-                      );
-                    },
-                  ),
-                ),
-              ],
-            )
-          : const Center(
-              child: Text('Nenhum registro encontrado.'),
-            ),
-    );
+        drawer: NavBarCoordenador(cont: context, pageName: 'solicitacoes'),
+        appBar: const TopBar(text: 'Solicitações'),
+        body: Column(children: [
+          Container(
+            height: MediaQuery.of(context).size.height * 0.55,
+            margin: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [PersonalColors.lightGrey, Colors.white]),
+                border: Border.all(color: Colors.black),
+                borderRadius: const BorderRadius.all(Radius.circular(10))),
+            child: Expanded(
+                child: ListView.builder(
+                    itemCount: lista.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                          margin: EdgeInsets.symmetric(
+                              horizontal:
+                                  MediaQuery.of(context).size.width * 0.05,
+                              vertical: 5),
+                          padding: const EdgeInsets.all(7),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(8)),
+                              color: PersonalColors.smoothWhite,
+                              border: Border.all(color: Colors.black)),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Texto(
+                                    text:
+                                        'Solicitado: ${lista[index][1]}, em: ${lista[index][0]} ${textToData(lista[index][3])}',
+                                    cor: PersonalColors.darkerGreen,
+                                    size: 12),
+                                const SizedBox(width: 10),
+                                if (lista[index].last == 'Aceito')
+                                  IconButton(
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateColor.resolveWith((states) =>
+                                                  PersonalColors.lightGrey)),
+                                      icon: const Icon(Icons.check,
+                                          color: Colors.green),
+                                      onPressed: editar)
+                                else if (lista[index].last == 'Analise')
+                                  IconButton(
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateColor.resolveWith((states) =>
+                                                  PersonalColors.lightGrey)),
+                                      icon: const Icon(Icons.restore_outlined,
+                                          color: Colors.blueAccent),
+                                      onPressed: editar)
+                                else
+                                  IconButton(
+                                      style: ButtonStyle(
+                                          backgroundColor: MaterialStateColor.resolveWith((states) => PersonalColors.lightGrey)),
+                                      icon: const Icon(Icons.close, color: Colors.red),
+                                      onPressed: editar)
+                              ]));
+                    })),
+          )
+        ]));
   }
 }

@@ -243,7 +243,7 @@ class EnviromentState extends State<Enviroment> {
         for (var i in dados['horarios']) {
           setState(() {
             final String text = i[0];
-            horariosAdicionados.add(textToData(text));
+            horariosAdicionados.add(textToDataHora(text));
           });
         }
       }
@@ -473,7 +473,7 @@ class ModalHorariosState extends State<ModalHorarios> {
       if (response.statusCode == 200) {
         for (var i in json.decode(response.body)['horarios']) {
           final String h = i[0];
-          horarios.add(textToData(h));
+          horarios.add(textToDataHora(h));
         }
       }
     } catch (e) {

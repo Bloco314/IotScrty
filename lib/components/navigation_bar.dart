@@ -148,7 +148,7 @@ class NavBarCoordenador extends NavBase {
               title: const Text('Solicitações'),
               onTap: () => {
                     if (pageName != 'solicitacoes')
-                      {navigateTo(context, ViewSolicitacoes())}
+                      {navigateTo(context, const SolicitacoesCoord())}
                     else
                       {Navigator.of(context).pop()}
                   }),

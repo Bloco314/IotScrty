@@ -9,7 +9,7 @@ import 'package:iot_scrty/components/modal_exclusao.dart';
 import 'package:iot_scrty/components/navigation_bar.dart';
 import 'package:iot_scrty/components/table_elements.dart';
 import 'package:iot_scrty/components/top_bar.dart';
-import 'package:iot_scrty/constants.dart';
+import 'package:iot_scrty/utils.dart';
 import 'package:http/http.dart' as http;
 
 class ViewEquipment extends StatefulWidget {
@@ -56,9 +56,11 @@ class Equipments extends State<ViewEquipment> {
   }
 
   int currentPage = 0;
-  static const int itemsPerPage = 5;
+  static int itemsPerPage = 5;
 
   List<List<String>> get currentData {
+    itemsPerPage =
+        MediaQuery.of(context).orientation == Orientation.landscape ? 2 : 5;
     int startIndex = currentPage * itemsPerPage;
     int endIndex = (currentPage + 1) * itemsPerPage;
     List<List<String>> result = [

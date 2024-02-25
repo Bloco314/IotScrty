@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:iot_scrty/pages/_environment.dart';
 import 'package:iot_scrty/pages/_equipments.dart';
 import 'package:iot_scrty/pages/_home_page.dart';
-import 'package:iot_scrty/pages/_horarios_professor.dart';
 import 'package:iot_scrty/pages/_register_loan.dart';
 import 'package:iot_scrty/pages/_solicitations.dart';
 import 'package:iot_scrty/pages/_colaborators.dart';
@@ -12,7 +11,12 @@ abstract class NavBase extends StatelessWidget {
   final String pageName;
 
   void navigateTo(context, Widget page) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => page));
+    if (pageName == 'home') {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => page));
+    } else {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => page));
+    }
   }
 
   double navBarSize() {
@@ -52,14 +56,21 @@ class NavBarProfessor extends NavBase {
               leading: const Icon(Icons.home),
               title: const Text('Inicio'),
               onTap: () => {
-                    if (pageName != 'professor_home')
+                    if (pageName != 'home')
                       {navigateTo(context, HomePage(coord: false))}
+                    else
+                      {Navigator.of(context).pop()}
                   }),
           const Divider(),
           ListTile(
-              leading: const Icon(Icons.monetization_on),
-              title: const Text('Emprestimos de aluno'),
+              leading: const Icon(Icons.qr_code),
+              title: const Text('Emprestimo Barcode/QRCode'),
               onTap: () => navigateTo(context, const CheckinEquip())),
+          const Divider(),
+          ListTile(
+              leading: const Icon(Icons.auto_stories),
+              title: const Text('Emprestimo Manual'),
+              onTap: () => {}),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.assignment),
@@ -70,12 +81,6 @@ class NavBarProfessor extends NavBase {
               else
                 {Navigator.of(context).pop()}
             },
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.schedule),
-            title: const Text('Meus horarios'),
-            onTap: () => navigateTo(context, Horarios()),
           ),
           const Divider(),
           ListTile(
@@ -116,7 +121,7 @@ class NavBarCoordenador extends NavBase {
             leading: const Icon(Icons.home),
             title: const Text('Inicio'),
             onTap: () => {
-              if (pageName != 'coordenador_home')
+              if (pageName != 'home')
                 {navigateTo(context, HomePage(coord: true))}
               else
                 {Navigator.of(context).pop()}
@@ -148,7 +153,7 @@ class NavBarCoordenador extends NavBase {
               title: const Text('Solicitações'),
               onTap: () => {
                     if (pageName != 'solicitacoes')
-                      {navigateTo(context, ViewSolicitacoes())}
+                      {navigateTo(context, const SolicitacoesCoord())}
                     else
                       {Navigator.of(context).pop()}
                   }),

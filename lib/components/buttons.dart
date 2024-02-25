@@ -44,6 +44,7 @@ class GenericButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
+            shadowColor: Colors.transparent,
             elevation: 0,
             foregroundColor: textColor,
             backgroundColor: color,

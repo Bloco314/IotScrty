@@ -1,5 +1,5 @@
 name: iot_scrty
-description: "A new Flutter project."
+description: "Beauty project"
 publish_to: 'none'
 
 
@@ -17,7 +17,6 @@ dependencies:
   mobile_scanner: ^4.0.0
   http: ^1.2.0
   fluttertoast: ^8.2.4
-  shared_preferences: ^2.2.2
   
 dev_dependencies:
   flutter_test:

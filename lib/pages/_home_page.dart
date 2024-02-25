@@ -23,8 +23,8 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         drawer: coord
-            ? NavBarCoordenador(cont: context, pageName: 'coordenador_home')
-            : NavBarProfessor(cont: context, pageName: 'professor_home'),
+            ? NavBarCoordenador(cont: context, pageName: 'home')
+            : NavBarProfessor(cont: context, pageName: 'home'),
         appBar: const TopBar(text: 'Bem-vindo'),
         //corpo
         body: Padding(

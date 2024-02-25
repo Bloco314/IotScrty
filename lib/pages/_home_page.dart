@@ -33,10 +33,10 @@ class HomePage extends StatelessWidget {
             //Carrosel com noticias
             CarouselSlider(
               options: CarouselOptions(
+                pauseAutoPlayOnTouch: true,
                 height: MediaQuery.of(context).size.height * 0.35,
                 enlargeCenterPage: true,
                 autoPlay: true,
-                aspectRatio: 16 / 9,
                 autoPlayCurve: Curves.fastOutSlowIn,
                 enableInfiniteScroll: true,
                 autoPlayAnimationDuration: const Duration(milliseconds: 800),
@@ -50,7 +50,7 @@ class HomePage extends StatelessWidget {
                       margin: const EdgeInsets.symmetric(horizontal: 5.0),
                       child: Image.asset(
                         image,
-                        fit: BoxFit.cover,
+                        fit: BoxFit.contain,
                       ),
                     );
                   },

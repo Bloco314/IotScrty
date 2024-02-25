@@ -89,7 +89,7 @@ class SolicitacoesState extends State<Solicitacoes> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Texto(
-                                    text: 
+                                    text:
                                         'Solicitado: ${lista[index][1]}, em: ${lista[index][0]} ${textToData(lista[index][3])}',
                                     cor: PersonalColors.darkerGreen,
                                     size: 12),
@@ -294,6 +294,7 @@ class SolicitacoesCoord extends StatefulWidget {
 
 class SolicitacoesCoordState extends State<SolicitacoesCoord> {
   List<List<dynamic>> lista = [];
+  bool loading = false;
 
   @override
   void initState() {
@@ -319,7 +320,45 @@ class SolicitacoesCoordState extends State<SolicitacoesCoord> {
     }
   }
 
-  void editar() {}
+  Future<void> editar(dados) async {
+    final value = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ModalF(
+            state: dados.last,
+            txt: 'Solicitado: ${dados[0]}, em: ${dados[1]} por ${dados[2]}');
+      },
+    );
+
+    final meta =
+        '?horario_valor=${dados[1]}&env_name=${dados[0]}&user_email=${dados[2]}&state=$value';
+
+    final url = Uri.parse('http://${NetConfig.link}/solicitation/update/$meta');
+
+    try {
+      setState(() {
+        loading = true;
+      });
+      final response = await http.put(url);
+      if (response.statusCode == 200) {
+        reload();
+      } else {
+        setState(() {
+          loading = true;
+        });
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: 'Houve um erro!');
+      setState(() {
+        loading = false;
+      });
+    }
+  }
+
+  void reload() {
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) => const SolicitacoesCoord()));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -327,67 +366,159 @@ class SolicitacoesCoordState extends State<SolicitacoesCoord> {
         drawer: NavBarCoordenador(cont: context, pageName: 'solicitacoes'),
         appBar: const TopBar(text: 'Solicitações'),
         body: Column(children: [
-          Container(
-            height: MediaQuery.of(context).size.height * 0.55,
-            margin: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [PersonalColors.lightGrey, Colors.white]),
-                border: Border.all(color: Colors.black),
-                borderRadius: const BorderRadius.all(Radius.circular(10))),
-            child: Expanded(
-                child: ListView.builder(
-                    itemCount: lista.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                          margin: EdgeInsets.symmetric(
-                              horizontal:
-                                  MediaQuery.of(context).size.width * 0.05,
-                              vertical: 5),
-                          padding: const EdgeInsets.all(7),
-                          decoration: BoxDecoration(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(8)),
-                              color: PersonalColors.smoothWhite,
-                              border: Border.all(color: Colors.black)),
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Texto(
-                                    text:
-                                        'Solicitado: ${lista[index][1]}, em: ${lista[index][0]} ${textToData(lista[index][3])}',
-                                    cor: PersonalColors.darkerGreen,
-                                    size: 12),
-                                const SizedBox(width: 10),
-                                if (lista[index].last == 'Aceito')
-                                  IconButton(
-                                      style: ButtonStyle(
-                                          backgroundColor:
-                                              MaterialStateColor.resolveWith((states) =>
-                                                  PersonalColors.lightGrey)),
+          if (loading)
+            Container()
+          else
+            Container(
+              height: MediaQuery.of(context).size.height * 0.55,
+              margin: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [PersonalColors.lightGrey, Colors.white]),
+                  border: Border.all(color: Colors.black),
+                  borderRadius: const BorderRadius.all(Radius.circular(10))),
+              child: Expanded(
+                  child: ListView.builder(
+                      itemCount: lista.length,
+                      itemBuilder: (context, index) {
+                        final dados = [
+                          lista[index][1], //ambiente
+                          lista[index][0], //horario
+                          lista[index][2], //solicitante
+                          lista[index][3], //data prevista
+                          lista[index].last //estado atual
+                        ];
+
+                        return Container(
+                            margin: EdgeInsets.symmetric(
+                                horizontal:
+                                    MediaQuery.of(context).size.width * 0.05,
+                                vertical: 5),
+                            padding: const EdgeInsets.all(7),
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(8)),
+                                color: PersonalColors.smoothWhite,
+                                border: Border.all(color: Colors.black)),
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Texto(
+                                      text:
+                                          'Solicitado: ${dados[0]}, em: ${dados[1]} por ${dados[2]}',
+                                      cor: PersonalColors.darkerGreen,
+                                      size: 12),
+                                  const SizedBox(width: 10),
+                                  if (dados.last == 'Aceito')
+                                    IconButton(
                                       icon: const Icon(Icons.check,
                                           color: Colors.green),
-                                      onPressed: editar)
-                                else if (lista[index].last == 'Analise')
-                                  IconButton(
+                                      onPressed: () => editar(dados),
                                       style: ButtonStyle(
-                                          backgroundColor:
-                                              MaterialStateColor.resolveWith((states) =>
-                                                  PersonalColors.lightGrey)),
+                                        backgroundColor:
+                                            MaterialStateColor.resolveWith(
+                                                (states) =>
+                                                    PersonalColors.lightGrey),
+                                        shape:
+                                            MaterialStateProperty.resolveWith(
+                                          (states) => RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                                10.0), // Defina o raio dos cantos aqui
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  else if (lista[index].last == 'Analise')
+                                    IconButton(
                                       icon: const Icon(Icons.restore_outlined,
                                           color: Colors.blueAccent),
-                                      onPressed: editar)
-                                else
-                                  IconButton(
+                                      onPressed: () => editar(dados),
                                       style: ButtonStyle(
-                                          backgroundColor: MaterialStateColor.resolveWith((states) => PersonalColors.lightGrey)),
-                                      icon: const Icon(Icons.close, color: Colors.red),
-                                      onPressed: editar)
-                              ]));
-                    })),
-          )
+                                        backgroundColor:
+                                            MaterialStateColor.resolveWith(
+                                                (states) =>
+                                                    PersonalColors.lightGrey),
+                                        shape:
+                                            MaterialStateProperty.resolveWith(
+                                          (states) => RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                                10.0), // Defina o raio dos cantos aqui
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  else
+                                    IconButton(
+                                      icon: const Icon(Icons.close,
+                                          color: Colors.red),
+                                      onPressed: () => editar(dados),
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateColor.resolveWith(
+                                                (states) =>
+                                                    PersonalColors.lightGrey),
+                                        shape:
+                                            MaterialStateProperty.resolveWith(
+                                          (states) => RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                                10.0), // Defina o raio dos cantos aqui
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                ]));
+                      })),
+            )
         ]));
+  }
+}
+
+class ModalF extends StatelessWidget {
+  final String state;
+  final String txt;
+
+  const ModalF({super.key, required this.state, required this.txt});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+        title: Row(
+          children: [
+            const Texto(
+                text: 'Gerenciar solicitação', size: 22, cor: Colors.black),
+            IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () => Navigator.pop(context),
+            )
+          ],
+        ),
+        content: SizedBox(
+            height: 80,
+            child: Column(children: [
+              Texto(
+                text: txt,
+                size: 16,
+                cor: PersonalColors.darkerGreen,
+              ),
+              Text(state)
+            ])),
+        actions: [
+          if (state != 'Aceito')
+            PrimaryButton(
+                text: 'Aceitar',
+                height: 40,
+                onPressed: () => Navigator.pop(context, 'Aceito')),
+          if (state != 'Recusado')
+            SecondaryButton(
+                text: state == 'Analise' ? 'Recusar' : 'Cancelar',
+                height: 40,
+                onPressed: () => Navigator.pop(context, 'Recusado'))
+        ],
+        actionsAlignment: MainAxisAlignment.center);
   }
 }

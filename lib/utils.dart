@@ -1,5 +1,5 @@
 class NetConfig {
-  static const ip = '10.10.16.16';//'192.168.0.9';
+  static const ip = '192.168.0.9';
   static const port = '8000';
   static const link = '$ip:$port';
 }

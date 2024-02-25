@@ -89,7 +89,7 @@ class SolicitacoesState extends State<Solicitacoes> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Texto(
-                                    text:
+                                    text: 
                                         'Solicitado: ${lista[index][1]}, em: ${lista[index][0]} ${textToData(lista[index][3])}',
                                     cor: PersonalColors.darkerGreen,
                                     size: 12),

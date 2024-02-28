@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iot_scrty/assets/colors.dart';
 import 'package:iot_scrty/components/buttons.dart';
+import 'package:iot_scrty/components/input_fields.dart';
 import 'package:iot_scrty/components/navigation_bar.dart';
 import 'package:iot_scrty/components/text.dart';
 import 'package:iot_scrty/components/top_bar.dart';
@@ -192,5 +193,55 @@ class ModalV extends StatelessWidget {
                     }))),
         actions: const [],
         actionsAlignment: MainAxisAlignment.center);
+  }
+}
+
+class CheckinManual extends StatefulWidget {
+  const CheckinManual({super.key});
+
+  @override
+  State<CheckinManual> createState() => _CheckinManualState();
+}
+
+class _CheckinManualState extends State<CheckinManual> {
+  TextEditingController matricula = TextEditingController();
+
+  TextEditingController equipamento = TextEditingController();
+
+  List<List<String>> lista = [];
+
+  void emprestar() async {
+    lista.add([matricula.text, equipamento.text]);
+    final url =
+        Uri.parse('http://${NetConfig.link}/register/create_many/$userEmail');
+    final body = jsonEncode({'list': lista});
+    try {
+      final response = await http
+          .post(url, body: body, headers: {'Content-Type': 'application/json'});
+      if (response.statusCode == 200) {
+        matricula.text = '';
+        equipamento.text = '';
+        final a = json.decode(response.body)['hora'];
+        Fluttertoast.showToast(msg: 'Reservado em $a');
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: 'Houve um erro');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: const TopBar(text: 'Emprestimo'),
+      drawer: NavBarProfessor(cont: context, pageName: 'Emprestimo manual'),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CampoCadastro(labelText: 'Matricula', controller: matricula),
+          CampoCadastro(labelText: 'Equipamento', controller: equipamento),
+          PrimaryButton(text: 'Emprestar', onPressed: emprestar)
+        ],
+      ),
+    );
   }
 }

@@ -65,12 +65,22 @@ class NavBarProfessor extends NavBase {
           ListTile(
               leading: const Icon(Icons.qr_code),
               title: const Text('Emprestimo Barcode/QRCode'),
-              onTap: () => navigateTo(context, const CheckinEquip())),
+              onTap: () => {
+                    if (pageName != 'checkin')
+                      {navigateTo(context, const CheckinEquip())}
+                    else
+                      {Navigator.of(context).pop()}
+                  }),
           const Divider(),
           ListTile(
               leading: const Icon(Icons.auto_stories),
               title: const Text('Emprestimo Manual'),
-              onTap: () => {}),
+              onTap: () => {
+                    if (pageName != 'Emprestimo manual')
+                      {navigateTo(context, const CheckinManual())}
+                    else
+                      {Navigator.of(context).pop()}
+                  }),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.assignment),

@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iot_scrty/assets/colors.dart';
 import 'package:iot_scrty/components/buttons.dart';
+import 'package:iot_scrty/components/input_fields.dart';
 import 'package:iot_scrty/components/navigation_bar.dart';
 import 'package:iot_scrty/components/text.dart';
 import 'package:iot_scrty/components/top_bar.dart';
+import 'package:iot_scrty/pages/login.dart';
 import 'package:iot_scrty/utils.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
@@ -25,6 +27,7 @@ class CheckinEquipState extends State<CheckinEquip> {
   String matricula = '';
   String tombo = '';
   bool lendo = true;
+  bool emprestado = false;
 
   String get currentState {
     if (matricula.isEmpty && tombo.isEmpty) {
@@ -76,7 +79,8 @@ class CheckinEquipState extends State<CheckinEquip> {
 
   void finalizar() async {
     lista.add([matricula, tombo]);
-    final url = Uri.parse('http://${NetConfig.link}/register/create_many/');
+    final url =
+        Uri.parse('http://${NetConfig.link}/register/create_many/$userEmail');
     final body = jsonEncode({'list': lista});
     try {
       final response = await http
@@ -84,6 +88,9 @@ class CheckinEquipState extends State<CheckinEquip> {
       if (response.statusCode == 200) {
         final a = json.decode(response.body)['hora'];
         Fluttertoast.showToast(msg: 'Reservado em $a');
+        setState(() {
+          emprestado = true;
+        });
       }
     } catch (e) {
       Fluttertoast.showToast(msg: 'Houve um erro');
@@ -92,56 +99,67 @@ class CheckinEquipState extends State<CheckinEquip> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: NavBarProfessor(
-        cont: context,
-        pageName: 'Checkin',
-      ),
-      appBar: TopBar(text: currentState),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-            Column(children: [
-              Texto(
-                  size: 16,
-                  text: "Matricula: $matricula",
-                  cor: PersonalColors.darkerGreen),
-              Texto(
-                  size: 16,
-                  text: "Equipamento: $tombo",
-                  cor: PersonalColors.darkerGreen)
+    if (emprestado) {
+      return Scaffold(
+          drawer: NavBarProfessor(
+            cont: context,
+            pageName: 'Checkin',
+          ),
+          appBar: const TopBar(text: 'Emprestimo concluido'),
+          body: const Center(child: Text('Emprestado.')));
+    } else {
+      return Scaffold(
+        drawer: NavBarProfessor(
+          cont: context,
+          pageName: 'Checkin',
+        ),
+        appBar: TopBar(text: currentState),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+              Column(children: [
+                Texto(
+                    size: 16,
+                    text: "Matricula: $matricula",
+                    cor: PersonalColors.darkerGreen),
+                Texto(
+                    size: 16,
+                    text: "Equipamento: $tombo",
+                    cor: PersonalColors.darkerGreen)
+              ]),
+              IconButton(
+                  onPressed: openModal, icon: const Icon(Icons.info_outline)),
             ]),
-            IconButton(
-                onPressed: openModal, icon: const Icon(Icons.info_outline)),
-          ]),
-          if (lendo)
-            Container(
-              height: 300,
-              margin: const EdgeInsets.all(5),
-              child: MobileScanner(
-                fit: BoxFit.fitHeight,
-                onDetect: read,
-              ),
-            ),
-          if (!lendo) const SizedBox(height: 50),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (!lendo)
-                PrimaryButton(
-                  text:
-                      currentState == 'Confirmar' ? 'Proximo aluno' : 'Proximo',
-                  onPressed: mainAction,
+            if (lendo)
+              Container(
+                height: 300,
+                margin: const EdgeInsets.all(5),
+                child: MobileScanner(
+                  fit: BoxFit.fitHeight,
+                  onDetect: read,
                 ),
-              if (currentState == 'Confirmar') const SizedBox(width: 20),
-              if (currentState == 'Confirmar')
-                PrimaryButton(text: 'Finalizar', onPressed: finalizar)
-            ],
-          )
-        ],
-      ),
-    );
+              ),
+            if (!lendo) const SizedBox(height: 50),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (!lendo)
+                  PrimaryButton(
+                    text: currentState == 'Confirmar'
+                        ? 'Proximo aluno'
+                        : 'Proximo',
+                    onPressed: mainAction,
+                  ),
+                if (currentState == 'Confirmar') const SizedBox(width: 20),
+                if (currentState == 'Confirmar')
+                  PrimaryButton(text: 'Finalizar', onPressed: finalizar)
+              ],
+            )
+          ],
+        ),
+      );
+    }
   }
 }
 
@@ -175,5 +193,55 @@ class ModalV extends StatelessWidget {
                     }))),
         actions: const [],
         actionsAlignment: MainAxisAlignment.center);
+  }
+}
+
+class CheckinManual extends StatefulWidget {
+  const CheckinManual({super.key});
+
+  @override
+  State<CheckinManual> createState() => _CheckinManualState();
+}
+
+class _CheckinManualState extends State<CheckinManual> {
+  TextEditingController matricula = TextEditingController();
+
+  TextEditingController equipamento = TextEditingController();
+
+  List<List<String>> lista = [];
+
+  void emprestar() async {
+    lista.add([matricula.text, equipamento.text]);
+    final url =
+        Uri.parse('http://${NetConfig.link}/register/create_many/$userEmail');
+    final body = jsonEncode({'list': lista});
+    try {
+      final response = await http
+          .post(url, body: body, headers: {'Content-Type': 'application/json'});
+      if (response.statusCode == 200) {
+        matricula.text = '';
+        equipamento.text = '';
+        final a = json.decode(response.body)['hora'];
+        Fluttertoast.showToast(msg: 'Reservado em $a');
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: 'Houve um erro');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: const TopBar(text: 'Emprestimo'),
+      drawer: NavBarProfessor(cont: context, pageName: 'Emprestimo manual'),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CampoCadastro(labelText: 'Matricula', controller: matricula),
+          CampoCadastro(labelText: 'Equipamento', controller: equipamento),
+          PrimaryButton(text: 'Emprestar', onPressed: emprestar)
+        ],
+      ),
+    );
   }
 }
